@@ -1,3 +1,10 @@
+---
+title: LayoutNG 기본
+categories:
+- Blink
+feature_image: "https://picsum.photos/2560/600?image=872"
+---
+
 # LayoutNG
 
 - 레이아웃은 화면에서 DOM 요소의 크기와 위치를 결정하는 immutable 프래그먼트 트리를 만드는 과정이다.
