@@ -37,13 +37,13 @@ feature_image: "https://picsum.photos/2560/600?image=872"
 3. position이 지정된 자식 element들은 HTML에서 등장하는 순서대로
 ```
 - Stacking Contexts
-        - Default stacking order와 z-index 값의 효과는 stacking contexts를 만드는 element의 자식 element에만 적용된다.
-        - 그럼 Stacking contexts는 어떻게 생성되나?
-            - z-index가 없다면 Default Stacking Contexts는 root element인 <html>이다.
-            - position이 absolute 또는 relative 이면서, z-index가 auto가 아닌 값을 지닌 element
-            - opacity가 1보다 작은 요소
-            - transform의 값이 none이 아닌 요소
-        - 중요한 것은, 자식의 z-index 값은 부모에게만 의미가 있다.
+    - Default stacking order와 z-index 값의 효과는 stacking contexts를 만드는 element의 자식 element에만 적용된다.
+    - 그럼 Stacking contexts는 어떻게 생성되나?
+        - z-index가 없다면 Default Stacking Contexts는 root element인 <html>이다.
+        - position이 absolute 또는 relative 이면서, z-index가 auto가 아닌 값을 지닌 element
+        - opacity가 1보다 작은 요소
+        - transform의 값이 none이 아닌 요소
+    - 중요한 것은, 자식의 z-index 값은 부모에게만 의미가 있다.
 <div><img src= "/assets/img/post/z_index_example.png"></div>
 - stacking contexts 계층 구조
 ```
