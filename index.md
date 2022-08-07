@@ -15,11 +15,12 @@ excerpt: "Alembic is a starting point for [Jekyll](https://jekyllrb.com/) projec
 - PKI(Public Key Infrastructure) & XML Digital Signature
 - Blink Rendering Engine Analysis
 - JavaScript, **TypeScript**, HTML, CSS
-- Frontend SPA Framework
-  - **React**
+- Frontend Framework
+  - **React**(SPA Framework)
   - Mbox(State Management)
+  - Jest(Test Framework)
 - Java
-- Backend
+- Backend Framework
   - Spring Boot
 - DBMS
   - SQL, Tibero, MariaDB
