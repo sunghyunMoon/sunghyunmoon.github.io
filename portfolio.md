@@ -20,8 +20,18 @@ aside: true
 
 ## Work Experience
 * Web Developer(2021.08 - current)
-  * 공동 편집이 가능한 협업툴 Super Word 개발
-  * C++, TypeScript, React, Java, MySQL, Jest Unit Test
+  * 협업 및 공동 편집이 가능한 협업툴 Super Word 개발(Office365, GoogleDocs와 같은 웹 오피스)
+    * File이 아닌 문서 데이터를 요소별로 DB화 하여 데이터 기반의 생산성 플랫폼 개발
+  * Full Stack
+    * C++, TypeScript, React, Java, MySQL, Jest Unit Test
+  * Super Word Graphic 개체 z-index Architecture 설계 및 구현
+  * Super Word Memo UX 기획, Architecture 설계 및 구현
+    * 직장 협업이 진화하고 있음에 따라 협업 툴로써 웹 친화적인 메모 기능 개발
+    * 문서 편집 시 paragraph의 위치가 바뀌면 Reactive하게 위치가 바뀌는 메모 레이아웃 구현
 * C++ Developer(2019.09 - 2021.08)
   * ToOffice Word 제품 개발
   * Static Analysis
+  * XML Digital Signature Architecture 설계 및 구현
+    * docx 문서의 인증과 무결성을 위한 PKI(Public Key Infrastructure) 기반 디지털 서명 기능
+  * 탐색창 페이지 탭 refacotring 설계 및 구현
+    * 1000 페이지 이상의 대용량 문서에서 탐색창 페이지 탭에 대해 Event-Driven Architectuire를 이용해 레이아웃

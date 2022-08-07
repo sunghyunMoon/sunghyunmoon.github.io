@@ -95,7 +95,7 @@ encoding: utf-8 # Make sure the encoding is right
 lang: en-GB # Set the site language
 title: "Sunghyun Moon" # Site name or title, also used in jekyll-seo-tag
 logo: "/assets/logos/logo.svg" # Site logo, also used in jekyll-seo-tag
-description: "Alembic is a starting point for Jekyll projects. Rather than starting from scratch, this boilerplate is designed to get the ball rolling immediately" # Site description and default description, also used in jekyll-seo-tag
+description: "저는 코더가 아닌 비즈니스 성장에 기여하는 일을 최우선으로 합니다. 불가능할 것 같거나 어렵고 복잡한 일을 해결했을 때의 성취감을 좋아합니다." # Site description and default description, also used in jekyll-seo-tag
 url: "https://sunghyunmoon.github.io/" # Site url, also used in jekyll-seo-tag
 baseurl: ""
 repo: "https://github.com/sunghyunMoon/sunghyunmoon.github.io"
