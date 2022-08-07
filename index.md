@@ -17,7 +17,7 @@ excerpt: "Alembic is a starting point for [Jekyll](https://jekyllrb.com/) projec
 - JavaScript, **TypeScript**, HTML, CSS
 - Frontend Framework
   - **React**(SPA Framework)
-  - Mbox(State Management)
+  - Mobx(State Management)
   - Jest(Test Framework)
 - Java
 - Backend Framework
