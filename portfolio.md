@@ -45,7 +45,7 @@ aside: true
   * 문서를 작성한 서명자가 내가 예상한 서명자 인지를 보장할 수 있음
   * 디지털 서명된 문서는 전송 과정 중 어떠한 위변조도 없는 것을 보장할 수 있음
   
-<img src= "/assets/img/post/digital_signature.png">
+<img src= "/assets/img/post/digital_signature.PNG">
 * 분석
   * HTTPS 통신에 사용되는 SSL 인증서에 대한 이해 및 인증서 관리 분석
     * OS에 기본으로 내장된 웹 브라우저에서 CA의 공개키가 들어 있는 인증서들을 어떻게 관리하고, 내장된 CA의 인증서를 이용해 서버로 받은 인증서를 검증할 때 어떤 라이브러리들을 사용하는지에 대해 분석함
