@@ -39,6 +39,33 @@ aside: true
 
 <hr class="MuiDivider-root MuiDivider-fullWidth css-3udx1k">
 
+<h4 style="color:#008000">탐색창 페이지 탭 Lazy Synchronization Architecture</h4>
+* 개발 기간 : 2020.10 ~ 2020. 12
+* 탐색창 페이지 탭?
+  * 검색 기능을 제공하는 툴페인으로 **페이지탭**이라는 세부 기능이 존재
+  * 페이지탭 기능은 **문서 전체 페이지를 미리보기 리스트 형태**로 보여주며 본문의 셀렉션에 따라 현재 보고있는 페이지에도 강조표시가 됨
+  * 페이지탭의 페이지 이미지를 클릭하면 해당 페이지로 본문이 이동 됨
+  * 검색 기능도 제공하는데 검색한 단어가 있는 페이지만 모아서 보여주기도 함
+<img src= "/assets/img/post/search_toolpane_intro.PNG">
+* 문제 상황
+  * 예를 들어, 총 1000페이지 문서에서 탐색창은 1000페이지를 보고 있고, 사용자는 1페이지에서 enter를 칠 경우
+<img src= "/assets/img/post/search_toolpane_issue.PNG">
+* 탐색창이 닫힌 경우, 1페이지에서 enter를 쳐도 editing이 연속적으로 가능
+* 탐색창이 열려 1000페이지를 보고 있고, 사용자는 1페이지에서 editing 할 경우
+  * 한번에 1000페이지까지 레이아웃 후 탐색창에 업데이트, 그 과정 동안 <span style="color:tomato; background-color:#fff5b1" > 사용자 editing이 block되는 문제</span>
+* **레퍼런스 제품인 MS의 경우도 본문과 탐색창의 sync를 맞춘 후** editing이 가능하기 때문에 editing block 현상이 있었음
+  * Word는 첫 페이지에서 엔터를 치면 그 아래 paragrpah 들의 위치가 밀려나게 되고 페이지도 늘어날 수 있게 된다. 그래서 엔터 친 아래의 모든 paragraph들의 좌표를 정해주는 layout이라는 과정을 거쳐야 한다. layout은 이전 paragraph의 위치와 높이가 정해져 있어야 다음 paragraph을 layout할 수가 있기 때문에, layout은 항상 위에서부터 아래로 진행이 된다.
+  * 1000 페이지 정도의 문서를 한번에 layout하는 것은 소모가 큰 작업이고, **1000페이지를 layout한 결과를 바탕으로 페이지 탭을 rendering해주기 때문에, editin block 현상이 생김**
+* 본문과 탐색창의 sync보다는 사용자 editing이 우선이라고 판단함
+  * <span style="color:tomato; background-color:#fff5b1" >사용자의 editing이 가능하면서 sync를 맞추는 방법이 없을까?</span>
+  * 아이디어 : 본문과 탐색창을 lazy하게 sync를 맞추어 사용자 editing을 가능하게 하자
+* 본문의 viewport 이후의 페이지에 대해서는 Event-Driven Architecture를 이용해 본문과 탐색창을 lazy하게 sync를 맞추어 사용자 editing이 가능하도록 해결함
+* Event-Driven?
+  * IT 영역에서 아주 오래된 키워드
+  * 어떤 하나의 큰 일을 잘게 쪼갠것들을 각각 **task**라고 지정한 다음 UI event를 계속 받아야 하는 event loop에 순서대로 넣어주는 것으로 생각하면 이해가 쉬울듯 하다. 이렇게 하면 task 사이 사이 사용자의 event가 들어올 수 있어, 사용자가 editing을 하면서도 페이지 Layout이 가능하게 된다. 
+
+<hr class="MuiDivider-root MuiDivider-fullWidth css-3udx1k">
+
 <h4 style="color:#008000">XML Digital Signature Architecture 설계 및 구현</h4>
 * 개발 기간 : 2020.02 ~ 2020. 07
 * 디지털 서명?
