@@ -39,6 +39,12 @@ aside: true
 
 <hr class="MuiDivider-root MuiDivider-fullWidth css-3udx1k">
 
+<h4 style="color:#008000">Super Word Graphic 개체 z-index Architecture</h4>
+* 개발 기간 : 2021.09 ~ 2021. 11
+* 탐색창 페이지 탭?
+
+<hr class="MuiDivider-root MuiDivider-fullWidth css-3udx1k">
+
 <h4 style="color:#008000">탐색창 페이지 탭 Lazy Synchronization Architecture</h4>
 * 개발 기간 : 2020.10 ~ 2020. 12
 * 탐색창 페이지 탭?
