@@ -195,7 +195,7 @@ person.foo(function () {
 ```
 
 - 정리!
-<div><img src= "/assets/img/post/this_binding.png"></div>
+<div><img src= "/assets/img/post/this_binding.PNG"></div>
 
 
 <h3>끄~ㅌㅌㅌ!</h3>
