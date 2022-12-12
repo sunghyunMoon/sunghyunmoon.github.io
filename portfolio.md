@@ -41,7 +41,41 @@ aside: true
 
 <h4 style="color:#008000">Super Word Graphic 개체 z-index Architecture</h4>
 * 개발 기간 : 2021.09 ~ 2021. 11
-* 탐색창 페이지 탭?
+* OOXML z-index
+** 화면상에서 z 축 좌표를 의미
+** OOXML 스펙상으로 z-index는 **unique한 id** & **양수**만 가능
+
+<img src= "/assets/img/post/z_index_intro.PNG">
+
+* MS 워드에서의 z-index
+  * global하게 z-index 관리
+  * Default(=251659264)부터 시작해 새로운 도형 생성 마다 문서 전체의 최대 z-index + 1024
+
+<img src= "/assets/img/post/ms_word_zindex.PNG">
+
+* 웹 표준 z-index
+  * CSS의 z-index로 설정
+  * 초깃값은 auto(=0)
+  * 음수와 양수 모두 설정 가능 
+
+<img src= "/assets/img/post/css_z_index.PNG">
+
+* <span style="color:tomato; background-color:#fff5b1" >Stacking Context</span>
+  * z-index가 설정되면 stacking context가 생성됨
+  * Stacking context는 HTML element의 3차원으로 개념화
+  * Stacking context에 따라 element의 부모/자식 간 페인트 순서가 결정됨
+  * Element -> negative z-index children -> normal flow children 
+       -> z-index==0 children  -> positive z-index children
+  
+  <img src= "/assets/img/post/stacking_context_example.PNG">
+  
+    * 부모인 paragraph의 z-index가 있으면, 자식인 shape2의 z-index가 음수더라도 절대로 부모 밑으로 paint 될 수 없다.(paragraph이 stacking context를 생성하기 때문)
+    * 부모인 paragraph의 z-index가 없으면, stacking context가 생성되지 않기 때문에, 자식의 z-index가 음수이면 부모 밑으로 paint 된다.
+* Super Word/Hangul z-index 설계
+  * 웹 표준 z-index를 CSS style에 설정해 구현
+  * 이전 ToOffice에서는 Paint단에서 layer를 제어했지만, SuperOffice에서는 웹 표준 z-index를 사용
+
+
 
 <hr class="MuiDivider-root MuiDivider-fullWidth css-3udx1k">
 
