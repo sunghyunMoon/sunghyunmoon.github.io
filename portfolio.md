@@ -39,6 +39,17 @@ aside: true
 
 <hr class="MuiDivider-root MuiDivider-fullWidth css-3udx1k">
 
+<h4 style="color:#008000">Super Word 메모 Architecture</h4>
+* 개발 기간 : 2021.11 ~ 
+* 기존 기록을 하기 위한 주석 관점의 메모에서 **의견을 주고 받기 위한 협업 관점의 새로운 Super Word Comment UX/UI 제안**
+* 레퍼런스 웹 오피스 제품인 office365, google docs의 메모 기능(simple editor)을 뛰어 넘어 OOXML 스펙 기반의 paragraph, 그림, 테이블 등이 삽입 가능한 메모 기능(complex editor) 구현
+
+<div><img src= "/assets/img/post/modern_comment.gif"></div>
+
+* 
+
+<hr class="MuiDivider-root MuiDivider-fullWidth css-3udx1k">
+
 <h4 style="color:#008000">Super Word Graphic 개체 z-index Architecture</h4>
 * 개발 기간 : 2021.09 ~ 2021. 11
 * OOXML z-index
