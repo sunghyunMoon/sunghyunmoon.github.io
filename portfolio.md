@@ -39,6 +39,50 @@ aside: true
 
 <hr class="MuiDivider-root MuiDivider-fullWidth css-3udx1k">
 
+<h4 style="color:#008000">Blink Layout 분석을 통한 SuperWord Layout 성능 점검</h4>
+* 개발 기간 : 2022.09 ~ 2022.10
+* Blink Layout
+  * DOM 요소의 크기와 위치를 결정하는 fragment를 만드는 과정
+  * LayoutObject가 LayoutAlgorithm을 통해 결과물인 LayoutResult를 만들어 내는 과정
+
+<div><img src= "/assets/img/post/layout_algorithm.PNG"></div>
+
+* ConstraintSpace
+  * **부모로부터 받은 Layout 정보**
+  * offset : 어디서부터 레이아웃 할지에 대한 정보
+  * available_space : 레이아웃 가능한 공간
+  * exclusion_space : 레이아웃 불가능한 공간
+* LayoutResult
+  * **Fragment를 보관**
+    * 일반적으로 LayoutObject와 1대1 관계
+    * Page나 Column의 경우 1대다 일 수 있음
+  * Fragmentation Context
+    * **Fragmentation Type**으로 page, colum이 있고, 일반적인 경우는 none으로 설정됨
+* Blink Dirty Layout System
+  * LayoutObject는 **layout을 다시 할지 결정하는 dirty_bit**을 들고 있음
+  * 텍스트가 입력된 layoutObject에 대해서 dirty_bit이 true로 설정
+  * 부모 layoutObject마다 dirty_bit을 true로 설정
+  * LayoutView까지 dirty_bit을 true로 설정한 후, LayoutView에 대해 레이아웃 수행
+
+<div><img src= "/assets/img/post/dirty_layout.PNG"></div>
+
+* Blink에서는 레이아웃 후 **모든 레이아웃을 다시 수행하지 않도록 layoutObject는 layoutResult를 캐싱**
+* layoutResult에는 대표적으로 fragment와 offset 정보가 있어서 **경우에 따라서 캐싱해둔 layout_result를 재사용**
+* Layout시 최상단 layoutObject는 항상 dirty_bit이 true기 때문에 layoutAlgorithm을 통해 fragment를 다시 만듬
+* Layout 과정 속에서 자식의 **dirty_bit이 true이면 자식도 새롭게 fragment를 만들고**, 반대로 **dirty_bit이 clear한 경우는 캐싱 해둔 layoutResult를 통해서 재사용 여부를 결정**
+
+* **Fragment Caching**
+  * 엔터를 치면 밀려나는 paragraph들의 레이아웃
+    * 밀려나는 paragraph 들은 dirty_bit이 clear하기 때문에 캐싱해둔 layoutResult를 통해 fragment 재사용 여부 결정
+    * 캐싱해둔 layoutResult에 저장된 available_space와 offset을 새로운 값들과 비교
+      * 모두 같은 경우, 캐싱 해둔 layout_result 재사용
+      * offset만 밀리는 경우, layoutResult의 offset 정보만 업데이트 시키고, fragment 재사용
+
+* 이와 같이 일반적인 BlinkLayout System 분석을 토대로한 SuperWord Layout 성능을 분석함
+
+
+<hr class="MuiDivider-root MuiDivider-fullWidth css-3udx1k">
+
 <h4 style="color:#008000">Super Word 메모 Architecture</h4>
 * 개발 기간 : 2021.11 ~ 
 * 기존 기록을 하기 위한 주석 관점의 메모에서 **의견을 주고 받기 위한 협업 관점의 새로운 Super Word Comment UX/UI 제안**
