@@ -46,7 +46,20 @@ aside: true
 
 <div><img src= "/assets/img/post/modern_comment.gif"></div>
 
-* 
+* 기존의 말풍선을 클릭하면서 열었다 닫을 수 있는 다이얼로그의 형태에서 페이지의 오른쪽에서 언제든 볼 수 있는 코멘트 박스의 형태로  UI를 변경
+* **Submit 기능**을 추가해 메모 내용을 작성하고 **Submit을 눌러야 해당 메모가 DB에 저장**되도록 변경
+
+<div><img src= "/assets/img/post/legacy_comment.gif"></div>
+
+* Comment DB
+  * 내부에 메모 단위로 comment element가 존재하고, 메모 내용이 paragraph element들이 자식으로 달리는 형태
+  * COMMENT_ELEMENT DB 테이블을 구성해 속성인 author, data, id를 관리
+
+* Comment Layout
+  * 본문의 레이아웃은 blink에서 처리하고, 코멘트 박스들에 대해서는 JS단에서 위치 업데이트
+  * **본문의 렌더링이 모두 끝난 후에 후처리 방식으로 JS 단에서 위치 업데이트**
+ 
+ <div><img src= "/assets/img/post/layout_comment.PNG"></div>
 
 <hr class="MuiDivider-root MuiDivider-fullWidth css-3udx1k">
 
