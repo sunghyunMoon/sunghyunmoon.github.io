@@ -45,7 +45,7 @@ feature_image: "https://picsum.photos/2560/600?image=872"
 - 자바스크립트는 HTML, CSS와 함께 웹을 구성하는 요소 중 하나로 **웹 브라우저에서 동작하는 유일한 프로그래밍 언어**다.
 - 자바스크립트는 개발자가 별도의 컴파일 작업을 수행하지 않는 **인터프리터 언어**다. 대부분의 모던 자바스크립트 엔진（크롬의 V8, 파이어폭스의 SpiderMonkey, 사파리의 JavaScriptCore, 마이크로소프트 엣지의 Chakra 등）은 **인터프리터와 컴파일러의 장점을 결합해 비교적 처리 속도가 느린 인터프리터의 단점을 해결**했다. **인터프리터는 소스코드를 즉시 실행하고 컴파일러는 빠르게 동작하는 머신 코드를 생성하고 최적화**한다. 이를 통해 컴파일 단계에서 추가적인 시간이 필요함에도 더욱 빠르게 코드를 실행할 수 있다.
 
-<div><img src= "/assets/img/post/compile_interpreter.png"></div>
+<div><img src= "/assets/img/post/compile_interpreter.PNG"></div>
 
 - 하지만 대부분의 모던 브라우저에서 사용되는 인터프리터는 전통적인 컴파일러 언어처럼 명시적인 컴파일 단계를 거치자는 않지만 복잡한 과정을 거치며 일부 소스코드를 컴파일하고 실행한다.
 - 이를 통해 **인터프리터 언어의 장점인 동적 기능 지원을 살리면서 실행 속도가 느리다는 단점을 극복**한다. 따라서 **현재는 컴파일러와 인터프리터의 기술적 구분이 점차 모호해져 가는 추세**다. 하지만 자바스크립트는 런타임에 컴파일되며 실행 파일이 생성되지않고 인터프리터의 도움 없이 실행할 수 없기 때문에 컴파일러 언어라고 할 수는 없다.
@@ -54,13 +54,13 @@ feature_image: "https://picsum.photos/2560/600?image=872"
 
 - 인터프리터를 통해 파싱된 결과물인 ByteCode로 변환한다. 인터프리터란, 다시 정리하면, **코드를 한 줄 한 줄 읽어내려가며 한 줄씩 중간 단계의 Bytecode로 변환하는것**을 말하며 자바스크립트는 기본적으로 인터프리터 언어다.
 
-<div><img src= "/assets/img/post/bytecode_machinecode.png"></div>
+<div><img src= "/assets/img/post/bytecode_machinecode.PNG"></div>
 
 - 바이트코드는 중간단계의 언어이며 바이트코드를 생성하는 시점에서 자바스크립트 엔진은 실제로 Javascript 코드를 실행된다. 특정 하드웨어가 아닌 가상 컴퓨터에서 돌아가는 실행 프로그램을 위한 이진 표현법이며 하드웨어가 아닌 소프트웨어에 의해 처리되기 때문에, 보통 기계어보다 더 추상적이다.
 
 - 아래 그림은 JavaScript 작동원리에 대한 파이프 라인이다.
 
-<div><img src= "/assets/img/post/javascript_engine.png"></div>
+<div><img src= "/assets/img/post/javascript_engine.PNG"></div>
 
 - 코드를 더 빠르게 실행하기 위해, 바이트코드는 프로파일링 된 데이터와 함께 최적화 컴파일러(optimizing compiler)로 보내진다.
 - 최적화 컴파일러는 프로파일링 데이터를 기반으로 최적화된 코드(Optimized code)를 생성 한다.
