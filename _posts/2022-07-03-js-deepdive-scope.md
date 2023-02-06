@@ -2,7 +2,7 @@
 title: 13장 스코프
 categories:
 - Modern JavaScript DeepDive
-feature_image: "https://picsum.photos/2560/600?image=872"
+feature_image: "/assets/img/background/javascript.PNG"
 ---
 
 #### 13.1 스코프란?

@@ -2,7 +2,7 @@
 title: 22장 this
 categories:
 - Modern JavaScript DeepDive
-feature_image: "https://picsum.photos/2560/600?image=872"
+feature_image: "/assets/img/background/javascript.PNG"
 ---
 
 자바 스크립트에서의 this에 대해서 알아보자.

@@ -2,7 +2,7 @@
 title: 자바스크립트와 인터프리터
 categories:
 - Modern JavaScript DeepDive
-feature_image: "https://picsum.photos/2560/600?image=872"
+feature_image: "/assets/img/background/javascript.PNG"
 ---
 
 #### 2.3 자바스크립트 성장의 역사

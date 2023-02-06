@@ -2,7 +2,7 @@
 title: 호이스팅
 categories:
 - Modern JavaScript DeepDive
-feature_image: "https://picsum.photos/2560/600?image=872"
+feature_image: "/assets/img/background/javascript.PNG"
 ---
 
 오늘은 호이스팅이라는 개념에 대해 정리해 보고자 한다. Modern JavaScript DeepDive에서 서술한 호이스팅에 관한 모든 것을 정리해봤다.

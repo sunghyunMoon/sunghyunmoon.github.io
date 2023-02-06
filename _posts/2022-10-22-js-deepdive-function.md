@@ -2,7 +2,7 @@
 title: 26장 ES6 함수의 추가 기능
 categories:
 - Modern JavaScript DeepDive
-feature_image: "https://picsum.photos/2560/600?image=872"
+feature_image: "/assets/img/background/javascript.PNG"
 ---
 
 ES6에서의 함수의 추가 기능에 대해서 알아보자.
