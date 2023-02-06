@@ -12,7 +12,7 @@ aside: true
 * Tel : 010 - 4900 - 5883
 * Email : shmoonlight@kaist.ac.kr
 * M.S. 2019 KAIST Electrical Engineering 
-* Github : [https://github.com/sunghyunMoon](https://github.com/sunghyunMoon "https://github.com/sunghyunMoon")
+* Github : [https://github.com/sunghyunMoon](https://github.com/sunghyunMoon)
 
 
 ## Award & Paper
