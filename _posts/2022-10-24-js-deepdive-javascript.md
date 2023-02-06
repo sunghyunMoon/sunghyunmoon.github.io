@@ -2,7 +2,7 @@
 title: 42장 비동기 프로그래밍
 categories:
 - Modern JavaScript DeepDive
-feature_image: "/assets/img/background/javascript.PNG"
+feature_image: "https://cdn.geekboots.com/geek/javascript-hero-1652702096795.webp"
 ---
 
 #### 42.1 동기처리와 비동기 처리
