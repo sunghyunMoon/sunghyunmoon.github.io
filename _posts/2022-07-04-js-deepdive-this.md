@@ -2,7 +2,7 @@
 title: 22장 this
 categories:
 - Modern JavaScript DeepDive
-feature_image: "/assets/img/background/javascript.PNG"
+feature_image: "https://cdn.geekboots.com/geek/javascript-hero-1652702096795.webp"
 ---
 
 자바 스크립트에서의 this에 대해서 알아보자.

@@ -2,7 +2,7 @@
 title: 24장 클로저
 categories:
 - Modern JavaScript DeepDive
-feature_image: "/assets/img/background/javascript.PNG"
+feature_image: "https://cdn.geekboots.com/geek/javascript-hero-1652702096795.webp"
 ---
 
 클로저는 난해하기로 유명한 자바스크립트의 개념 중 하나다. 클로저는 자바스크립트 고유의 개념이 아니다. 함수를 일급 객체로 취급하는 함수형 프로그래밍 언어(예: 하스켈, 리스프, 얼랭, 스칼라 등)에서 사용되는 중요한 특성이다. 클로저는 자바스크립트 고유의 개념이 아니므로 클로저의 정의가 ECMAScript 사양에 등장하지 않는다. MDN에서는 클로저에 대해 다음과 같이 정의하고 있다.
