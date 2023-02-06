@@ -7,7 +7,7 @@ feature_image: "https://picsum.photos/2560/600?image=872"
 
 CSS 스타일로 position을 absolute로 설정하고 offset 설정할 때 이 offset은 과연 어디서 설정해줄까?라는 궁금증으로 Blink Rendering Engine을 분석해봤다. 
 
-#### Position absolute의 top 오프셋과 BlockLayoutAlgorithm의 관점
+<h3>Position absolute의 top 오프셋과 BlockLayoutAlgorithm의 관점</h3>
 - 예를 들어, top offset 값을 100px로 준다면, 이 100px은 과연 어디서 오프셋을 설정해줄까??
 - BlockLayoutAlgorithm의 FinishLayout에서 NGOutofFlowLayoutPart의 Run 수행
 - Run 수행 중 자식들 중 position이 absolute인(outofflow 특성을 가진) 자식들이 있으면 candidates에 등록되어 있음
@@ -20,7 +20,7 @@ CSS 스타일로 position을 absolute로 설정하고 offset 설정할 때 이 o
             - 코드 : layout_result->GetMutableForOutOfFlow().SetOutOfFlowPositionedOffset
 - 정리하면, BlockLayoutAlgorithm을 수행하면서 오프셋을 정해주는 줄 알았는데, BlockLayoutAlgorithm 완료 후 layout_result에 대해 Offset 정보를 설정해줌!
 
-#### blink layout call
+<h3>blink layout call</h3>
 
 - contentEditable이 true인 element에서 에디팅을을 하면 Blink에서는 과연 layout이 어떻게 돌아갈까?
 - 디버깅을 해보면...
