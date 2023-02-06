@@ -359,10 +359,10 @@ function Person(name, age) {
     let _age = age; // private
     // 인스턴스 메서드
     this.sayHi = function () {
-    console.log('Hi! My name is ${this.name}. I am ${_age );
+    console.log('Hi! My name is ${this.name}. I am ${_age}.' );
 };
 }
-const me = new Persor( Lee', 20)；
+const me = new Persor( 'Lee', 20)；
 me.sayHi(); // Hi/ My name is Lee. I am 20.
 console.log(me.name)； // Lee
 console.log(me._age); // undefined
