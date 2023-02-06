@@ -317,8 +317,9 @@ a {
 
   // Code block.
   code, pre {
+    color: azure;
     background-color: $codeBackgroundColour;
-    font-family: unquote(map-get($monospacetype, font-family));
+    font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
   }
 
   pre {
