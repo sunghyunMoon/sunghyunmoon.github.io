@@ -110,8 +110,8 @@ aside: true
 <h4 style="color:#008000">Super Word Graphic 개체 z-index Architecture</h4>
 * 개발 기간 : 2021.09 ~ 2021. 11
 * OOXML z-index
-** 화면상에서 z 축 좌표를 의미
-** OOXML 스펙상으로 z-index는 **unique한 id** & **양수**만 가능
+  * 화면상에서 z 축 좌표를 의미
+  * OOXML 스펙상으로 z-index는 **unique한 id** & **양수**만 가능
 
 <img src= "/assets/img/post/z_index_intro.PNG">
 
