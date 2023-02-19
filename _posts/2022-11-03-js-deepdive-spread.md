@@ -14,9 +14,9 @@ console.log( ... [1, 2, 3]); // 1 2 3
 // 문자열은 이터러블이다.
 console.log( ... 'Hello'); //Hello
 // Map과 Set은 이터러블이다.
-console.log( ... new Map([[’a', '1'], ['b', '2']])); // [ 'a'1' ] [ 'b', '2' J
+console.log( ... new Map([['a', '1'], ['b', '2']])); // [ 'a', '1' ] [ 'b', '2' ]
 console.log( ... new Set([1, 2, 3])); // 1 2 3
-// 이터러블이 아닌 일반 객체는 스프러/드 문법의 대상이 될 수 없다.
+// 이터러블이 아닌 일반 객체는 스프레드 문법의 대상이 될 수 없다.
 console.log( ... { a: 1, b: 2 });
 // TypeError: Found non-callable @@iterator
 
@@ -49,7 +49,7 @@ const max = Math.max(arr); // — NaN
 ```js
 const arr = [1, 2, 3];
 // 스프레드 문법을 사용하여 배열 arr을 1, 2, 3으로 펼쳐서 Math.max에 전달한다.
-// Math.max(... [1, 2, 3J)은 Math.max(l, 2, 3)과 같다.
+// Math.max(... [1, 2, 3])은 Math.max(l, 2, 3)과 같다.
 const max = Math.max(... arr); // — 3
 ```
 
@@ -67,7 +67,7 @@ const max = Math.max(... arr); // — 3
 
 ```js
 // ES5
-var arr = [1, 2]•concat([3, 4]);
+var arr = [1, 2].concat([3, 4]);
 console.log(arr); // [1, 2, 3, 4]
 ```
 
@@ -75,7 +75,7 @@ console.log(arr); // [1, 2, 3, 4]
 
 ```js
 // ES6
-const arr = [...[1, 2], ... [3f 4]];
+const arr = [...[1, 2], ...[3, 4]];
 console.log(arr); // [1, 2, 3, 4]
 ```
 
@@ -85,24 +85,24 @@ console.log(arr); // [1, 2, 3, 4]
 
 ```js
 // ES5
-var arrl = [1, 4];
+var arr1 = [1, 4];
 var arr2 = [2, 3];
 // 세 번째 안수 arr2를 해체하여 전달해야 한다.
-// 그렇지 않으면 arrl어/ arr2 배열 자체가 추가된다.
-arrl.splice(1, 0, arr2);
-// 기대한 결과는 [1, [2, 3], 4]가 아니라 [1, 2, 3, 4j다.
-console.log(arrl); // [1, [2, 3], 4]
+// 그렇지 않으면 arr1에 arr2 배열 자체가 추가된다.
+arr1.splice(1, 0, arr2);
+// 기대한 결과는 [1, [2, 3], 4]가 아니라 [1, 2, 3, 4]다.
+console.log(arr1); // [1, [2, 3], 4]
 ```
 
-- 위 예제의 경우 splice 메서드의 세 번째 인수 [2, 3]을 2, 3으로 해체하여 전달해야 한다. 그렇지 않으면 arrl에 arr2 배열 자체가 추가된다.
+- 위 예제의 경우 splice 메서드의 세 번째 인수 [2, 3]을 2, 3으로 해체하여 전달해야 한다. 그렇지 않으면 arr1에 arr2 배열 자체가 추가된다.
 - 스프레드 문법을 사용하면 다음과 같이 더욱 간결하고 가독성 좋게 표현할 수 있다.
 
 ```js
 // ES6
-const arrl = [1, 4];
+const arr1 = [1, 4];
 const arr2 = [2, 3];
-arrl.splice(l, 0, ... arr2);
-console.log(arrl); // [1, 2, 3, 4]
+arr1.splice(l, 0, ...arr2);
+console.log(arr1); // [1, 2, 3, 4]
 ```
 
 ##### 35.2.3 배열 복사
@@ -127,7 +127,7 @@ console.log(copy); // [1, 2]
 console.log(copy === origin); // false
 ```
 
-- 이때 원본 배열의 각 요소를 얕은 복사 shallow 하여 새로운 복사본을 생성한다. 이는 slice 메서드도 마찬가지다.
+- 이때 원본 배열의 각 요소를 얕은 복사(shallow copy)하여 새로운 복사본을 생성한다. 이는 slice 메서드도 마찬가지다.
 
 ##### 35.2.4 이터러블을 배열로 변환
 
