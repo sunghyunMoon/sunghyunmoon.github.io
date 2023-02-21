@@ -483,4 +483,4 @@ for (let i = 0; i < funcs.length; i++) {
 
 
 
-<h3>끄~ㅌㅌㅌ!</h3>
+<h3>끝!</h3>

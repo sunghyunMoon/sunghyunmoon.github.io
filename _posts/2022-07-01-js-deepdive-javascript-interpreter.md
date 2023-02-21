@@ -66,4 +66,4 @@ feature_image: "https://cdn.geekboots.com/geek/javascript-hero-1652702096795.web
 - 최적화 컴파일러는 프로파일링 데이터를 기반으로 최적화된 코드(Optimized code)를 생성 한다.
 - 만약 프로파일링 데이터 중에 잘못된 부분이 있다면 최적화 해제(Deoptimize) 를 다시 바이트코드를 실행해서 이전 동작을 반복한다.
 
-<h3>끄~ㅌㅌㅌ!</h3>
+<h3>끝!</h3>
