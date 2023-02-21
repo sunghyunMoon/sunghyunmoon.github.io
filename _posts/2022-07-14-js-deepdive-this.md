@@ -198,4 +198,4 @@ person.foo(function () {
 <div><img src= "/assets/img/post/this_binding.PNG"></div>
 
 
-<h3>끄~ㅌㅌㅌ!</h3>
+<h3>끝!</h3>

@@ -232,4 +232,4 @@ const circle = Circle(5);
 console.log(circle.getDiameter());
 ```
 
-<h3>끄~ㅌㅌㅌ!</h3>
+<h3>끝!</h3>

@@ -570,4 +570,4 @@ class ColorRectangle extends Rectangle {
 
 - 클래스의 모든 처리가 끝나면 완성된 인스턴스가 바인딩된 this가 암묵적으로 반환된다.
 
-<h3>끄~ㅌㅌㅌ!</h3>
+<h3>끝!</h3>
