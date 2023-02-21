@@ -49,7 +49,7 @@ function Circle(radius) {
 }
 // 인스턴스의 생성
 const circlel = new Circle(5); // 반지름이 5인 Circle 객체를 생성
-const circle? = new Circle( 10); // 반지름이 10인 Circle 객처/를 생성
+const circle? = new Circle( 10); // 반지름이 10인 Circle /를 생성
 console.log(circlel.getDiameter()); // 10
 console.Iog(circle2.getDiameter()); // 20
 
@@ -193,7 +193,7 @@ function add(x, y) {
 }
 // 생성자 함수로서 정의하지 않은 일반 함수를 new 연산자와 함께 호출
 let inst = new add();
-// 함수가 객처/를 반환하지 않았.으므루 반환문이 무시된다. 따라서 빈 객체가 생성되어 반환된다.
+// 함수가 객체를 반환하지 않았.으므루 반환문이 무시된다. 따라서 빈 객체가 생성되어 반환된다.
 console.log(inst); // {}
 // 객체를 반환하는 일반 함수
 function createUser(name, role) {
