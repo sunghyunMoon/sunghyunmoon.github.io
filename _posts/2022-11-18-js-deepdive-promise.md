@@ -225,7 +225,7 @@ promiseGet('https://jsonplaceholder.typicode.com/posts/!');
 
 #### 45.3 프로미스의 후속 처리 메서드
 
-- 프로미스의 비동기 처리 상태가 변화하면 이에 따른 후속 처리를 해야 한다. 예를 들어, 프로미스가 fulfilled 상태가 되면 프로미스의 처리 결과를 가지고 무언가를 해야 하고, 프로미스가 rejected 상태가 되면 프로미스의 처리 결과(에러)를 가지고 에러 처리를 해야 한다. 이를 위해 프로미스는 후속 메서드 then, catch, finally를 제공한다.
+- 프로미스의 비동기 처리 상태가 변화하면 이에 따른 후속 처리를 해야 한다. 예를 들어, 프로미스가 fulfilled 상태가 되면 프로미스의 처리 결과를 가지고 무언가를 해야 하고, 프로미스가 rejected 상태가 되면 프로미스의 처리 결과(에러)를 가지고 에러 처리를 해야 한다. 이를 위해 **프로미스는 후속 메서드 then, catch, finally를 제공**한다.
 - **프로미스의 비동기 처리 상태가 변화하면 후속 처리 메서드에 인수로 전달한 콜백 함수가 선택적으로 호출**된다. 이때 후속 처리 메서드의 콜백 함수에 프로미스의 처리 결과가 인수로 전달된다.
 
 #### 45.3.1 Promise.prototype.then
@@ -244,7 +244,7 @@ new Promise((_, reject) => reject(new Error('rejected')))
 
 - then 메서드는 언제나 프로미스를 반환한다. 만약 then 메서드의 콜백 함수가 프로미스를 반환하면 그 프로미스를 그대로 반환하고, 콜백 함수가 프로미스가 아닌 값을 반환하면 그 값을 암묵적으로 resolve 또는 reject하여 프로미스를 생성해 반환한다.
 
-#### 45.3.2 Promise.prototype.cath
+#### 45.3.2 Promise.prototype.catch
 
 - catch 메서드는 한 개의 콜백 함수를 인수로 전달받는다. catch 메서드의 콜백 함수는 프로미스가 rejected 상태인 경우만 호출된다.
 
@@ -260,10 +260,15 @@ new Promise((_, reject) => reject(new Error('rejected')))
 
 - finally 메서드는 한 개의 콜백 함수를 인수로 전달받는다. finally 메서드의 콜백 함수는 프로미스의 성공(fulfilled) 또는 실패(rejected)와 상관없이 무조건 한 번 호출된다. finally 메서드는 프로미스의 상태와 상관없이 공통적으로 수행해야 할 처리 내용이 있을 때 유용하다. finally 메서드도 then/catch 메서드와 마찬가지로 언제나 프로미스를 반환한다.
 
+```js
+new Promise(() => {})
+    .finally(() => console.log('finally')); // finally
+```
+
 #### 45.4 프로미스의 에러 처리
 
 - 45.1.2절 “에러 처리의 한계”에서 살펴보았듯이 비동기 처리를 위한 콜백 패턴은 에러 처리가 곤란하다는 문제가 있다. 프로미스는 에러를 문제없이 처리할수 있다.
-- 비동기 처리 결과에 대한 후속 처리는 프로미스가 제공하는 후속 처리 메서드 then, catch, finally를 사용하여 수행한다. 비동기 처리에서 발생한 에러는 then 메서드의 두 번째 콜백 함수로 처리할 수 있다.
+- 비동기 처리 결과에 대한 후속 처리는 프로미스가 제공하는 후속 처리 메서드 then, catch, finally를 사용하여 수행한다. **비동기 처리에서 발생한 에러는 then 메서드의 두 번째 콜백 함수로 처리할 수 있다.**
 
 ```js
 const wrongUrl = 'https://jsonplaceholder.typicode.eom/XXX/l';
@@ -274,7 +279,7 @@ promiseGet(wrongUrl).then(
 ); // Error: 404
 ```
 
-- 비동기 처리에서 발생한 에러는 프로미스의 후속 처리 메서드 catch를 사용해 처리할수도 있다.
+- **비동기 처리에서 발생한 에러는 프로미스의 후속 처리 메서드 catch를 사용해 처리할수도 있다.**
 
 ```js
 const wrongUrl = 'https://jsonplaceholder.typicode.eom/XXX/l';
@@ -294,24 +299,31 @@ promiseGet('https://jsonplaceholder.typicode.eom/todos/l').then(
 ```
 
 - **catch 메서드를 모든 then 메서드를 호출한 이후에 호출하면 비동기 처리에서 발생한 에러(rejected 상태)뿐만 아니라 then 메서드 내부에서 발생한 에러까지 모두 캐치할 수 있다.**
-- 또한 then 메서드에 두 번째 콜백 함수를 전달하는 것보다 catch 메서드를 사용하는 것이 가독성이 좋고 명확하다. 따라서 에러 처리는 then 메서드에서 하지 말고 catch 메서드에서 하는 것을 권장한다.
+
+```js
+promiseGet('https://jsonplaceholder.typicode.eom/todos/l')
+    .then(res => console.xxx(res))
+    .catch(err => console.error(err)); // TypeError: console.xxx is not a function
+```
+
+- 또한 **then 메서드에 두 번째 콜백 함수를 전달하는 것보다 catch 메서드를 사용하는 것이 가독성이 좋고 명확**하다. 따라서 에러 처리는 then 메서드에서 하지 말고 catch 메서드에서 하는 것을 권장한다.
 
 #### 45.5 프로미스 체이닝
 
-- 45.1.1 절 “콜백 헬”에서 살펴보았듯이 비동기 처리를 위한 콜백 패턴은 콜백 헬이 발생하는 문제가 있다. 프로미스는 then, catch, finally 후속 처리 메서드를 통해 콜백 헬을 해결한다.
+- 45.1.1 절 “콜백 헬”에서 살펴보았듯이 비동기 처리를 위한 콜백 패턴은 콜백 헬이 발생하는 문제가 있다. **프로미스는 then, catch, finally 후속 처리 메서드를 통해 콜백 헬을 해결**한다.
 - 45.1.1 절 “콜백 헬”에서 살펴본 콜백 헬이 발생하는 예제를 프로미스를 사용해 다시 구현해보자.
 
 ```js
 const url = 'https://jsonplaceholder.typicode.com'；
-// id가 1인 post의 userid^ 취득
+// id가 1인 post의 userid를 취득
 promiseGet('${url}/posts/l')
 // 취득한 post의 userid로 user 정보를 취득
-.then(({ userid }) => promiseGet( ${url}/users/${userld}'))
-.then(userlnfo => console.log(userinfo))
-.catch(err => console.error(err));
+.then(({ userid }) => promiseGet('${url}/users/${userld}'))
+    .then(userlnfo => console.log(userinfo))
+        .catch(err => console.error(err));
 ```
 
-- 위 예제에서 then -> then —> catch 순서로 후속 처리 메서드를 호출했다. then, catch, finally 후속 처리 메서드는 언제나 프로미스를 반환하므로 연속적으로 호출할 수 있다. 이를 프로미스 체이닝이라한다.
+- 위 예제에서 then -> then —> catch 순서로 후속 처리 메서드를 호출했다. **then, catch, finally 후속 처리 메서드는 언제나 프로미스를 반환하므로 연속적으로 호출할 수 있다. 이를 프로미스 체이닝**이라한다.
 - 45.3 절 “프로미스의 후속 처리 메서드”에서 살펴보았듯이 후속 처리 메서드의 콜백 함수는 프로미스의 비동기 처리 상태가 변경되면 선택적으로 호출된다. 위 예제에서 후속 처리 메서드의 콜백 함수는 다음과 같이 인수를 전달받으면서 호출된다.
 
 <div><img src= "/assets/img/post/then_then_catch.PNG"></div>
@@ -337,7 +349,7 @@ resolvedPromise.then(console.log); // [1, 2, 3]
 - 위 예제는 다음 예제와 동일하게 동작한다.
 
 ```js
-const resolvedPromise = new Promise(resolve => resolve([l, 2, 3]));
+const resolvedPromise = new Promise(resolve => resolve([1, 2, 3]));
 resolvedPromise.then(console.log); // [1, 2, 3]
 ```
 
@@ -345,7 +357,7 @@ resolvedPromise.then(console.log); // [1, 2, 3]
 
 ```js
 // 에러 객처/를 reject하는 프로미스를 생성
-const rejectedPromise = Promise.reject(new Error('Error! ));
+const rejectedPromise = Promise.reject(new Error('Error!'));
 rejectedPromise.catch(console.log); // Error: Error!
 ```
 
@@ -401,14 +413,14 @@ Promise.all([requestData1(), requestData2(), requestData3()])
 .catch(console.error);
 ```
 
-- Promise.all 메서드는 프로미스를 요소로 갖는 배열 등의 이터러블을 인수로 전달받는다. 그리고 전달받은 모든 프로미스가 모두 fulfilled 상태가 되면 모든 처리 결과를 배열에 저장해 새로운 프로미스를 반환한다.
+- Promise.all 메서드는 프로미스를 요소로 갖는 배열 등의 이터러블을 인수로 전달받는다.
 - Promise.all 메서드는 인수로 전달받은 배열의 모든 프로미스가 모두 fulfilled 상태가 되면 종료한다. 위 예제의 경우 모든 처리에 걸리는 시간은 가장 늦게 fulfilled 상태가 되는 첫 번째 프로미스의 처리 시간인 3초보다 조금 더 소요된다.
-- 모든 프로미스가 fulfilled 상태가 되면 resolve된 처리 결과(위 예제의 경우 1, 2, 3）를 모두 배열에 저장해 새로운 프로미스를 반환한다. 이때 첫 번째 프로미스가 가장 나중에 fulfilled 상태가 되어도 Promise.all 메서드는 첫 번째 프로미스가 resolve한 처리 결과부터 차례대로 배열에 저장해 그 배열을 resolve하는 새로운 프로미스를 반환한다. 즉, 처리 순서가 보장된다.
-- Promise.all 메서드는 인수로 전달받은 배열의 프로미스가 하나라도 rejected 상태가 되면 나머지 프로미스가 fulfilled 상태가 되는 것을 기다리지 않고 즉시 종료한다.
+- **모든 프로미스가 fulfilled 상태가 되면 resolve된 처리 결과(위 예제의 경우 1, 2, 3）를 모두 배열에 저장해 새로운 프로미스를 반환**한다. 이때 첫 번째 프로미스가 가장 나중에 fulfilled 상태가 되어도 Promise.all 메서드는 첫 번째 프로미스가 resolve한 처리 결과부터 차례대로 배열에 저장해 그 배열을 resolve하는 새로운 프로미스를 반환한다. 즉, 처리 순서가 보장된다.
+- **Promise.all 메서드는 인수로 전달받은 배열의 프로미스가 하나라도 rejected 상태가 되면 나머지 프로미스가 fulfilled 상태가 되는 것을 기다리지 않고 즉시 종료**한다.
 
 ##### 45.6.3 Promise.race
 
-- Promise.race 메서드는 Promise.all 메서드와 동일하게 프로미스를 요소로 갖는 배열 등의 이터러블을 인수로 전달받는다. Promise.race 메서드는 Promise.all 메서드처럼 모든 프로미스가 fulfilled 상태가 되는것을 기다리는 것이 아니라 가장 먼저 fulfilled 상태가 된 프로미스의 처리 결과를 resolve하는 새로운 프로미스를 반환한다.
+- Promise.race 메서드는 Promise.all 메서드와 동일하게 프로미스를 요소로 갖는 배열 등의 이터러블을 인수로 전달받는다. **Promise.race 메서드는** Promise.all 메서드처럼 모든 프로미스가 fulfilled 상태가 되는것을 기다리는 것이 아니라 **가장 먼저 fulfilled 상태가 된 프로미스의 처리 결과를 resolve하는 새로운 프로미스를 반환**한다.
 
 ```js
 Promise.race([
@@ -439,7 +451,7 @@ J
 */
 ```
 
-- Promise.allSettled 메서드가 반환한 배열에는 fulfilled 또는 rejected 상태와는 상관없이 Promise.allSettled 메서드가 인수로 전달받은 모든 프로미스들의 처리 결과가 모두 담겨 있다. 프로미스의 처리 결과를 나타내는 객체는 다음과 같다.
+- **Promise.allSettled 메서드가 반환한 배열에는 fulfilled 또는 rejected 상태와는 상관없이 Promise.allSettled 메서드가 인수로 전달받은 모든 프로미스들의 처리 결과가 모두 담겨 있다.** 프로미스의 처리 결과를 나타내는 객체는 다음과 같다.
     - 프로미스가 fulfilled 상태인 경우 비동기 처리 상태를 나타내는 status 프로퍼티와 처리 결과를 나타내는 value 프로퍼티를 갖는다.
     - 프로미스가 rejected 상태인 경우 비동기 처리 상태를 나타내는 status 프로퍼티와 에러를 나타내는 reason 프로퍼티를 갖는다.
 
