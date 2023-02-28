@@ -15,7 +15,7 @@ feature_image: "https://cdn.geekboots.com/geek/javascript-hero-1652702096795.web
 // 빈 객체의 생성
 const person = new Object();
 // 프로퍼티 추가
-person.name = 'Lee’;
+person.name = 'Lee';
 person.sayHello = function () {
     console.log('Hi! My name is ' + this.name);
 };
@@ -48,9 +48,9 @@ function Circle(radius) {
     }；
 }
 // 인스턴스의 생성
-const circlel = new Circle(5); // 반지름이 5인 Circle 객체를 생성
-const circle? = new Circle( 10); // 반지름이 10인 Circle /를 생성
-console.log(circlel.getDiameter()); // 10
+const circle1 = new Circle(5); // 반지름이 5인 Circle 객체를 생성
+const circle2 = new Circle( 10); // 반지름이 10인 Circle 객체를 생성
+console.log(circle1.getDiameter()); // 10
 console.Iog(circle2.getDiameter()); // 20
 
 ```
@@ -85,11 +85,11 @@ const circlel = new Circle（5）; // 반지름이 5인 Circle 객체를 생성
 ```
 
 - 생성자 함수 내부의 코드를 살펴보면 this에 프로퍼티를 추가하고 필요에 따라 전달된 인수를 프로퍼티의 초기값으로서 할당하여 인스턴스를 초기화한다. 하지만 인스턴스를 생성하고 반환하는 코드는 보이지 않는다.
-- 자바스크립트 엔진은 암묵적 인 처리를 통해 인스턴스를 생성하고 반환한다. **new 연산자와 함께 생성자 함수를 호출하면 자바스크립트 엔진은 다음과 같은 과정을 거쳐 암묵적으로 인스턴스를 생성하고 인스턴스를 초기화한 후 암묵적으로 인스턴스를 반환**한다.
+- 자바스크립트 엔진은 암묵적인 처리를 통해 인스턴스를 생성하고 반환한다. **new 연산자와 함께 생성자 함수를 호출하면 자바스크립트 엔진은 다음과 같은 과정을 거쳐 암묵적으로 인스턴스를 생성하고 인스턴스를 초기화한 후 암묵적으로 인스턴스를 반환**한다.
 
 ###### 인스턴스 생성과 this 바인딩
 
-- 암묵적으로 빈 객체가 생성된다. 이 빈 객체가 바로 （아직 완성되지는 않았지만） 생성자 함수가 생성한 인스턴스다. 그리고 암묵적으로 생성된 **빈 객체, 즉 인스턴스는 this에 바인딩**된다. 생성자 함수 내부의 this가 생성자 함수가 생성할 인스턴스를 가리키는 이유가 바로 이것이다. 이 처리는 함수 몸체의 코드가 한 줄씩 실행되는 **런타임 이전에 실행**된다.
+- 암묵적으로 빈 객체가 생성된다. 이 빈 객체가 바로（아직 완성되지는 않았지만） 생성자 함수가 생성한 인스턴스다. 그리고 암묵적으로 생성된 **빈 객체, 즉 인스턴스는 this에 바인딩**된다. 생성자 함수 내부의 this가 생성자 함수가 생성할 인스턴스를 가리키는 이유가 바로 이것이다. 이 처리는 함수 몸체의 코드가 한 줄씩 실행되는 **런타임 이전에 실행**된다.
 
 ```js
 function Circle（radius） {
@@ -152,7 +152,7 @@ foo.method(); // 10
 
 ```js
 function foo() {}
-// 일반적인 함수로서 호출: TfCallJJ이 호출된다.
+// 일반적인 함수로서 호출: [[Call]]이 호출된다.
 foo();
 // 생성자 함수로서 호출: [[Construct]]가 호출된다.
 new foo();
@@ -163,7 +163,7 @@ new foo();
 
 ##### 17.2.5 constructor와 non-constructor의 구분
 
-- 자바스크립트 엔진이 어떻게 constructor와 non-constructor를 구분하는지 살펴보자. **자바스크립트 엔진은 함수 정의를 평가하여 함수 객체를 생성할 때 함수 정의 방식에 따라 힘수를 constructor와 nonconstructor로 구분**한다.
+- 자바스크립트 엔진이 어떻게 constructor와 non-constructor를 구분하는지 살펴보자. **자바스크립트 엔진은 함수 정의를 평가하여 함수 객체를 생성할 때 함수 정의 방식에 따라 함수를 constructor와 nonconstructor로 구분**한다.
     - constructor： 함수 선언문. 함수 표현식, 클래스(클래스도 함수다)
     - non-constructor： 메서드(ES6 메서드 축약 표현), 화살표 함수
 - 이때 주의할 것은 ECMAScript 사양에서 메서드로 인정하는 범위가 일반적인 의미의 메서드보다 좁다는 것이다. 다음 예제를 살펴보자.
