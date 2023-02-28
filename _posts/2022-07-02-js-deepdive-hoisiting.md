@@ -34,7 +34,7 @@ feature_image: "https://cdn.geekboots.com/geek/javascript-hero-1652702096795.web
     console.dir(sub); // undefined
     // 함수 호출
     console.log(add(2, 5)); // 7
-    console.log( sub(2, 5)); // TypeError: sub is not a function
+    console.log(sub(2, 5)); // TypeError: sub is not a function
 
     function add(x, y) {
     return x + y;

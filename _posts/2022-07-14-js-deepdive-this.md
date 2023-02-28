@@ -100,7 +100,7 @@ foo();
 <h4>22.2.4 Function.prototype.apply/call/bind 메서드에 의한 간접 호출</h4>
 
 - apply, call, bind 메서드는 Function.prototype의 메서드다. 즉, 이들 메서드는 모든 함수가 상속받아 사용 할 수있다.
-- Function. prototype .apply. Function. prototype. call 메서드는 this로 사용할 객체와 인수 리스트를 인수 로 전달받아 **함수를 호출**한다. apply와 call 메서드의 사용법은 다음과 같다.
+- Function.prototype.apply, Function.prototype.call 메서드는 this로 사용할 객체와 인수 리스트를 인수 로 전달받아 **함수를 호출**한다. apply와 call 메서드의 사용법은 다음과 같다.
 
 ``` js
 /**
@@ -137,14 +137,14 @@ console.log(getThisBinding.apply(thisArg, [1, 2, 3]));
 // {a: 1}
 // call 메서드는 호출할 함수의 인수를 쉼표로 구분한 리스트 형식으로 전달한다.
 console.log(getThisBinding.call(thisArg, 1, 2, 3));
-// Arguments(3) fl, 2, 3, callee: f, Symbol(5ymbol.iterator)： f]
+// Arguments(3) [1, 2, 3, callee: f, Symbol(5ymbol.iterator)： f]
 // {a: 1}
 
 ```
 
 - apply 메서드는 호출할 함수의 인수를 배열로 묶어 전달한다. call 메서드는 호출할 함수의 인수를 쉼표로 구분한 리스트 형식으로 전달한다. 
-- 이처럼 **apply와 call 메서드는 호출할 함수에 인수를 전달하는 방식만 다 를 뿐 this로 사용할 객체를 전달하면서 함수를 호출하는 것은 동일**하다.
-- **Function.prototype.bind 메서드는** apply와 call 메서드와 달리 함수를 호출하지 않는다. 다만 **첫 번째 인 수로 전달한 값으로 this 바인딩이 교체된 함수를 새롭게 생성**해 반환한다.
+- 이처럼 **apply와 call 메서드는 호출할 함수에 인수를 전달하는 방식만 다를 뿐 this로 사용할 객체를 전달하면서 함수를 호출하는 것은 동일**하다.
+- **Function.prototype.bind 메서드는** apply와 call 메서드와 달리 함수를 호출하지 않는다. 다만 **첫 번째 인수로 전달한 값으로 this 바인딩이 교체된 함수를 새롭게 생성**해 반환한다.
 
 ``` js
 function getThisBinding() {
