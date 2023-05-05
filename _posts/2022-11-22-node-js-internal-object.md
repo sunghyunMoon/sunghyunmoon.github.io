@@ -84,7 +84,7 @@ const secretCode = process.env.SECRET_CODE；
 
 ```js
 setlmmediate(() => {
-    console.log(‘immediate')；
+    console.log('immediate')；
 });
 process.nextTick(() => {
     console.log('nextTick')；
