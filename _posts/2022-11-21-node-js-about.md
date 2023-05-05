@@ -135,9 +135,9 @@ require, cache입니다.
         loaded： true,
         children： [],
         paths： [
-        'C：\\Users\\zerocho\\node_modules‘z
-        ‘C:\\Users\\nodejnodules'z
-        ‘C：\\node_modules’
+        'C：\\Users\\zerocho\\node_modules'z
+        'C:\\Users\\nodejnodules'z
+        'C：\\node_modules’
         ]
     }
 }

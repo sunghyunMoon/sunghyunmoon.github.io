@@ -15,11 +15,11 @@ feature_image: "https://cdn.geekboots.com/geek/javascript-hero-1652702096795.web
 - hello.js와 world.js 파일이 있다. 
 
 ```js
-var word  = ‘Hello’;
+var word  = 'Hello’;
 ```
 
 ```js
-var word  = ‘World’;
+var word  = 'World’;
 ```
 
 - 각각 word라는 변수가 다른 값을 갖고 있다. index.html에서 hello.js와 world.js를 로딩 시켜보자.
@@ -68,12 +68,12 @@ var word  = ‘World’;
 ```
 
 ```js
-var word  = ‘Hello’;
+var word  = 'Hello’;
 export default word;
 ```
 
 ```js
-var word  = ‘World’;
+var word  = 'World’;
 export default word;
 ```
 
