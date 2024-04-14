@@ -2,7 +2,7 @@
 title: 4장 서버 사이드 렌더링(2)
 categories:
 - React Deep Dive
-feature_image: "https://cdn.geekboots.com/geek/javascript-hero-1652702096795.webp"
+feature_image: "https://raw.githubusercontent.com/sunghyunMoon/sunghyunmoon.github.io/main/assets/img/background/react.png"
 ---
 
 #### 4.2 서버 사이드 렌더링을 위한 리액트 API 살펴보기

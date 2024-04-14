@@ -2,7 +2,7 @@
 title: 3장 리액트 훅 깊게 살펴보기
 categories:
 - React Deep Dive
-feature_image: "https://cdn.geekboots.com/geek/javascript-hero-1652702096795.webp"
+feature_image: "https://raw.githubusercontent.com/sunghyunMoon/sunghyunmoon.github.io/main/assets/img/background/react.png"
 ---
 
 함수형 컴포넌트가 상태를 사용하거나 클래스형 컴포넌트의 생명주기 메서드를 대체하는 등의 다양한 작업을 하기 위해 훅(hook)이라는 것이 추가됐다. 훅을 활용하면 클래스형 컴포넌트가 아니더라도 리액트의 다
