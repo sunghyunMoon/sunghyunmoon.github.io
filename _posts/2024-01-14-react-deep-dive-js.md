@@ -2,7 +2,7 @@
 title: 1장 리액트 개발을 위해 꼭 알아야 할 자바스크립트
 categories:
 - React Deep Dive
-feature_image: "https://cdn.geekboots.com/geek/javascript-hero-1652702096795.webp"
+feature_image: "https://raw.githubusercontent.com/sunghyunMoon/sunghyunmoon.github.io/main/assets/img/background/react.png"
 ---
 
 2024년 새해, 새로운 마음 가짐으로 모던 리액트 Deep Dive 책을 정독하기로 해본다. 프런트엔드 분야는 다른 기술 분야에 비해 진입장벽이 상대적으로 낮고 웹서비스를 손쉽고 빠르게 만들 수 있다는 장점 덕분에 많은 사람들, 특히 비전공자들이 진입하는 경우가 많다. 하지만, 리액트와 자바스크립트 사이에 겉으로 드러나지 않는 사실 을 완벽하게 이해하는 과정에 도전하게 된다면 다른 기술 분야와 마찬가지로 프런트엔드 역시 절대 쉽지 않다는 것을 깨닫게 된다. 이 책을 통해 리액트에 대해서 다시 살펴보며 생각을 정리해본다.
@@ -13,7 +13,7 @@ feature_image: "https://cdn.geekboots.com/geek/javascript-hero-1652702096795.web
 
 - 리액트 함수형 컴포넌트와 훅을 반복적으로 작성하다 보면 의존성 배열(dependencies)에 대해 고민해 본 적이 있을 것이다. 실제로 이것이 어떤 식으로 작동하는지, 또한 왜 이러한 변수들을 넣어야 하는지 이해하지 못하는 경우가 많다.
 - 또 렌더링 관점에서도 살펴볼 만한 이유가 있다. 리액트 컴포넌트의 렌더링이 일어나는 이유 중 하나가 바로 props의 동등 비교에 따른 결과다. 그리고 이 props의 동등 비교는 객체의 얕은 비교를 기반으로 이뤄지는데, 이 얕은 비교가 리액트에서 어떻게 작동하는지 이해하지 못하면 렌더링 최적화에 어려움을 겪을 가능성이 크다.
-- 리액트의 가상 DOM과 실제 DOM의 비교, 리액트 컴포넌트가 렌더링할지를 판단하는 방법, 변수나 함수의 메모이제이션 등 모든 작업은 자바스크립트의 동등 비교를 기반으로 한다. 자바스크립트의 이러한 동등 비교는 어떻게 수행되는지, 또 이를 리액트에서 어떻게 활용하고 있는지 살펴보자.
+- 리액트의 가상 DOM과 실제 DOM의 비교, 리액트 컴포넌트가 렌더링할지를 판단하는 방법, 변수나 함수의 메모이제이션 등 **모든 작업은 자바스크립트의 동등 비교를 기반**으로 한다. 자바스크립트의 이러한 동등 비교는 어떻게 수행되는지, 또 이를 리액트에서 어떻게 활용하고 있는지 살펴보자.
 
 ##### 1.1.1 자바스크립트의 데이터 타입
 
@@ -31,9 +31,9 @@ feature_image: "https://cdn.geekboots.com/geek/javascript-hero-1652702096795.web
 ```js
 typeof [] ==== 'object' // true
 typeof {} === 'object' // true
-function heUo() {}
+function hello() {}
 typeof hello === 'function' // true
-const hellol = function () {}
+const hello1 = function () {}
 const hello2 = function () {}
 // 객체인 함수의 내용이 육안으로는 같아 보여도 참조가 다르기 때문에 false가 반환된다.
 hellol === hello2 // false
@@ -50,7 +50,7 @@ let hi = hello
 console.log(hello === hi) // true
 ```
 
-- 는 hello의 hello world라는 값이 hi에 복사해 전달됐기 때문이다. 값을 비교하기 때문에, 값을 전달하는 방식이 아닌 각각 선언하는 방식으로도 동일한 결과를 볼수 있다.
+- hello의 hello world라는 값이 hi에 복사해 전달됐기 때문이다. 값을 비교하기 때문에, 값을 전달하는 방식이 아닌 각각 선언하는 방식으로도 동일한 결과를 볼수 있다.
 
 ```js
 let hello = 'hello world'
@@ -66,7 +66,7 @@ var hello = {
     greet: 'hello, world',
 }
 var hi = {
-    greet： 'hello, world',
+    greet：'hello, world',
 }
 // 그러나 동등 비교를 하면 false가 나온다.
 console.log(hello === hi) // false
@@ -82,7 +82,17 @@ console.log(hello.greet === hi.greet) // true
 
 - == vs. Object.is: == 비교는 같음을 비교하기 전에 양쪽이 같은 타입이 아니라면 비교할 수 있도록 강제로 형변환 (type casting)을 한 후에 변경한다. 따라서 5 == ' 5'와 같이 형변환 후에 값이 동일하다면 ==는 true를 반환한다. 하지만 Object.is는 이러한작업을하지 않는다. 즉. === 와동일하게 타입이 다르면 그냥 false다.
 - === VS. Object.is： 이 방법에도 차이가 있다. 다음코드를 보면 알수 있듯, Object.is가좀 더 개발자가 기대하는 방식으로 정확히 비교한다.
-- . 한 가지 주의해야 할 점은, Object.is를 사용한다 하더라도 객체 비교에는 별 차이가 없다는 것이다. 객체 비교는 앞서 이야기한 객체 비교 원리와 동등하다.
+
+```js
+-0 === +0 // true
+Object.is(-0, +0) // false
+Number.NaN === NaN // false
+Object.is(Number.NaN, NaN) //true
+NaN === 0 / 0 // false
+Object.is(NaN, 0/0) //true
+```
+
+- 한 가지 주의해야 할 점은, Object.is를 사용한다 하더라도 객체 비교에는 별 차이가 없다는 것이다. 객체 비교는 앞서 이야기한 객체 비교 원리와 동등하다.
 
 ##### 1.1.4 리액트에서의 동등 비교
 
@@ -92,14 +102,60 @@ console.log(hello.greet === hi.greet) // true
 ```js
 // Object.is는 참조가 다른 객체에 대해 비교가 불가능하다.
 Object.is({ hello: 'world' }, { hello： 'world' }) // false
-// 반면 리액트 팀에서 구현한 와allowEq니al은 객체의 1 depth까지는 비교가 가능하다.
+// 반면 리액트 팀에서 구현한 shallowEqual은 객체의 1 depth까지는 비교가 가능하다.
 shallowEqual({ hello: 'world' }, { hello： 'world' }) // true
 // 그러나 2 depth까지 가면 이를 비교할 방법이 없으므로 false률 반환한다.
 shallowEqual({ hello： { hi: 'world' } }, { hello: { hi: 'world' } }) // false
 ```
 
-- 이렇게 객체의 얕은 비교까지만 구현한 이유는 무엇일까? 먼저 **리액트에서 사용하는JSX props는 객체이고, 그리고 여기에 있는 props만 일차적으로 비교하면 되기 때문**이다.
+- 이렇게 객체의 얕은 비교까지만 구현한 이유는 무엇일까? 먼저 **리액트에서 사용하는JSX props는 객체이고, 그리고 여기에 있는 props만 일차적으로 비교하면 되기 때문**이다. 다음 코드를 살펴보자.
 - 기본적으로 리액트는 props에서 꺼내온 값을 기준으로 렌더링을 수행하기 때문에 일반적인 케이스에서는 얕은 비교로 충분할 것이다. 이러한 특성을 안다면 props에 또 다른 객체를 넘겨준다면 리액트 렌더링이 예상치 못하게 작동한다는 것을 알수 있다.
+
+```js
+import { memo, useEffect, useState } from 'react'
+
+type Props = {
+counter: number
+}
+
+const Component = memo((props: Props) => {
+    useEffect(() => {
+        console.log('Component has been rendered!')
+    })
+    return <hl>{props.counter}</hl>
+})
+
+type DeeperProps = {
+    counter: {
+        counter: number
+    }
+}
+
+const DeeperComponent = memo((props: DeeperProps) => {
+    useEffect(() => {
+        console.log('DeeperComponent has been rendered!')
+    })
+    return <hl>{props.counter.counter}</hl>
+})
+
+export default function App() {
+    const [, setcounter] = useState(0)
+    function handleClick() {
+        setCounter((prev) => prev + 1)
+    }
+    return (
+        <div className="App">
+        <Component counter={100} />
+        <DeeperComponent counter={{ counter: 100 }} />
+        <button onClick={handleClick}>+</button>
+        </div>
+    )
+}
+```
+
+- 이와 같이 props가 깊어지는 경우, 즉 한 객체 안에 또다른 객체가 있을 경우 React.memo는 컴포넌트에 실제로 변경된 값이 없음에도 불구하고 메모이제이션된 컴포넌트를 반환하지 못한다. 즉, Component는 props,
+counter가 존재하지만, DeeperComponent는 props.counter.counter에 props가 존재한다. 상위 컴포넌트인 App에서 버튼을 클릭해서 강제로 렌더 링을 일으킬 경우, **ShallowEqual을 사용하는 Component 함수는 위 로직에 따라 정확히 객체 간 비교를 수행해서 렌더 링을 방지해 주었지만 DeeperComponent 함수는 제대로 비교하지 못해 memo가 작동하지 않는 모습을 볼 수 있다.**
+- 만약 내부에 있는 객체까지 완벽하게 비교하기 위한 재귀문까지 넣었으면 어떻게 됐을까? 객체 안에 객체가 몇 개까지 있을지 알 수 없으므로 이를 재귀적으로 비교하려 할 경우 성능에 악영향을 미칠 것이다.
 
 ##### 1.1.5 정리
 
@@ -131,7 +187,7 @@ function Component(props) {
 - 자바스크립트에서 함수를 선언할 때 가장 일반적으로 사용하는 방식이다.
 
 ```js
-f니nction add(a, b) {
+function add(a, b) {
     return a + b
 }
 ```
@@ -139,7 +195,7 @@ f니nction add(a, b) {
 - 함수 선언문은 표현식이 아닌 일반 문(statement)으로 분류된다. 표현식이란 무언가 값을 산출하는 구문을 의미한다. 즉, 앞선 함수 선언으로는 어떠한 값도 표현되지 않았으므로 표현식이 아닌 문으로 분류된다.
 
 ```js
-const sum = function suiii(a_, b) {
+const sum = function sum(a, b) {
     return a + b
 }
 sum(10, 24) // 34
@@ -151,12 +207,11 @@ sum(10, 24) // 34
 <h5>함수 표현식</h5>
 
 - 함수 표현식에 대해 알아보기 전에 ‘일급 객체’라는 개념을 알고 있어야 한다. 프로그래밍 세계에서 일급객체란 다른 객체들에 일반적으로 적용 가능한 연산을 모두 지원하는 객체를 의미한다.
--  자바스크립트에
-서 함수는 일급 객체다. 함수는 다른 함수의 매개변수가 될 수도 있고, 반환값이 될 수도 있으며, 앞에서 본 것처럼 할당도 가능하므로 일급 객체가 되기 위한 조건을 모두 갖추고 있다.
+-  자바스크립트에서 함수는 일급 객체다. 함수는 다른 함수의 매개변수가 될 수도 있고, 반환값이 될 수도 있으며, 앞에서 본 것처럼 할당도 가능하므로 일급 객체가 되기 위한 조건을 모두 갖추고 있다.
 
 <h5>함수 표현식과 선언 식의 차이</h5>
 
-- 이 두 가지 방식의 가장큰 차이는 호이스팅(hoisting) 여부다. 함수의 호이스팅이라 함은, 함수 선언문이 마치 맨 앞단에 작성된 것처럼 작동하는 자바스크립트의 특징을 의미한다.
+- 이 두 가지 방식의 가장 큰 차이는 호이스팅(hoisting) 여부다. 함수의 호이스팅이라 함은, 함수 선언문이 마치 맨 앞단에 작성된 것처럼 작동하는 자바스크립트의 특징을 의미한다.
 
 ```js
 hello() // hello
@@ -171,7 +226,7 @@ hello() // hello
 - 반면 함수 표현식은 함수를 변수에 할당했다. 변수도 마찬가지로 호이스팅이 발생한다. 그러나 함수의 호이스팅과는 다르게, 호이스팅되는 시점에서 var의 경우에는 undefined로 초기화한다는 차이가 있다. 
 - **함수와 다르게 변수는, 런타임 이전에 undefined로 초기화되고, 할당문이 실행되는 시점, 즉 런타임 시점에 함수가 할당되어 작동한다는 것**을 알 수 있다.
 
-<h5>Function 생성자</h5>
+<h5>Function 생성자</h5><br>
 
 ```js
 const add = new Fiinction('a', 'b', 'return a + b')
@@ -180,7 +235,7 @@ add(10, 24) // 34
 
 - Function 생성자 함수를 사용해서 만든 모습은 썩 좋아보이지 않는다. 코드 작성 관점에서만 보더라도 매개변수, 그리고 함수의 몸통을 모두 문자열로 작성해야 한다.
 
-<h5>화살표 함수</h5>
+<h5>화살표 함수</h5><br>
 
 
 ```js
@@ -212,8 +267,8 @@ const add = (a, b) => a + b
 
 ```js
 var counter = 0
-function handleClickO {
-    coiinter++
+function handleClick() {
+    counter++
 }
 ```
 
@@ -227,11 +282,11 @@ function handleClickO {
 - 그렇다면 리액트 함수형 컴포넌트의 훅에서 클로저는 어떻게 사용될까? 클로저의 원리를 사용하고 있는 대표적 인 것 중 하나가 바로 useState다.
 
 ```js
-function ComponentO {
+function Component() {
 const [state, setState] = useState()
 function handleClickO {
-    // usestate 호출윤 위에서 끝났지만,
-    // setstate는 계속 내부의 최신값(prev)을 알고 있다.
+    // usestate 호출은 위에서 끝났지만,
+    // setState는 계속 내부의 최신값(prev)을 알고 있다.
     // 이는 클로저를 활용했기 때문에 가능하다.
     setState((prev) => prev + 1)
 }
@@ -248,13 +303,13 @@ function handleClickO {
 ```js
 for (var i = 0; i < 5; i++) {
     setTimeout(function () {
-        console.iog(i)
+        console.log(i)
         }, i * 1000)
 }
 ```
 
--  실제로 위 코드를 실행하면 0, 1, 2, 3, 4초 뒤에 5만 출력된다. . setTimeout의 익명 함수가 클로저로 i를 잘 따라갈 것 같은데, 모두 5가 되는 이유는 무엇일까?
-- 그 이유는 노가 전역 변수로 작동하기 때문이다. var는 for 문의 존재와 상관없이 해당 구문이 선언된 함수 레벨 스코프를 바라보고 있으므로 함수 내부 실행이 아니라면 전역 스코프에 var i가 등록돼 있을 것이다. for 문을 다 순회한 이후, 태스크 큐에 있는 setTimeout을 실행하려고했을 때, 이미 전역 레벨에 있는 i는 5로 업데이트가 완료돼 있다.
+-  실제로 위 코드를 실행하면 0, 1, 2, 3, 4초 뒤에 5만 출력된다. setTimeout의 익명 함수가 클로저로 i를 잘 따라갈 것 같은데, 모두 5가 되는 이유는 무엇일까?
+- 그 이유는 i가 전역 변수로 작동하기 때문이다. var는 for 문의 존재와 상관없이 해당 구문이 선언된 함수 레벨 스코프를 바라보고 있으므로 함수 내부 실행이 아니라면 전역 스코프에 var i가 등록돼 있을 것이다. for 문을 다 순회한 이후, 태스크 큐에 있는 setTimeout을 실행하려고했을 때, 이미 전역 레벨에 있는 i는 5로 업데이트가 완료돼 있다.
 - 이를 올바르게 수정하는 방법은 첫째, 함수 레벨 스코프가 아닌 블록 레벨 스코프를 갖는 let으로 수정하는 것이다. let은 기본적으로 블록 레벨 스코프를 가지게 되므로 let i가 for 문을 순회하면서 각각의 스코프를 갖게 된다. 이는 setTimeout이 실행되는 시점에도 유효해서 각 콜백이 의도한 i 값을 바라보게 할 수 있다.
 - 이처럼 **클로저의 기본 개념, ‘함수와 함수가 선언된 어휘적 환경의 조합’을 주의 깊게 살펴봐야 클로저를 제대로 활용할수 있다.**
 - 클로저를 사용할 때 한 가지 주의할 점은, 클로저를 사용하는 데는 비용이 든다는 것이다. 클로저는 생성될때마다 그 선언적 환경을 기억해야 하므로 추가로 비용이 발생한다.
@@ -262,7 +317,7 @@ for (var i = 0; i < 5; i++) {
 
 ```js
 // 일반적인 함수
-const aButton = document.getElementByldC'a')
+const aButton = document.getElementByld('a')
 
 function heavyJob() {
     const longArr = Array.from({ length: 10000000 }, (_, i) => i + 1)
@@ -274,7 +329,7 @@ aButton.addEventListener('click', heavyJob)
 ```js
 // 클로저라면?
 function heavyJobWithClosure() {
-    const longArr = Array.froni({ length: 10000000 }, (_, i) => i + 1)
+    const longArr = Array.from({ length: 10000000 }, (_, i) => i + 1)
     return function () {
         console.log(longArr.length)
     }
@@ -295,7 +350,7 @@ bButton.addEventListener('click', function () {
 <div><img src= "/assets/img/post/closure_memory.png"></div>
 
 - 클로저를 활용하는 함수를 크롬 개발자 도구에서 확인해 보면 클로저를 활용하는 쪽이 압도적으로 부정적인 영향을 미치는 것을 알 수 있다. 
-- 클로저 heavyJobWithClosureO로 분리해 실행하고, 이를 onClick에서 실행하는 방식인데 이미 스크립트를 실행하는 시점부터 아주 큰 배열을 메모리에 올려두고 시작하는 것을 알 수 있다（약 40MB).
+- 클로저 heavyJobWithClosure()로 분리해 실행하고, 이를 onClick에서 실행하는 방식인데 이미 스크립트를 실행하는 시점부터 아주 큰 배열을 메모리에 올려두고 시작하는 것을 알 수 있다（약 40MB).
 - **클로저의 기본 원리에 따라, 클로저가 선언된 순간 내부 함수는 외부 함수의 선언적인 환경을 기억하고 있어야 하므로 이를 어디에서 사용하는지 여부에 관계없이 저장해 둔다.** 실제로는 onClick 내부에서만 사용하고 있지만 이를 알 수 있는 방법이 없기 때문에 긴 배열을 저장해 두고 있는 모습이다.
 - **반면 일반 함수의 경우에는 클릭 시 스크립트 실행이 조금 길지만 클릭과 동시에 선언, 그리고 길이를 구하는 작업이 모두 스코프 내부에서 끝났기 때문에 메모리 용량에 영향을 미치지 않았다.**
 - 클로저의 개념, 즉 외부 함수를 기억하고 이를 내부 함수에서 가져다 쓰는 메커니즘은 성능에 영향을 미친다. 클로저는 공짜가 아니므
@@ -309,7 +364,7 @@ bButton.addEventListener('click', function () {
 
 - **구조 분해 할당(Destmcturing assignment)이란 배열 또는 객체의 값을 말 그대로 분해해 개별 변수에 즉시 할당하는 것을 의미**한다. 언급한 대로 배열과 객체에서 사용하며, 주로 어떠한 객체나 배열에서 선언문 없이 즉시 분해해 변수를 선언하고 할당하고 싶을 때 사용한다. 
 
-<h5>배열 구조 분해 할당</h5>
+<h5>배열 구조 분해 할당</h5>  
 
 ```js
 const array = [1, 2, 3, 4, 5]
@@ -392,7 +447,7 @@ arrl === arr2 // true. 내용이 아닌 참조를 복사하기 때문에 true가
 const arr1 = ['a', 'b']
 const arr2 = [...arrl]
 
-arrl === arr2 // false. 싦제로 값만 복사됐을 뿐, 참조는 다르므로 false가 반환된다.
+arrl === arr2 // false. 실제로 값만 복사됐을 뿐, 참조는 다르므로 false가 반환된다.
 ```
 
 <h5>객체의 전개 구문</h5>
@@ -400,7 +455,7 @@ arrl === arr2 // false. 싦제로 값만 복사됐을 뿐, 참조는 다르므�
 - 객체에서도 배열과 비슷하게 사용이 가능하다. 객체를 새로 만들 때 이 전개 구문을 사용할 수 있으며, 마찬가지로 객체를 합성하는 데 있어 편리함을 가져다 준다.
 
 ```js
-const newObj = { ...objl, ..-obj2 }
+const newObj = { ...objl, ...obj2 }
 // { "a": 1, "b": 2, "c": 3, "d": 4 }
 ```
 

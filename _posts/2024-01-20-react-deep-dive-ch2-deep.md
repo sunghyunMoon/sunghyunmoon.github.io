@@ -2,7 +2,7 @@
 title: 2장 리액트 핵심 요소 깊게 살펴보기
 categories:
 - React Deep Dive
-feature_image: "https://cdn.geekboots.com/geek/javascript-hero-1652702096795.webp"
+feature_image: "https://raw.githubusercontent.com/sunghyunMoon/sunghyunmoon.github.io/main/assets/img/background/react.png"
 ---
 
 이번 장에서는 리액트를 이루는 핵심적인 개념을 깊게 샆펴보고, 이러한 기능이 자바스크립트를 토대로 어떻게 동작하는지 알아보자.

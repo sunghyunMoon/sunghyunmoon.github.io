@@ -2,7 +2,7 @@
 title: 4장 서버 사이드 렌더링(1)
 categories:
 - React Deep Dive
-feature_image: "https://cdn.geekboots.com/geek/javascript-hero-1652702096795.webp"
+feature_image: "https://raw.githubusercontent.com/sunghyunMoon/sunghyunmoon.github.io/main/assets/img/background/react.png"
 ---
 
 이번 장에서는 리액트를 활용한 서버 사이드 렌더링(Server—Side Rendering： SSR)에 대해 알아보고자 한다. 과거 리액트 애플리케이션을 만들 때 Create React App(create-react-app)이 각광받았지만 요즘은 서버 사이드 렌더링을 지원하는 Next.js 같은 프레임워크를 사용해 프로젝트를 만드는 것이 큰 인기를 끌고 있다. 이에 따라 리액트 개발자라면 리액트뿐만 아니라 서버 사이드 렌더링에 대해서도 이해하는 것이 중요해 지고 있다. 서버 사이드 렌더링의 정의와 함께 이를 리액트로 구현하는 방법까지 알아보자.
