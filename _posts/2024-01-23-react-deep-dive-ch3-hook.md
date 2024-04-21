@@ -83,7 +83,7 @@ console.log(value()) // 1
 
 <h5>게으른 초기화</h5>
 
-- 일반적으로 usestate에서 기본값을 선언하기 위해 useState() 인수로 원시값을 넣는 경우가 대부분일 것이다. . useState에 변수 대신 함수를 넘기는 것을 게으른 초기화＜lazy initialization）라고 한다. 이 게으른 초기화가 무엇인지 살펴보자.
+- 일반적으로 usestate에서 기본값을 선언하기 위해 useState() 인수로 원시값을 넣는 경우가 대부분일 것이다. useState에 변수 대신 함수를 넘기는 것을 게으른 초기화(lazy initialization）라고 한다. 이 게으른 초기화가 무엇인지 살펴보자.
 
 ```js
 // 일반적인 useState 사용
@@ -98,7 +98,7 @@ const [count, setCount] = useState(() =>
 )
 ```
 
-- **리액트 공식 문서2에서 이러한 게으른 초기화는 usestate의 초깃값이 복잡하거나 무거운 연산을 포함하고 있을 때 사용하라고 돼 있다. 이 게으른 초기 함수는 오로지 state가 처음 만들어질 때만 사용된다.** 만약 이후에 리렌더링이 발생된다면 이 함수의 실행은 무시된다. 다음 예제를 보자.
+- **리액트 공식 문서에서 이러한 게으른 초기화는 usestate의 초깃값이 복잡하거나 무거운 연산을 포함하고 있을 때 사용하라고 돼 있다. 이 게으른 초기 함수는 오로지 state가 처음 만들어질 때만 사용된다.** 만약 이후에 리렌더링이 발생된다면 이 함수의 실행은 무시된다. 다음 예제를 보자.
 - 리액트에서는 렌더링이 실행될 때마다 함수형 컴포넌트의 함수가 다시 실행된다는 점을 명심하자. 함수형 컴포넌트의 usestate의 값도 재실행된다. 물론 우리는 앞서 구현 예제를 통해 내부에는 클로저가 존재하며, 클로저를 통해 값을 가져오며 초깃값은 최초에만 사용된다는 것을 알고 있다. 만약 usestate 인수로 자바스크립트에 많은 비용을 요구하는 작업이 들어가 있다면 이는 계속해서 실행될 위험이 존재할 것이다. 그러나 **우려와는 다르게 usestate 내부에 함수를 넣으면 이는 최초 렌더링 이후에는 실행되지 않고 최초의 state 값을 넣을 때만 실행된다.**
 - 만약 Number.parselnt(window.localstorage.getltem(cacheKey))와 같이 한 번 실행되는 데 어느 정도 비용이 드는 값이 있다고 가정해 보자. usestate의 인수로 이 값 자체를 사용한다면 초깃값이 필요한 최초 렌더링과, 초깃값이 있어 더 이상 필요 없는 리렌더링 시에도 동일하게 계속 해당 값에 접근해서 낭비가 발생한다. 따라서 이런 경우에는 함수 형태로 인수에 넘겨주는 편이 훨씬 경제적일 것이다.
 - 그렇다면 게으른 최적화는 언제 쓰는 것이 좋을까? 리액트에서는 무거운 연산이 요구될 때 사용하라고 한다. **즉, localStorage나 sessionstorage에 대한 접근. map, filter, find 같은 배열에 대한 접근, 혹은 초깃값 계산을 위해 함수 호출이 필요할 때와 같이 무거운 연산을 포함해 실행 비용이 많이 드는 경우에 게으른 초기화를 사용하는 것이 좋다.**
@@ -169,8 +169,8 @@ function Component() {
 ```
 
 - 두 코드는 명백히 리액트에서 차이점을 지니고 있다. 차이점은 다음과 같다.
-    - 1. 이후에 소개할 서버 사이드 렌더링 관점에서 useEffect는 클라이언트 사이드에서 실행되는 것을 보장해 준다. useEffect 내부에서는 window 객체의 접근에 의존하는 코드를 사용해도 된다.
-    - 2. **useEffect는 컴포넌트 렌더링의 부수 효과, 즉 컴포넌트의 렌더링이 완료된 이후에 실행된다. 반면 직접 실행은 컴포넌트가 렌더링되는 도중에 실행된다.** 따라서 1번과는 달리 서버 사이드 렌더링의 경우에 서버에서도 실행된다. 그리고 이 작업은 함수형 컴포넌트의 반환을 지연시키는 행위다. 즉, 무거운 작업일 경우 렌더링을 방해하므로 성능에 악영향을 미칠 수있다.
+    - 1) 이후에 소개할 서버 사이드 렌더링 관점에서 useEffect는 클라이언트 사이드에서 실행되는 것을 보장해 준다. useEffect 내부에서는 window 객체의 접근에 의존하는 코드를 사용해도 된다.
+    - 2) **useEffect는 컴포넌트 렌더링의 부수 효과, 즉 컴포넌트의 렌더링이 완료된 이후에 실행된다. 반면 직접 실행은 컴포넌트가 렌더링되는 도중에 실행된다.** 따라서 1번과는 달리 서버 사이드 렌더링의 경우에 서버에서도 실행된다. 그리고 이 작업은 함수형 컴포넌트의 반환을 지연시키는 행위다. 즉, 무거운 작업일 경우 렌더링을 방해하므로 성능에 악영향을 미칠 수있다.
 
 - useEffect의 effect는 컴포넌트의 사이드 이펙트, 즉 부수 효과를 의미한다는 것을 명심하자. **useEffect는 컴포넌트가 렌더링된 후에 어떠한 부수 효과를 일으키고 싶을 때 사용하는 훅이다.**
 
@@ -252,7 +252,7 @@ useEffect(() => {
 - **useMemo는 비용이 큰 연산에 대한 결과를 저장(메모이제이션)해 두고, 이 저장된 값을 반환하는 훅이다.** 흔히 리액트에서 최적화를 떠올릴 때 가장 먼저 언급되는 훅이 바로 useMemo다.
 
 ```js
-import { 나seMemo } from 'react'
+import { useMemo } from 'react'
 const memoizedValue = useMemo(() => expensiveComputation(a, b), [a, b])
 ```
 
@@ -270,28 +270,28 @@ const Childcomponent = memo(({ name, value, onChange }) => {
     })
     return (
         <>
-        <hl>
-        {name} {value ? '켜짐' : '꺼짐'}
-        </hl>
-        <button onClick={onChange}>toggle</button>
+            <hl>
+                {name} {value ? '켜짐' : '꺼짐'}
+            </hl>
+            <button onClick={onChange}>toggle</button>
         </>
     )
 })
 
 function App() {
-    const [status!, setStatusl] = useState(false)
+    const [status1, setStatus1] = useState(false)
     const [status2, setStatus2] = useState(false)
 
     const togglel =()=>{
-        setStatusl(!statusl)
+        setStatusl(!status1)
     }
     const toggle2 =()=>{
         setStatus2(!status2)
     }
     return (
         <>
-        <ChildComponent name="l" value={statusl} onChange={togglel} />
-        <ChildConiponent name="2" value={stati』s2} onChange={toggle2} />
+        <ChildComponent name="l" value={status1} onChange={togglel} />
+        <ChildConiponent name="2" value={status2} onChange={toggle2} />
         </>
     )
 }
@@ -321,7 +321,7 @@ const toggle2 = useCallback(
 #### 3.1.5 useRef
 
 - useRef는 usestate와 동일하게 컴포넌트 내부에서 렌더링이 일어나도 변경 가능한 상태값을 저장한다는 공통점이 있다. 그러나 usestate와구별되는 큰 차이점 두 가지를 가지고 있다.
-    - useRef는 반환값인 객체 내부에 있는 current로 갮에 접근 또는 변경할 수 있다.
+    - useRef는 반환값인 객체 내부에 있는 current로 값에 접근 또는 변경할 수 있다.
     - useRef는 그 값이 변하더라도 렌더링을 발생시키지 않는다.
 - useRef에 대해 본격적으로 알아보기 전에 useRef가 왜 필요한지 먼저 고민해보자. **렌더링에 영향을 미치지않는 고정된 값을 관리하기 위해서 useRef를 사용한다면 useRef를 사용하지 않고 그냥 함수 외부에서 값을 선언해서 관리하는 것도 동일한 기능을 수행할 수도 있지 않을까?** 다음 예제를 보자.
 
@@ -406,7 +406,7 @@ const MyContext = createContext<{ hello: string } | undefined>(undefined)
 function ContextProvider({
     children,
     text,
-}: PropsWith아ildren<{ text: string }>) {
+}: PropsWithChildren<{ text: string }>) {
     return (
         <MyContext.Provider value={{ hello： text }}>{children}</MyContext.Provider>
     )
@@ -422,7 +422,7 @@ function useMyContext() {
 }
 
 function GrandChildComponent() {
-    const { hello } = useMyContextO
+    const { hello } = useMyContext()
     useEffect(() => {
         console.log('렌더링 GrandChildComponent')
     })
@@ -445,16 +445,26 @@ function ParentComponent() {
         console.log('렌더링 Parentcomponent‘)
     })
 
+    return (
+        <>
+            <ContextProvider text="react">
+                <input value={text} onChange={handleChange} />
+                <ChildComponent />
+            </ContextProvider>
+        </>
+    )
+}
+
 ```
 
 - ParentComponent에서 Provider의 값을 내려주고, 이를 useContext로 GrandChild
-Component에서 사용 중이다. **언뚯 보기에는 text가 변경되는 Parentcomponent와 이를 사용하는 Grand아lildComponent만 렌더링될 것 같지만 그렇지 않다. 사실은 컴포넌트 트리 전체가 리렌더링되고 있다.**
+Component에서 사용 중이다. **언뜻 보기에는 text가 변경되는 Parentcomponent와 이를 사용하는 GrandClildComponent만 렌더링될 것 같지만 그렇지 않다. 사실은 컴포넌트 트리 전체가 리렌더링되고 있다.**
 - **부모 컴포넌트가 렌더링되면 하위 컴포넌트는 모두 리렌더링되기 때문이다.** usecontext는 상태를 관리하는 마법이 아니라는 사실을 반드시 기억해야 한다. 거듭 이야기하지만 **콘텍스트는 단순히 상태를 주입할 뿐 그 이상의 기능도, 그 이하의 기능도 하지 않는다.**
 - 그렇다면 아래의 예제를 최적화하려면 어떻게 해야 할까? **예제에서 Childcomponent가 렌더링되지 않게 막으려면 React.memo를 써야 한다. memo는 props 변화가 없으면 리렌더링되지 않고 계속해서 같은 결과물을 반환할 것이다.**
 
 #### 3.1.8 useImperativeHandle
 
-- useimperativ애andle은 실제 개발 과정에서는 자주 볼 수 없는 훅으로 널리 사용되지 않는다. 그럼에도 uselmperativ애andle은 일부 사용 사례에서 유용하게 활용될 수 있다. useimperativ해andle을 이해하기 위해서는 먼저 React.forwardRef에 대해 일아야 한다.
+- useImperativeHandle은 실제 개발 과정에서는 자주 볼 수 없는 훅으로 널리 사용되지 않는다. 그럼에도 useImperativeHandle은 일부 사용 사례에서 유용하게 활용될 수 있다. useImperativeHandle을 이해하기 위해서는 먼저 React.forwardRef에 대해 일아야 한다.
 
 <h5>forwardRef 살펴보기</h5>
 
@@ -534,7 +544,7 @@ function ParentComponent() {
 
 <h5>useImperativeHandle이란?</h5>
 
-- forwardRef에 대해 알아봤으니 useImperatiwHandle에 대해 살펴보자. **useImperativeHandle은 부모에게서 넘겨받은 ref를 원하는 대로 수정할 수 있는 훅이다.** 다음 코드를 보자.
+- forwardRef에 대해 알아봤으니 useImperativeHandle에 대해 살펴보자. **useImperativeHandle은 부모에게서 넘겨받은 ref를 원하는 대로 수정할 수 있는 훅이다.** 다음 코드를 보자.
 
 ```js
 const Input = forwardRef((props, ref) => {
@@ -551,7 +561,7 @@ const Input = forwardRef((props, ref) => {
 })
 ```
 
-- **‘useImperatiwHandle을 사용하면 부모 컴포넌트에서 노출되는 값을 원하는 대로 바꿀 수 있다’라는 말의 뜻이 명확해졌다.** 원래 ref는 {current: HTMLElement>}와 같은 형태로 HTMLElement만 주입할 수 있는 객체였다. 그러나 여기서는 전달받은 ref에다 useimperativ애andle 훅을 사용해 추가적인 동작을 정의했다. **이로써 부모는 단순히 HTMLElement뿐만 아니라 자식 컴포넌트에서 새롭게 설정한 객체의 키와 값에 대해서도 접근할 수 있게 됐다.** useImperatiwHandle을 사용하면 이 ref의 값에 원하는 값이나 액션을 정의할 수 있다.
+- **useImperativeHandle을 사용하면 부모 컴포넌트에서 노출되는 값을 원하는 대로 바꿀 수 있다’라는 말의 뜻이 명확해졌다.** 원래 ref는 {current: HTMLElement>}와 같은 형태로 HTMLElement만 주입할 수 있는 객체였다. 그러나 여기서는 전달받은 ref에다 useImperativeHandle 훅을 사용해 추가적인 동작을 정의했다. **이로써 부모는 단순히 HTMLElement뿐만 아니라 자식 컴포넌트에서 새롭게 설정한 객체의 키와 값에 대해서도 접근할 수 있게 됐다.** useImperativeHandle을 사용하면 이 ref의 값에 원하는 값이나 액션을 정의할 수 있다.
 
 #### 3.1.9 useLayoutEffect
 
@@ -567,7 +577,7 @@ const Input = forwardRef((props, ref) => {
 
 #### 3.1.11 훅의 규칙
 
-- 리액트에서 제공하는 훅은 사용하는 데 몇 가지 규칙이 존재한다. 이러한 규칙을 rules-of-hooks라고 하며 이와 관련된 ESLint 규칙인 react-hooks/r니les-of-hooks도 존재한다.
+- 리액트에서 제공하는 훅은 사용하는 데 몇 가지 규칙이 존재한다. 이러한 규칙을 rules-of-hooks라고 하며 이와 관련된 ESLint 규칙인  react-hooks/rules-of-hooks도 존재한다.
     - 1) **최상위에서만 훅을 호출해야 한다.** 반복문이나 조건문, 중첩된 함수 내에서 훅을 실행할수 없다. **이규칙을 따라야만 컴포넌트가 렌더링될 때마다 항상 동일한 순서로 훅이 호출되는 것을 보장할 수 있다.**
     - 훅을 호출할 수 있는 것은 리액트 함수형 컴포넌트. 혹은 사용자 정의 훅의 두 가지 경우뿐이다. 일반 자바스크립트 함수에 서는 훅을 사용할 수 없다.
 
@@ -622,7 +632,7 @@ url: string,
 }
 ```
 
-- 이 코드는 fetch를 이용흐H API> 호출하는 로직을 사용자 정의 훅으로 분리한 예제다. **만약 훅으로 분리하지 않았다면 fetch로 API 호출을 해야 하는 모든 컴포넌트 내에서 공통적으로 관리되지 않는 최소 4개의 state를 선언해서 각각 구현했어야 할 것이다.**
+- 이 코드는 fetch를 이용해 API를 호출하는 로직을 사용자 정의 훅으로 분리한 예제다. **만약 훅으로 분리하지 않았다면 fetch로 API 호출을 해야 하는 모든 컴포넌트 내에서 공통적으로 관리되지 않는 최소 4개의 state를 선언해서 각각 구현했어야 할 것이다.**
 - 이렇게 복잡하고 반복되는 로직은 사용자 정의 훅으로 간단하게 만들 수 있다. **훅에서 필요한 usestate와 useEffect 로직을 사용자 정의 훅인 useFetch 내부에 두면 사용하는 쪽에서는 useFetch 훅만 사용해도 손쉽게 중복되는 로직을 관리할 수 있다.**
 - 이 코드를 통해 왜 use라는 이름을 지켜야 하는지 알 수 있게 됐다. 사용자 정의 훅은 내부에 usestate와 useEffect 등을 가지고 자신만의 원하는 훅을 만드는 기법으로, 내부에서 useState와 같은 리액트 훅을 사용하고 있기 때문에 당연히 앞서 언급한 리액트 훅의 규칙을 따라야 한다. 그리고 이 리액트 훅의 규칙을 따르고 react-hooks/rules-of-hooks의 도움을 받기 위해서는 use로 시작하는 이름을 가져야 한다. 만약 그렇지 않으면 에러가 발생한다.
 
@@ -650,8 +660,8 @@ function ParentComponent() {
     }
     return (
     <>
-    <input type="number" value={state} onChange={handleChange} />
-    <ChildComponent value="hello" />
+        <input type="number" value={state} onChange={handleChange} />
+        <ChildComponent value="hello" />
     </>
     )
 }
@@ -673,7 +683,7 @@ const Childcomponent = memo(({ value }: { value： string }) => {
 
 <h5>고차 함수 만들어보기</h5>
 
-- 리액트의 고차’ 컴포넌트를 만들기에 앞서 먼저 자바스크립트에서 고차" 함수를 만드는 것에 대해 살펴보고자 한다. 리액트의 함수형 컴포넌트도 결국 함수이기 때문에 함수를 기반으로 고차 함수를 만드는 것을 먼저 이해해야 한다. **고차 함수의 사전적인 정의를 살펴보면 ‘함수를 인수로 받거나 결과로 반환하는 함수’라고 정의돼 있다. 가장 대표적인 고차 함수로는 리액트에서 배열을 렌더링할 때 자주 사용하는 Array.prototype.map을 들 수 있다.** 다음 예제를 통해 고차 함수가 무엇인지 알아보자.
+- 리액트의 고차 컴포넌트를 만들기에 앞서 먼저 자바스크립트에서 고차 함수를 만드는 것에 대해 살펴보고자 한다. 리액트의 함수형 컴포넌트도 결국 함수이기 때문에 함수를 기반으로 고차 함수를 만드는 것을 먼저 이해해야 한다. **고차 함수의 사전적인 정의를 살펴보면 ‘함수를 인수로 받거나 결과로 반환하는 함수’라고 정의돼 있다. 가장 대표적인 고차 함수로는 리액트에서 배열을 렌더링할 때 자주 사용하는 Array.prototype.map을 들 수 있다.** 다음 예제를 통해 고차 함수가 무엇인지 알아보자.
 
 ```js
 const list = [1, 2, 3]
@@ -709,7 +719,7 @@ const result = add(1) // 여기서 result는 앞서 반환한 함수를 가리�
 const result2 = result(2) // 비로소 a와 b룔 더한 3이 반환된다.
 ```
 
-- add(l)라는 함수를 호출하는 시점에 1이라는 정보가 a에 포함되고, 이러한 정보가 담긴  수를 result로 반환된다. 잠깐, 이것은 마치 usestate의 원리와 비슷하다. useState의 실행은 함수 호출과 동시에 끝났지만 state의 값은 별도로 선언한 환경, 즉 클로저에 기억된다. 여기에서도 마찬가지로 a=l이라는 정보가 담긴 클로저가 result에 포함됐고, result(2)를 호출하면서 이 클로저에 담긴 a=l인 정보를 활용해 1 + 2의 결과를 반환할 수 있게 됐다.
+- add(l)라는 함수를 호출하는 시점에 1이라는 정보가 a에 포함되고, 이러한 정보가 담긴  수를 result로 반환된다. 잠깐, 이것은 마치 usestate의 원리와 비슷하다. useState의 실행은 함수 호출과 동시에 끝났지만 state의 값은 별도로 선언한 환경, 즉 클로저에 기억된다. 여기에서도 마찬가지로 a=1이라는 정보가 담긴 클로저가 result에 포함됐고, result(2)를 호출하면서 이 클로저에 담긴 a=1인 정보를 활용해 1 + 2의 결과를 반환할 수 있게 됐다.
 
 <h5>고차 함수를 활용한 리액트 고차 컴포넌트 만들어보기</h5>
 
@@ -720,7 +730,7 @@ interface LoginProps {
     loginRequired?: boolean
 }
 function withLoginComponent<T>(Component: ComponentType<T>) {
-    return function (props; T & LoginProps) {
+    return function (props: T & LoginProps) {
         const { loginRequired, ...restProps } = props
         if (loginRequired) {
             return <>로그인이 필요합니다.</>
