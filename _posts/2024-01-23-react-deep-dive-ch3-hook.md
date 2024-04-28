@@ -462,6 +462,78 @@ Component에서 사용 중이다. **언뜻 보기에는 text가 변경되는 Par
 - **부모 컴포넌트가 렌더링되면 하위 컴포넌트는 모두 리렌더링되기 때문이다.** usecontext는 상태를 관리하는 마법이 아니라는 사실을 반드시 기억해야 한다. 거듭 이야기하지만 **콘텍스트는 단순히 상태를 주입할 뿐 그 이상의 기능도, 그 이하의 기능도 하지 않는다.**
 - 그렇다면 아래의 예제를 최적화하려면 어떻게 해야 할까? **예제에서 Childcomponent가 렌더링되지 않게 막으려면 React.memo를 써야 한다. memo는 props 변화가 없으면 리렌더링되지 않고 계속해서 같은 결과물을 반환할 것이다.**
 
+#### 3.1.7 useReducer
+
+- useReducer는 useState의 심화 버전으로 볼 수 있다. useState와 비슷한 형태를 띠지만 좀 더 복잡한 상태값을 미리 정의해 놓은 시나리오에 따라 관리할 수 있다. useReducer에서 사용되는 용어를 먼저 살펴보자.
+    - 반환값은 usestate와 동일하게 길이가 2인 배열이다.
+        - state: 현재 나seReducer가 가지고 있는 값을 의미한다. 니seState와 마찬가지로 배열을 반환하는데. 동일하게 첫 번째 요소가 이 값이다.
+        - dispatcher: state를 업데이트하는 함수. useReducer가 반환하는 배열의 두 번째 요소다. setState는 단순히 값을 넘겨주지만 여기서는 action을 넘겨준다는 점이 다르다. 이 action은 state를 변경할 수 있는 액션을 의미한다.
+    - usestate의 인수와 달리 2개에서 3개의 인수를 필요로 한다
+        - reducer： useReducer의 기본 action을 정의하는 함수다. 이 reducer는 useReducer의 첫 번째 인수로 넘겨주어야한다.
+        - initialstate： 두 번째 인수로, useReducer의 초깃값을 의미한다.
+        - init： usestate의 인수로 함수를 넘겨줄 때처럼 초깃값을 지연해서 생성시키고 싶을 때 사용하는 함수다. 이 함수는 필수값이 아니며, 만약 여기에 인수로 넘겨주는 함수가 존재한다면 usestate와 동일하게 게으른 초기화가 일어나며 initialstate를 인수로 init 함수가 실행된다.
+
+```js
+// useReducer가 사용할 state를 정의
+type State = {
+    count: number
+}
+
+// state의 변화를 발생시킬 action의 타입과 넘겨줄 값(payload)을 정의
+// 꼭 type과 payload라는 네이밍을 지킬 필요도 없으며, 굳이 객체일 필요도 없다.
+// 다만 이러한 네이밍이 가장 널리 쓰인다.
+type Action = { type： 'up' | 'down' | 'reset'; payload?: State }
+
+// 무거운 연산이 포함된 게으른 초기화 함수
+function init(count： State)： State {
+    // count: State를 받아서 초깃값을 어떻게 정의할지 연산하면 된다.
+    return count
+}
+
+// 초깃값
+const initialstate: State = { count: 0 }
+
+// 앞서 선언한 state와 action을 기반으로 state가 어떻게 변경될지 정의
+function reducer(state: State, action: Action): State {
+    switch (action.type) {
+    case 'up':
+        return { count: state.count + 1 }
+    case 'down':
+        return { count: state.count - 1 > 0 ? state.count - 1 : 0 }
+    case 'reset':
+        return init(action.payload || { count: 0 })
+    default:
+        throw new Error('Unexpected action type ${action.type}')
+    }
+}
+
+export default function App() {
+const [state, dispatcher] = useReducer(reducer, initialState, init)
+    function handleUpButtonClick() {
+        dispatcher({ type: 'up' })
+    }
+    function handleDownButtonClick() {
+        dispatcher({ type: 'down' })
+    }
+    function handleResetButtonClick() {
+        dispatcher({ type: 'reset', payload： { count: 1 } })
+    }
+
+    return (
+        <div className="App">
+            <h1>>{state.count}</h1>
+            <button onClick={handleUpButtonClick}>+</button>
+            <button onClick={handleDownButtonClick}>-</button>
+            <button onClick={handleResetButtonClick}>reset</button>
+        </div>
+    )
+}
+```
+
+- 복잡한 형태의 state를 사전에 정의된 dispatcher로만 수정할 수 있게 만들어 줌으로써 state 값에 대한 접근은 컴포넌트에서만 가능하게 하고, 이를 업데이트하는 방법에 대한 상세 정의는 컴포넌트 밖에다 둔 다음, state의 업데이트를 미리 정의해 둔 dispatcher로만 제한하는 것이다.
+- **state 값을 변경하는 시나리오를 제한적으로 두고 이에 대한 변경을 빠르게 확인할 수 있게끔 하는 것이 useReducer의 목적이다.**
+- 일반적으로 단순히 number나 boolean과 같이 간단한 값을 관리하는 것은 useState로 충분하지만 state 하나가 가져야 할 값이 복잡하고 이를 수정하는 경우의 수가 많아진다면 state를 관리하는 것이 어려워진다. 또 여러 개의 state를 관리하는 것보다 때로는 성격이 비슷한 여러 개의 state를 묶어 useReducer로 관리하는 편이 더 효율적일 수도 있다. 이렇게 useReducer를 사용해 state를 관리하면 state를 사용하는 로직과 이를 관리하는 비즈니스 로직을 분리할 수 있어 state를 관리하기가 한결 쉬워진다.
+
 #### 3.1.8 useImperativeHandle
 
 - useImperativeHandle은 실제 개발 과정에서는 자주 볼 수 없는 훅으로 널리 사용되지 않는다. 그럼에도 useImperativeHandle은 일부 사용 사례에서 유용하게 활용될 수 있다. useImperativeHandle을 이해하기 위해서는 먼저 React.forwardRef에 대해 일아야 한다.

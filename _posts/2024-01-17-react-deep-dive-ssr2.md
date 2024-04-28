@@ -11,8 +11,7 @@ feature_image: "https://raw.githubusercontent.com/sunghyunMoon/sunghyunmoon.gith
 
 ##### 4.2.1 renderToString
 
-- renderToString은 함수 이름에서도 알 수 있듯이 인수로 넘겨받은 리액트 컴포넌트를 렌더링해 HTML 문자열로 반환하는 함수다. 서버 사이드 렌더링을 구현하는 데 가장 기초적인 API로, 최초의 페이지를 HTML로
-먼저 렌더링한다고 언급했는데 바로 그 역할을 하는 함수가 renderToString이다.
+- renderToString은 함수 이름에서도 알 수 있듯이 인수로 넘겨받은 리액트 컴포넌트를 렌더링해 HTML 문자열로 반환하는 함수다. 서버 사이드 렌더링을 구현하는 데 가장 기초적인 API로, 최초의 페이지를 HTML로 먼저 렌더링한다고 언급했는데 바로 그 역할을 하는 함수가 renderToString이다.
 
 ```js
 function ChildrenComponent({ fruits }: { fruits: Array<string> }) {
@@ -33,7 +32,7 @@ function ChildrenComponent({ fruits }: { fruits: Array<string> }) {
         </ul>
     )
 }
-function SampleComponentO {
+function SampleComponent() {
     return (
         <>
         <div>hello</div>
@@ -46,12 +45,23 @@ const result = ReactDOMServer.renderToString(
 )
 ```
 
+- 위 result는 다음과 같은 문자열을 반환한다.
+
+```html
+<div id="root" data-reactroot="">
+    <div>hello</div>
+    <ul>
+        <li>apple</li>
+        <li>banana</li>
+        <li>peach</li>
+    </ul>
+</div>
+```
+
 - **여기서 한 가지 눈여겨볼 것은 ChildrenComponent에 있는 useEffect와 같은 훅과 handleClick과 같은 이벤트 핸들러는 결과물에 포함되지 않았다는 것이다.** 이것은 의도된 것으로, renderToString은 인수로 주어진 리액트 컴포넌트를 기준으로 빠르게 브라우저가 렌더링할수 있는 HTML을 제공하는 데 목적이 있는 함수일 뿐이다. 필요한 자바스크립트 코드는 여기에서 생성된 HTML과는 별도로 제공해 브라우저에 제공돼야 한다.
 - renderToString을 사용하면 앞서 언급했던 서버 사이드의 이점, 클라이언트에서 실행되지 않고 일단 먼저 완성된 HTML을 서버에서 제공할 수 있으므로 초기 렌더링에서 뛰어난 성능을 보일 것이다.
 - 여기서 한 가지 중요한 사실은 **리액트의 서버 사이드 렌더링은 단순히 ‘최초 HTML 페이지를 빠르게 그려주는 데’에 목적이 있다는 것**이다. 사용자는 완성된 HTML을 빠르게 볼 수는 있지만 **useEffect나 이벤트 핸들러가 없는 것을 확인할 수 있듯이 실제로 웹페이지가 사용자와 인터랙션할 준비가 되기 위해서는 이와 관련된 별도의 자바스크립트 코드를 모두 다운로드, 파싱, 실행하는 과정을 거쳐야 한다.**
-
-
-<h5>싱글 펭지 애플리케이션이란?</h5>
+- 마지막으로 주목할 것은 div#root에 존재하는 속성인 data-reactroot다. 이 속성은 리액트 컴포넌트의 루트 엘리먼트가 무엇인지 식별하는 역할을 한다. 이 속성은 이후에 자바스크립트를 실행하기 위한 hydrate 함수에서 루트를 식별하는 기준점이 된다. 
 
 
 <h3>끝!</h3>
