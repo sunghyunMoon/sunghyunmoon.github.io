@@ -466,7 +466,7 @@ Component에서 사용 중이다. **언뜻 보기에는 text가 변경되는 Par
 
 - useReducer는 useState의 심화 버전으로 볼 수 있다. useState와 비슷한 형태를 띠지만 좀 더 복잡한 상태값을 미리 정의해 놓은 시나리오에 따라 관리할 수 있다. useReducer에서 사용되는 용어를 먼저 살펴보자.
     - 반환값은 usestate와 동일하게 길이가 2인 배열이다.
-        - state: 현재 나seReducer가 가지고 있는 값을 의미한다. 니seState와 마찬가지로 배열을 반환하는데. 동일하게 첫 번째 요소가 이 값이다.
+        - state: 현재 useReducer가 가지고 있는 값을 의미한다. useState와 마찬가지로 배열을 반환하는데. 동일하게 첫 번째 요소가 이 값이다.
         - dispatcher: state를 업데이트하는 함수. useReducer가 반환하는 배열의 두 번째 요소다. setState는 단순히 값을 넘겨주지만 여기서는 action을 넘겨준다는 점이 다르다. 이 action은 state를 변경할 수 있는 액션을 의미한다.
     - usestate의 인수와 달리 2개에서 3개의 인수를 필요로 한다
         - reducer： useReducer의 기본 action을 정의하는 함수다. 이 reducer는 useReducer의 첫 번째 인수로 넘겨주어야한다.
