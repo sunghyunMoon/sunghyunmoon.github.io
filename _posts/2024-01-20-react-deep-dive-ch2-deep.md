@@ -16,22 +16,22 @@ feature_image: "https://raw.githubusercontent.com/sunghyunMoon/sunghyunmoon.gith
 
 #### 2.1.1 JSX의 정의
 
-- JSX는 기본적으로 JSXEIement, JSXAttributes, JSXChildren, JSXStrings라는 4가지 컴포넌트를 기반으로 구성돼 있다. 각 컴포넌트에 대해 살펴보자.
+- JSX는 기본적으로 JSXElement, JSXAttributes, JSXChildren, JSXStrings라는 4가지 컴포넌트를 기반으로 구성돼 있다. 각 컴포넌트에 대해 살펴보자.
 
 <h5>JSXElement</h5>
 
-- JSX를 구성하는 가장 기본 요소로, HTML의 요소(element)와 비슷한 역할을 한다. JSXEIement가 되기 위해서는 다음과 같은 형태 중 하나여야 한다.
+- JSX를 구성하는 가장 기본 요소로, HTML의 요소(element)와 비슷한 역할을 한다. JSXElement가 되기 위해서는 다음과 같은 형태 중 하나여야 한다.
     - JSXOpeningElement: 일반적으로 볼 수 있는 요소다. JSXOpeningElement로 시작했다면 후술할 JSXClosingElement가 동일한 요소로 같은 단계에서 선언돼 있어야 올바른 JSX 문법으로 간주된다.
-        - 예:〈JSXEIement JSXAttribiites(optional)>
+        - 예:〈JSXElement JSXAttribiites(optional)>
     - JSXClosingElement: JSXOpeningElement가 종료됐음을 알리는 요소로, 반드시 JSXOpeningElement와 쌍으로 사용돼야 한다.
-        - 예:〈JSXEIement />
+        - 예:〈JSXElement />
     - JSXSelfClosingElement: 요소가 시작되고, 스스로 종료되는 형태를 의미한다. <script/>와 동일한 모습을 띠고 있다. 이는 내부적으로 자식을 포함할 수 없는 형태를 의미한다.
-        - 예:〈JSXEIement JSXAttributes(optional) />
+        - 예:〈JSXElement JSXAttributes(optional) />
     - JSXFragment: 아무런 요소가 없는 형태로, JSXSelfClosingElement 형태를 띨 수는 없다. "</>"는 불가능하다. 단 "<></>" 는가능하다.
 
 <h5>JSXAttributes</h5>
 
-- JSXEIement에 부여할 수 있는 속성을 의미한다. 단순히 속성을 의미하기 때문에 모든 경우에서 필수값이 아니고, 존재하지 않아도 에러가 나지 않는다.
+- JSXElement에 부여할 수 있는 속성을 의미한다. 단순히 속성을 의미하기 때문에 모든 경우에서 필수값이 아니고, 존재하지 않아도 에러가 나지 않는다.
 
     - JSXSpreadAttributes: 자바스크립트의 전개 연산자와 동일한 역할을 한다고 볼 수 있다.
         - {.. .AssignmentExpression}: 이 AssignmentExpression에는 단순히 객체뿐만 아니라 자바스크립트에서 AssignmentExpression으로 취급되는 모든 표현식이 존재할 수 있다. 여기에는 조건문 표현식, 화살표 함수, 할당식 등 다양한 것이 포함돼 있다.
@@ -39,10 +39,10 @@ feature_image: "https://raw.githubusercontent.com/sunghyunMoon/sunghyunmoon.gith
 
 <h5>JSXChildren</h5>
 
-- **JSXEIement의 자식 값을 나타낸다. JSX는 앞서 언급했듯 속성을 가진 트리 구조를 나타내기 위해 만들어졌기 때문에 JSX로 부모와 자식 관계를 나타낼 수 있으며, 그 자식을 JSXChildren이라고 한다.**
+- **JSXElement의 자식 값을 나타낸다. JSX는 앞서 언급했듯 속성을 가진 트리 구조를 나타내기 위해 만들어졌기 때문에 JSX로 부모와 자식 관계를 나타낼 수 있으며, 그 자식을 JSXChildren이라고 한다.**
     - JSXChild： JSXChildren을 이루는 기본 단위다. 단어의 차이에서 알 수 있듯이 JSXChildren은 JSXChild를 0개 이상 가질 수 있다.
         - JSXText: {. <, >, }을 제외한 문자열
-        - JSXEIement: 값으로 다른 JSX 요소가 들어갈 수 있다.
+        - JSXElement: 값으로 다른 JSX 요소가 들어갈 수 있다.
         - JSXFragment: 값으로 빈 JSX 요소인 <></>가 들어갈 수 있다
         - { JSXChildExpression (optional) }: 이 JSXChildExpression은 자바스크립트의 AssignmentExpression을 의미한다. 익숙하지 않겠지만 다음과 같은 코드두 올바른 JSX 표현식으로 볼 수 있다.
 
@@ -80,7 +80,7 @@ const ComponentF = (
 )
 const ComponentG = (
     <A>
-        {/* 옵션의 값으로 JSXEIement를 넣는 것 또한 올바론 문법이다. */}
+        {/* 옵션의 값으로 JSXElement를 넣는 것 또한 올바론 문법이다. */}
         <B optionalChildren={<>안녕하세요.</>} />
     </A>
 )
@@ -353,10 +353,10 @@ export class ClassComponent extends React.Component<Props, {}> {
 - 1) 최초 렌더링: 사용자가 처음 애플리케이션에 진입하면 당연히 렌더링해야 할 결과물이 필요하다. 리액트는 브라우저에 이정보를 제공하기 위해 최초 렌더링을 수행한다.
 - 2) 리렌더링: 리렌더링은 처음 애플리케이션에 진입했을 때 최초 렌더링이 발생한 이후로 발생하는 모든 렌더링을 의미한다. 리렌더링이 발생하는 경우는 다음과 같다
     - 함수형 컴포넌트의 useState()의 두 번째 배열 요소인 setter가 실행되는 경우: useState가 반환하는 배열의 두 번째 인수는 클래스형 컴포넌트의 setstate와 마찬가지로 state를 업데이트하는 함수다. 이 함수가 실행되면 렌더링이 일어난다.
-    - 함수형 컴포넌트의 useReducer()의 두 번째 배열 요소인 dispatch가 실행되는 경우 useReducer도 useState와 마찬가지로 상태와 이 상태를 업데이트하는 함수를 배열로 제공한다. 이 두 번째 배열 요소를 실행하면 컴포넌트의 렌더링이 일어난다.
+    - 함수형 컴포넌트의 useReducer()의 두 번째 배열 요소인 dispatch가 실행되는 경우: useReducer도 useState와 마찬가지로 상태와 이 상태를 업데이트하는 함수를 배열로 제공한다. 이 두 번째 배열 요소를 실행하면 컴포넌트의 렌더링이 일어난다.
     - 컴포넌트의 key props가 변경되는 경우: 리액트에서 key는 명시적으로 선언돼 있지 않더라도 모든 컴포넌트에서 사용할 수 있는 특수한 props다. 일반적으로 key는 다음과 같이 배열에서 하위 컴포넌트를 선언할 때 사용된다.
     - 리액트에서 배열에 key를 쓰지 않으면 콘솔에 경고가 출력되기 때문에 key를 유일한 값으로 추가하는 것이 일반적이지만 정작 왜 추가해야 하는지는 모르는 경우가 많다. **왜 key가 필요할까?**
-    - 리액트에서 key는 리렌더링이 발생하는 동안 형제 요소들 사이에서 동일한 요소를 식별하는 값이다. 동일한 자식 컴포넌트가 여러 개 있는 구조를 상상해 보자. 리렌더링이 발생하면 current 트리와 worklnProgress 트리 사이에서 어떠한 컴포넌트가 변경이 있었는지 구별해야 하는데. 이 두 트리 사이에서 같은 컴포넌트인지를 구별하는 값이 바로 key다. **key가 존재한다면 두 트리 사이에서 통일한 key를 가지고 있는 컴포넌트는 이를 기준으로 구별할 수 있지만, 이 key가 없다면 단순히 파이버 내부의 sibling 인덱스만을 기준으로 판단하게 된다.**
+    - 리액트에서 key는 리렌더링이 발생하는 동안 형제 요소들 사이에서 동일한 요소를 식별하는 값이다. 동일한 자식 컴포넌트가 여러 개 있는 구조를 상상해 보자. 리렌더링이 발생하면 current 트리와 worklnProgress 트리 사이에서 어떠한 컴포넌트가 변경이 있었는지 구별해야 하는데, 이 두 트리 사이에서 같은 컴포넌트인지를 구별하는 값이 바로 key다. **key가 존재한다면 두 트리 사이에서 통일한 key를 가지고 있는 컴포넌트는 이를 기준으로 구별할 수 있지만, 이 key가 없다면 단순히 파이버 내부의 sibling 인덱스만을 기준으로 판단하게 된다.**
     - props가 변경되는 경우 부모로부터 전달받는 값인 props가 달라지면 이를 사용하는 자식 컴포넌트에서도 변경이 필요하므로 리렌더링이 일어난다.
     - 부모 컴포넌트가 렌더링될 경우: 한 가지 주의할 점은 **부모 컴포넌트가 리렌더링된다면 자식 컴포넌트도 무조건 리렌더링이 일어난다는 것**이다. 이에 대해서는 이후에 더 자세하게 다룬다.
 
@@ -424,7 +424,7 @@ componentDidMount, componentDidUpdate 메서드를 호출하고, 함수형 컴�
 
 #### 2.5.2 주장 2： 렌더링 과정의 비용은 비싸다, 모조리 메모이제이션해 버리자
 
-- 일부 컴포넌트에서는 메모이제이션을 하는 것이 성능에 도움이 된다. 섣부른 최적화인지 여부와는 관계없이, 만약 해당 컴포넌트가 렌더링이 자주 일어나며 그 렌더링 사이에 비싼 연산이 포함돼 있고. 심지어 그 컴포넌트가 자식 컴포넌트 또한 많이 가지고 있다면 memo나 다른 메모이제이션 방법을 사용하는 것이 이점이 있을 때가분명히 있다.
+- 일부 컴포넌트에서는 메모이제이션을 하는 것이 성능에 도움이 된다. 섣부른 최적화인지 여부와는 관계없이, 만약 해당 컴포넌트가 렌더링이 자주 일어나며 그 렌더링 사이에 비싼 연산이 포함돼 있고, 심지어 그 컴포넌트가 자식 컴포넌트 또한 많이 가지고 있다면 memo나 다른 메모이제이션 방법을 사용하는 것이 이점이 있을 때가분명히 있다.
 - 그렇다면 우리에게는 두 가지 선택권이 있다.
     - memo를 컴포넌트의 사용에 따라 잘 살펴보고 일부에만 적용하는 방법
     - memo를 일단 그냥 다 적용하는 방법
