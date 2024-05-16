@@ -751,7 +751,7 @@ const Childcomponent = memo(({ value }: { value： string }) => {
 })
 ```
 
-- 이제 Parentcomponent에서 아무리 state가 변경돼도 ChildComponent는 다시 렌더링되지 않는다. 그 이유는 props가 변경되지 않았고, 변경되지 않았다는 것을 히emo가 확인하고 이전에 기억한 컴포넌트를 그대로 반환한 것이다. 결국 앞서서 발생했던 불필요한 렌더링 작업을 생략할 수 있게 됐다.
+- 이제 Parentcomponent에서 아무리 state가 변경돼도 ChildComponent는 다시 렌더링되지 않는다. 그 이유는 props가 변경되지 않았고, 변경되지 않았다는 것을 memo가 확인하고 이전에 기억한 컴포넌트를 그대로 반환한 것이다. 결국 앞서서 발생했던 불필요한 렌더링 작업을 생략할 수 있게 됐다.
 
 <h5>고차 함수 만들어보기</h5>
 
