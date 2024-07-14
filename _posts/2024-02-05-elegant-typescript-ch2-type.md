@@ -1,7 +1,7 @@
 ---
 title: 2장 타입
 categories:
-- React Deep Dive
+- 우아한 타입스크립트 with 리액트
 feature_image: "https://raw.githubusercontent.com/sunghyunMoon/sunghyunmoon.github.io/main/assets/img/background/elegant_typescript.png"
 ---
 
