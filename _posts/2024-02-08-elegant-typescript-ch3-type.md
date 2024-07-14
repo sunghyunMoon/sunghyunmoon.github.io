@@ -8,7 +8,7 @@ feature_image: "https://raw.githubusercontent.com/sunghyunMoon/sunghyunmoon.gith
 ### 3.1 타입스크립트만의 독자적 타입 시스템
 
 - 타입스크립트는 자바스크립트 자료형에서 제시되지 않은 독자적인 타입 시스템을 가지고 있다. 하지만 엄밀히 말하면 타입스크립트의 타입 시스템이 내포하고 있는 개념은 모두 자바스크립트에서 기인한 것이다. 단지 자바스크립트로 표현할 수단과 필요성이 없었을 뿐이다. 자바스크립트의 슈퍼셋으로 정적 타이핑을 할 수 있는 타입스크립트가 등장하면서 비로소 타입스크립트의 타입 시스템이 구축되었다.
-- . 이 장에서 소개하는 모든 타입 시스템은 타입스크립트에만 존재하는 키워드지만, 그 개념은 자바스크립트에 기인한 타입 시스템이라는 점을 인지하고 각 타입을 살펴 보자.
+- 이 장에서 소개하는 모든 타입 시스템은 타입스크립트에만 존재하는 키워드지만, 그 개념은 자바스크립트에 기인한 타입 시스템이라는 점을 인지하고 각 타입을 살펴 보자.
 
 #### 3.1.1 any 타입
 
@@ -57,7 +57,7 @@ unknownFunction();
 - **unknown 타입은 이러한 상황을 보완하기 위해 등장한 타입이다. any 타입과 유사하지만 타입 검사를 강제하고 타입이 식별된 후에 사용할 수 있기 때문에 any 타입보다 더 안전하다.** 따라서 데이터 구조를 파악하기 힘들 때 any 타입 대신 unknown 타입으로 대체해서 사용하는 방법이 권장된다.
 - unknown은 어떨 때 사용할 수 있을까요?
     - 강제 타입 캐스팅을 통해 타입을 전환할 때 사용합니다. const env = process.env unknown as ProcessEnv 같은 식으로요.
-    - 예상할 수 없는 데이터라면 unknown을 씁니다. 타입스크립트 4.4부터 try— catch 에러의 타입이 any에서 unknown으로 변경되어서 에러 핸들링할 때도 unknown을 사용합니다. 한편 as unknown as Type같이 강제 타입 캐스팅율 하기도 하는데 사실 이것도 any와 다를 바 없어서 지양해야합니다.
+    - 예상할 수 없는 데이터라면 unknown을 씁니다. 타입스크립트 4.4부터 try— catch 에러의 타입이 any에서 unknown으로 변경되어서 에러 핸들링할 때도 unknown을 사용합니다. 한편 as unknown as Type같이 강제 타입 캐스팅을 하기도 하는데 사실 이것도 any와 다를 바 없어서 지양해야합니다.
 
 #### 3.1.3 void 타입
 
@@ -179,7 +179,7 @@ type ProductItemWithDiscount = Productitem & { discountAmount: number };
 
 #### 3.1.2 유니온 타입(Union)
 
-- 교차 타입 (A & B)이 타입 A와 타입 으를 모두 만족하는 경우라면, 유니온 타입은 타입 A 또는 타입 B 중 하나가 될 수 있는 타입을 말하며 A | B 같이 표기한다. 주로 특정 변수가 가질수 있는 타입을 전부 나열하는 용도로 사용된다. 
+- 교차 타입 (A & B)이 타입 A와 타입 B를 모두 만족하는 경우라면, 유니온 타입은 타입 A 또는 타입 B 중 하나가 될 수 있는 타입을 말하며 A | B 같이 표기한다. 주로 특정 변수가 가질수 있는 타입을 전부 나열하는 용도로 사용된다. 
 - 교차 타입과 마찬가지로 2개 이상의 타입을 이어 붙일 수 있고 타입 별칭을 통해 중복을 줄일 수도 있다. 아래 예시는 Productitem 혹은 Carditem이 될 수 있는 유니온 타입인 PromotionEventltem을 나타낸다. 즉, 이벤트 프로모션의 대상으로 상품이 될 수도 있고 카드가 될 수도 있다는 의미이다.
 
 ```js
@@ -231,9 +231,163 @@ type Example = {
 };
 type IndexedAccess = Example["a"];
 type IndexedAccess2 = Example["a" | "b"]; // number j string
-type IndexedAccessB = Example[keyof Example]; // number ! string { boolean
+type IndexedAccessB = Example[keyof Example]; // number | string | boolean
 type ExAlias = "b" | "c";
-type IndexedAccess4 = Exainple[ExAlias]; // string ! boolean
+type IndexedAccess4 = Example[ExAlias]; // string ! boolean
+```
+
+#### 3.1.5 맵드 타입(Mapped Types)
+
+- 보통 map이라고 하면 유사한 형태를 가진 여러 항목의 목록 A를 변환된 항목의 목록 브로 바꾸는 것을 의미한다. 이와 마찬가지로 **맵드 타입은 다른 타입을 기반으로 한 타입을 선언할 때 사용하는 문법인데, 인덱스 시그니처 문법을 사용해서 반복적인 타입 선언을 효과적으로줄일 수 있다.**
+
+```js
+type Example = {
+    a： number;
+    b: string;
+    c： boolean;
+};
+
+type Subset<T> = {
+[K in keyof T]?: T[K];
+};
+// keyof Example = a | b | c
+// T[K] : 프로퍼티 'K'의 타입을 'T'에서 가져옴
+
+const aExample： Subset<Example> = { a: 3 };
+const bExampl은: Subset<Example> = { b： "hello" };
+const acExample: Subset<Example> = { a： 4, c： true };
+```
+
+- 맵드 타입이 실제로 사용된 예시를 살펴보자. 배달의민족 선물하기 서비스에는 ‘바텀시트’ 라는 컴포넌트가 존재한다. 밑에서부터 스르륵 올라오는 모달이라고 생각하면 되는데 이 바텀시트는 선물하기 서비스의 최근 연락처 목록, 카드 선택, 상품 선택 등 여러 지면에서 사용되고 있다. 바텀시트마다 각각 resolver, isOpened 등의 상태를 관리하는 스토어가 필요한데 이 스토어의 타입 (BottomSheetStore)을 선언해줘야 한다.
+- 이때 BottomSheetMap에 존재하는 모든 키에 대해 일일이 스토어를 만들어줄 수도 있지만 불필요한 반복이 발생하게 된다. 이럴 때는 인덱스 시그니처 문법을 사용해서 BottomSheetMap을 기반으로 각 키에 해당하는 스토어를 선언할수 있다. 이처럼 반복 작업을 효율적으로 처리할 수있다.
+
+```js
+const BottomSheetMap = {
+    RECENT.CONTACTS: RecentContactsBottomSheet,
+    CARD.SELECT: CardSelectBottomSheet,
+    SORT_FILTER： SortFilterBottomSheet,
+    PRODUCT.SELECT: ProductSelectBottomSheet,
+    REPLY_CARD_SELECT: ReplyCardSelectBottomSheet,
+    RESEND： ResendBottomSheet,
+    STICKER： StickerBottomSheet,
+    BASE: null,
+};
+
+export type B0TT0M_SHEET_ID = keyof typeof BottomSheetMap;
+// "RECENT.CONTACTS" | "CARD.SELECT" | "SORT_FILTER" | "PRODUCT.SELECT" | "REPLY_CARD_SELECT" | "RESEND" | "STICKER" | "BASE";
+
+// 불필요한 반복이 발생한다
+type BottomSheetStore = {
+RECENT.CONTACTS: {
+    resolver?: (payload： any) => void;
+    args?： any;
+    isOpened： boolean;
+};
+CARD.SELECT: {
+    resolver?: (payload： any) => void;
+    args?; any;
+    isOpened： boolean;
+}；
+SORT.FILTER: {
+    resolver?： (payload: any) => void;
+    args?： any;
+    isOpened: boolean;
+}；
+// ...
+}；
+
+// Mapped Types를 통해 효율적으로 타입을 선언할 수 있다
+type Bottomsheetstore = {
+    [index in BOTTOM_SHEET_ID]: {
+        resolver?： (payload： any) => void;
+        args?: any;
+        isOpened： boolean；
+    }；
+}；
+```
+
+- 덧붙여 맵드 타입에서는 as 키워드를 사용하여 키를 재지정할 수 있다. 앞서 봤던 바텀시트를 다시 살펴보자. BottomSheetStore의 키 이름에 BottomSheetMap의 키 이름을 그대로 쓰고 싶은 경우가 있을 수 있고, 모든 키에 _BOTTOM_SHEET를 붙이는 식으로 공통된 처리를 적용하여 새로운 키를 지정하고 싶을 수도 있다. 이럴 때는 아래 예시처럼 as 키워드를 사용해서 효율적으로 처리할 수 있다.
+
+```js
+type BottomSheetStore = {
+    [index in BOTTOM_SHEET_ID as '${index}_BOTTOM_SHEET']: {
+        resolver?: (payload： any) => void;
+        args?： any;
+        isOpened： boolean;
+    }；
+}；
+```
+
+#### 3.1.6 템플릿 리터럴 타입(Template Literal Types)
+
+- 템플릿 리터럴 타입은 자바스크립트의 템플릿 리터럴 문자열을 사용하여 문자열 리터럴 타입을 선언할 수 있는 문법이다.
+
+```js
+type Stage =
+| "init"
+| "select-image"
+| "edit-image"
+| "decorateord"
+| "capture-image";
+type StageName = `${Stage}-stage`;
+// 'init-stage' i 'select-image-stage' ! ’edit-image-stage' i 'decorate-card-stage'i
+’capture-image-stage'
+```
+
+#### 3.1.7 제네릭(Generic)
+
+- 제네릭Generic은 C나 자바 같은 정적 언어에서 다양한 타입 간에 재사용성을 높이기 위해 사용하는 문법이다. 타입스크립트도 정적 타입을 가지는 언어이기 때문에 제네릭 문법을 지원하고 있다.
+- .좀 더 자세히 타입스크립트 제네릭의 개념을 풀어보면 **함수, 타입, 클래스 등에서 내부적으로 사용할 타입을 미리 정해두지 않고 타입 변수를 사용해서 해당 위치를 비워 둔 다음에, 실제로 그 값을 사용할 때 외부에서 타입 변수 자리에 타입을 지정하여 사용하는 방식을 말한다.**
+- 이렇게 하면 함수, 타입, 클래스 등 여러 타입에 대해 하나하나 따로 정의하지 않아도 되기 때문에 재사용성이 크게 향상된다.
+
+```js
+type ExampleArrayType<T> = T[];
+const arrayl： ExampleArrayType<string> = ["치킨", "피자", "우동"];
+```
+
+- 앞서 제네릭이 일반화된 데이터 타입을 말한다고 했는데, 이 표현만 보면 any의 쓰임과 혼동할 수도 있을 것이다. 하지만 둘은 명확히 다르다. 둘의 차이는 배열을 떠올리면 쉽게 알 수 있다.
+- any 타입의 배열에서는 배열 요소들의 타입이 전부 같지 않을 수 있다. 쉽게 말해 타입 정보를 잃어버린다고 생각하면 편하다. 즉, any를 사용하면 타입 검사를 하지 않고 모든 타입이 허용되는 타입으로 취급된다. 반면에 제네릭은 any처럼 아무 타입이나 무분별하게 받는 게 아니라, 배열 생성 시점에 원하는 타입으로 특정할 수 있다. 다시 말해 제네릭을 사용하면 배열 요소가 전부 동일한 타입이 라고 보장할 수 있다.
+- 또한 특정 요소 타입을 알 수 없을 때는 제네릭 타입에 기본값을 추가할 수 있다.
+
+```js
+interface SubmitEventxT = HTMLElement> extends SyntheticEvent<T> { submitter： T;
+
+}
+```
+
+- 다시 언급하지만 제네릭은 일반화된 데이터 타입을 의미한다고 했다. 따라서 함수나 클래스 등의 내부에서 제네릭을 사용할 때 어떤 타입이든 될 수 있다는 개념을 알고 있어야 한다. 
+- 특정한 타입에서만 존재하는 멤버를 참조하려고 하면 안된다. 예를 들어 배열에만 존재하는 length 속성을 제네릭에서 참조하려고 하면 당연히 에러가 발생한다. 컴파일러는 어떤 타입이 제네릭에 전달될지 알 수 없기 때문에 모든 타입이 length 속성을 사용할 수는 없다고 알려주는 것이다.
+
+```js
+function exampleFunc2<T>(arg： T)： number {
+return arg.length; // 에러 발생: Property 'length' does not exist on type 'T'
+}
+```
+
+- 이럴 때는 제네릭 꺾쇠괄호 내부에 "length 속성을 가진 타입만 받는다"라는 제약을 걸어줌으로써 length 속성을 사용할 수 있게끔 만들 수 있다.
+
+```js
+interface TypeWithLength {
+    length： number;
+}
+function exampleFunc2<T extends TypeWithLength>(arg: T): number {
+    return arg.length;
+}
+```
+
+- 제네릭을 사용할 때 주의해야 할 점이 있다. **파일 확장자가 tsx일 때 화살표 함수에 제네릭을 사용하면 에러가 발생한다.** tsx는 타입스크립트 + JSX이므로 제네릭의 꺾쇠괄호와 태그의 꺾쇠괄호를 혼동하여 문제가 생기는 것이다. JSX에서는 태그를 나타내는 데 꺾쇠괄호(<>)를 사용한다.
+- **이러한 상황을 피하기 위해서는 제네릭 부분에 extends 키워드를 사용하여 컴파일러에게 특정 타입의 하위 타입만 올 수 있음을 확실히 알려주면 된다.** 보통 제네릭을 사용할 때는 function 키워드로 선언하는 경우가 많다.
+
+```js
+// 에러 발생: JSX element 'T' has no corresponding closing tag
+const arrowExampleFunc = <T></>(arg：T): T[] => {
+    return new Array(3).fill.(arg);
+};
+
+// 에러 발생 X
+const arrowExampleFunc2 = <T extends {}>(arg： T)： T[] => {
+    return new Array(3).fiVL(arg);
+}
 ```
 
 <h3>끝!</h3>
