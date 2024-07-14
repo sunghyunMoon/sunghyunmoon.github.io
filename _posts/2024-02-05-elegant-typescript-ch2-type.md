@@ -59,7 +59,202 @@ let color: string = "blue";
 
 #### 2.2.3 구조적 서브타이핑
 
-- 
+- 앞서 타입스크립트의 타입 시스템을 집합으로 이해할 수 있다고 언급했었다. 타입스크립트의 타입은 값의 집합으로 생각할 수 있다. . 타입은 단지 집합에 포함되는 값이고 특정 값은 많은 집합에 포함될 수 있다. 따라서 타입스크립트에서는 특정 값이 string 또는 number 타입을 동시에 가질 수 있다.
+
+```js
+ type stringOrNumber = string | number;
+```
+
+- 이처럼 집합으로 나타낼 수 있는 타입스크립트의 타입 시스템을 지탱하고 있는 개념이 바로 구조적 서브타이핑이다.
+- **구조적 서브타이핑이란 객체가 가지고 있는 속성（프로퍼티)을 바탕으로 타입을 구분하는 것이다.** 이름이 다른 객체라도 가진 속성이 동일하다면 타입스크립트는 서로 호환이 가능한 동일한 타입으로 여긴다.
+
+```js
+interface Pet {
+    name： string;
+}
+let cat = { name： "Zag", age: 2 };
+function greet(pet： Pet) {
+    console.log("Hello, " + pet.name);
+}
+
+greet(cat);
+```
+
+- 위와 같은 타이핑 방식이 구조적 타이핑이다. 이 절의 제목인 구조적 서브타이핑에서도 알 수 있듯이 타입스크립트의 서브타이핑, 즉 타입의 상속 역시 구조적 타이핑을 기반으로 하고 있다.
+- 서로 다른 두 타입 간의 호환성은 오로지 타입 내부의 구조에 의해 결정된다. 타입 A가 타입 B의 서브타입이라면 A 타입의 인스턴스는 B 타입이 필요한 곳에 언제든지 위치할 수 있다. 즉, 타입이 계층구조로부터 자유롭다.
+
+#### 2.2.4 자바스크립트를 닮은 타입스크립트
+
+- 타입스크립트의 타입 시스템은 구조적 서브타이핑을 사용한다고 했다. 이것은 명목적 타이핑과는 대조적인 타이핑 방식이다. 명목적 타이핑은 타입의 구조가 아닌 타입의 이름만을 가지고 구별하는 것으로 C++, 자바 등에서 사용한다.
+- **명목적 타이핑은 타입의 동일성을 확인하는 과정에서 구조적 타이핑에 비해 조금 더안전하다.** 개발자가 의도한 타입이 아니라면 변수에 타입을 명시하는 과정에서 에러를 내뱉기 때문이다. 즉, 객체의 속성을 다른 객체의 속성과 호환되지 않도록 하여 안전성을 추구한다.
+- **그런데도 타입스크립트가 구조적 타이핑을 채택한 이유는 타입스크립트가 자바스크립트를 모델링한 언어이기 때문이다.** 자바스크립트는 본질적으로 덕 타이핑(duck typing)을 기반으로 한다. 덕 타이핑은 어떤 함수의 매개변숫값이 올바르게 주어진다면 그 값이 어떻게 만들어졌는지 신경 쓰지 않고 사용한다는 개념이다.
+- 타입스크립트는 이런 동작을 그대로 모델링한다. 타입스크립트는 자바스크립트의 특징을 그대로 받아들여 명시적인 이름을 가지고 타입을 구분하는 대신 객체나 함수가 가진 구조적 특징을 기반으로 타이핑하는 방식을 택했다. 구조적 타이핑 덕분에 타입스크립트는 더욱 유연한 타이핑이 가능해졌다. **쉬운 사용성과 안전성이라는 두 가지 목표 사이의 균형을 중시하는 타입스크립트에서는 객체 간 속성이 동일하다면 서로 호환되는 구조적 타입 시스템을 제공하여 더욱 편리성을높였다.**
+- **덕 타이핑과 구조적 타이핑의 차이는 타입을 검사하는 시점에 있다.** 덕 타이핑은 런타임에 타입을 검사한다. 자바스크립트는 덕 타이핑 언어다. 구조적 타이핑은 컴파일타임에 타입체커가 타입을 검사한다.
+
+#### 2.2.5 구조적 타이핑의 결과
+
+```js
+interface Cube {
+    width: number;
+    height： number;
+    depth： number;
+}
+
+function addLines(c： Cube) {
+    let total = 0;
+    for (const axis of Object.keys(c)) {
+        // * Element implicitly has an 'any' type
+        // because expression of type 'string' can’t be used to index type 'Cube'
+        //•No index signature with a parameter of type 'string'
+        // was found on type 'Cube'
+        const length = c[axis];
+        total += length;
+    }
+}
+```
+
+- c에 들어올 객체는 Cube의 width, height, depth 외에도 어떤 속성이든 가질 수있기 때문에 c[axis]의 타입이 string일 수도 있어 에러가 발생한다. 즉, 타입스크립트는 c[axis]가 어떤 속성을 지닐지 알 수 없으며 c[axis] 타입을 number라고 확정할 수 없어서 에러를 발생시킨다.
+
+#### 2.2.6 타입스크립트의 점진적 타입 확인
+
+- 타입스크립트는 점진적으로 타입을 확인하는 언어다. 점진적 타입 검사란 컴파일 타임에 타입을 검사하면서 필요에 따라 타입 선언 생략을 허용하는 방식이다. 타입을 지정한 변수와 표현식은 정적으로 타입을 검사하지만 타입 선언이 생략되면 동적으로 검사를 수행한다. 타입 선언을 생략하면 암시적 타입 변환이 일어난다.
+- 타입스크립트는 자바스크립트의 슈퍼셋 언어이기 때문에 모든 자바스크립트 코드는 타입스크립트 코드라고 봐도 무방하다. 따라서 ts 파일에 자바스크립트 문법으로 소스코드를 작성하더라도 문제가 발생하지 않는다. 특히 타입을 지정하지 않은 자바스크립트 코드를 타입스크립트로 마이그레이션할 때 타입스크립트의 점진적 타이핑이라는 특징을 유용하게 활용할 수 있다.
+- 그러나 이러한 특징 때문에 타입스크립트의 타입 시스템은 정적 타입의 정확성을 100% 보장 해주지 않는다. 모든 변수와 표현식의 타입을 컴파일타임에 검사하지 않아도 되기 때문에 타입이 올바르게 정해지지 않으면 런타임에서 에러가 발생하기도 한다.
+
+#### 2.2.7 자바스크립트 슈퍼셋으로서의 타입스크립트
+
+- 타입스크립트는 기존 자바스크립트 코드에 정적인 타이핑을 추가한 것으로 자바스크립트의 상위 집합이다.
+- 모든 자바스크립트 코드는 타입스크립트라고 볼 수 있지만 반대로 모든 타입스크립트 코드가 자바스크립트 코드인 것은 아니다. 다시 말하지만 타입스크립트는 타입을 명시하는 문법을 가지고 있기 때문이다.
+
+#### 2.2.8 값 vs 타입
+
+- 값은 프로그램이 처리하기 위해 메모리에 저장하는 모든 데이터다. 다르게 말하면 프로그램에서 조작하고 다룰 수 있는 어떤 표현이며 다양한 형태의 데이터를 포함한다. 프로그래밍 관점에서는 문자열, 숫자, 변수, 매개변수 등이 값에 해당한다.
+
+```js
+11; // 숫자 값
+"hello typescript"; // 문자열 값
+let foo = "bar"; // 변숫값
+```
+
+- 객체 역시 값이다. 그리고 자바스크립트에서는 함수도 값이다. 모든 것이 객체인 언어답게 자바스크립트 함수는 런타임에 객체로 변환되기 때문이다.
+- 앞서 언급한 대로 함수 역시 값으로 볼 수 있다. 위 예시에서 정의된 함수 goWork를 다른 방식으로 정의하면 다음과 같다.
+
+```js
+ //함수
+const goWork = function (developer) {
+    console.log(`tired ${developer}`);
+};
+```
+
+- 함수 역시 변수에 할당할 수 있는 값임을 알 수 있다. 자바스크립트 대신 타입스크립트를 사용하게 되면서 타입이라는 개념이 등장한다. **타입스크립트는 변수, 매개변수, 객체 속성 등에 : type 형태로 타입을 명시한다.**
+- 또는 type이나 interface 키워드로 커스텀 타입을 정의할수도 있다.
+
+```js
+type Person = {
+    name： string;
+    age： number;
+}；
+interface Person {
+    name： string;
+    age： number;
+}
+```
+
+- 값 공간과 타입 공간의 이름은 서로 충돌하지 않기 때문에 타입과 변수를 같은 이름으로 정의 할 수 있는데 타입스크립트가 자바스크립트의 슈퍼셋인 것과 관련이 있다. 타입스크립트 문법인 type으로 선언한 내용은 자바스크립트 런타임에서 제거되기 때문에 값 공간과 타입 공간은 서로충돌하지 않는다.
+- 타입스크립트에는 앞서 언급한 대로 타입과 값이 혼용되는 것 말고도 값과 타입 공간에 동시에 존재하는 심볼도 있다. 대표적인 것이 클래스와 enum이다.
+- 타입스크립트에서 헷갈리는 것 중 하나가 클래스에 관한 것이다. 자바스크립트 ES6에서 등장한 클래스는 객체 인스턴스를 더욱 쉽게 생성하기 위한 문법 기능으로 실제 동작은 함수와 같다.
+
+```js
+class Rectangle {
+    constructor(height, width) {
+        this.height = height;
+        this.width = width;
+    }
+}
+const rect1 = new Rectangle(5, 4);
+```
+
+- 동시에 클래스는 타입으로도 사용된다. 즉 **타입스크립트 코드에서 클래스는 값과 타입 공간 모두에 포함될 수 있다.**
+
+```js
+ class Developer {
+    name： string;
+    domain： string;
+    constructor(name： string, domain: string) {
+        this.name = name;
+        this.domain = domain;
+    }
+}
+const me： Developer = new Developer("zig", "frontend”);
+```
+
+- 변수명 me 뒤에 등장하는 : Developer에서 Developer는 타입에 해당하지만 new 키워드 뒤의 Developer는 클래스의 생성자 함수인 값으로 동작한다. 타입스크립트에서 클래스는 타입 애너테이션으로 사용할 수 있지만 런타임에서 객체로 변환되어 자바스크립트의 값으로 사용되는 특징을 가지고 있다.
+- 타입스크립트에서 어떠한 심볼이 값으로 사용된다는 것은 컴파일러를 사용해서 타입스크립트 파일을 자바스크립트 파일로 변환해도 여전히 자바스크립트 파일에 해당 정보가 남아있음을 의미한다. 반면 타입으로만 사용되는 요소는 컴파일 이후에 자바스크립트 파일에서 해당 정보가 사라진다.
+
+#### 2.2.9 타입을 확인하는 방법
+
+- 타입스크립트에서 typeof, instanceof 그리고 타입 단언을 사용해서 타입을 확인할 수 있다. typeof는 연산하기 전에 피연산자의 데이터 타입을 나타내는 문자열을 반환한다. typeof 연산자가 반환하는 값은 자바스크립트의 7가지 기본 데이터 타입 （Boolean, null, undefined, Number, Bigint, String. Symbol）과 Function（함수）, 호스트 객체 그리고 object 객체가 될 수 있다.
+
+```js
+typeof 2022； // "number”
+typeof "woowahan"; // "string”
+typeof true; // "boolean"
+typeof {}; // "object"
+```
+
+- 타입스크립트에는 값 공간과 타입 공간이 별도로 존재한다. 타입스크립트에서 typeof 연산자도 값에서 쓰일 때와 타입에서 쓰일 때의 역할이 다르다.
+
+```js
+interface Person {
+    first： string;
+    last： string;
+}
+const person： Person = { first： "zig", last： "song" }；
+function email(options: { person： Person; subject： string; body： string }) {}
+```
+
+- 값에서 사용된 typeof는 자바스크립트 런타임의 typeof 연산자가 된다.
+
+```js
+const vl = typeof person; // 값은 'object'
+const v2 = typeof email; // 값은 'function'
+```
+
+- 예시의 **v1과 v2는 const 키워드로 선언된 변수로 값이 할당될 공간이다.** 값 공간의 typeof는 피연산자인 person과 email의 런타임 타입을 가리키는 문자열을 반환한다. 즉, 값에서 사용된 typeof 연산자는 자바스크립트 typeof 연산자와 동일하게 동작한다.
+- 반면 타입에서 사용된 typeof는 값을 읽고 타입스크립트 타입을 반환한다.
+
+```js
+type T1 = typeof person; // 타입온 Person
+type T2 = typeof email; // 타입은 (options： { person： Person; subject： string; body：
+string; }) => void
+```
+
+- person 변수가 interface Person 타입으로 선언되었기 때문에 타입 공간에서의 typeof person은 Person을 반환한다. email 함수는 타입 공간에서 typeof 연산자로 값을 읽을 때 함수의 매개변수 타입과 리턴 타입을 포함한 함수 시그니처 타입을 반환한다.
+- 자바스크립트 클래스는 typeof 연산자를 쓸 때 주의해야 한다. 앞서 선언한 Developer 클래스를 다시 보자.
+
+```js
+class Developer {
+    name： string;
+    sleepingTime： number;
+    constructor(name： string, sleepingTime： number) {
+        this.name = name;
+        this.sleepingTime = sleepingTime;
+    }
+}
+const d = typeof Developer; // 값이 'function'
+type T = typeof Developer; // 타입이 typeof Developer
+```
+
+- 자바스크립트의 클래스는 결국 함수이기 때문에 값 공간에서 typeof Developer의 값은 function이 된다. 타입 공간에서 typeof Developer의 반환 값은 조금 특이한데 type T에 할당된 Developer는 인스턴스의 타입이 아니라 new 키워드를 사용할 때 볼 수 있는 생성자 함수이기 때문이다.
+
+```js
+const zig： Developer = new Developer("zig", 7);
+type ZigType = typeof zig; // E|입0| Developer
+```
+
+- Developer 클래스로 생성한 zig 인스턴스는 Developer가 인스턴스 타입으로 생성되었기 때문에 타입 공간에서의 typeof zig 즉, type ZigType은 Developer를 반환한다.
+- 자바스크립트에서 instanceof 연산자를 사용하면 프로토타입 체이닝 어딘가에 생성자의 프로토타입 속성이 존재하는지 판단할 수 있다. typeof 연산자처럼 instanceof 연산자의 필터링으로 타입이 보장된 상태에서 안전하게 값의 타입을 정제하여 사용할 수 있다.
+- 타입스크립트에서는 타입 단언이라 부르는 문법을 사용해서 타입을 강제할 수도 있는데 as 키워드를 사용하면 된다. 타입 단언은 개발자가 해당 값의 타입을 더 잘 파악할 수 있을 때 사용되며 강제 형 변환과 유사한 기능을 제공한다.
 
 
 <h3>끝!</h3>
