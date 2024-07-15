@@ -230,10 +230,350 @@ type Example = {
     c： boolean；
 };
 type IndexedAccess = Example["a"];
+<<<<<<< Updated upstream:_posts/2024-02-05-elegant-typescript-ch3-type.md
 type IndexedAccess2 = Example["a" | "b"]; // number j string
 type IndexedAccessB = Example[keyof Example]; // number ! string { boolean
 type ExAlias = "b" | "c";
 type IndexedAccess4 = Exainple[ExAlias]; // string ! boolean
+=======
+type IndexedAccess2 = Example["a" | "b"]; // number | string
+type IndexedAccessB = Example[keyof Example]; // number | string | boolean
+type ExAlias = "b" | "c";
+type IndexedAccess4 = Example[ExAlias]; // string ! boolean
 ```
+
+#### 3.1.5 맵드 타입(Mapped Types)
+
+- 보통 map이라고 하면 유사한 형태를 가진 여러 항목의 목록 A를 변환된 항목의 목록으로 바꾸는 것을 의미한다. 이와 마찬가지로 **맵드 타입은 다른 타입을 기반으로 한 타입을 선언할 때 사용하는 문법인데, 인덱스 시그니처 문법을 사용해서 반복적인 타입 선언을 효과적으로줄일 수 있다.**
+
+```js
+type Example = {
+    a： number;
+    b: string;
+    c： boolean;
+};
+
+type Subset<T> = {
+[K in keyof T]?: T[K];
+};
+// keyof Example = a | b | c
+// T[K] : 프로퍼티 'K'의 타입을 'T'에서 가져옴
+
+const aExample： Subset<Example> = { a: 3 };
+const bExample: Subset<Example> = { b： "hello" };
+const acExample: Subset<Example> = { a： 4, c： true };
+```
+
+- 맵드 타입이 실제로 사용된 예시를 살펴보자. 배달의민족 선물하기 서비스에는 ‘바텀시트’ 라는 컴포넌트가 존재한다. 밑에서부터 스르륵 올라오는 모달이라고 생각하면 되는데 이 바텀시트는 선물하기 서비스의 최근 연락처 목록, 카드 선택, 상품 선택 등 여러 지면에서 사용되고 있다. 바텀시트마다 각각 resolver, isOpened 등의 상태를 관리하는 스토어가 필요한데 이 스토어의 타입 (BottomSheetStore)을 선언해줘야 한다.
+- 이때 BottomSheetMap에 존재하는 모든 키에 대해 일일이 스토어를 만들어줄 수도 있지만 불필요한 반복이 발생하게 된다. 이럴 때는 인덱스 시그니처 문법을 사용해서 BottomSheetMap을 기반으로 각 키에 해당하는 스토어를 선언할수 있다. 이처럼 반복 작업을 효율적으로 처리할 수있다.
+
+```js
+const BottomSheetMap = {
+    RECENT.CONTACTS: RecentContactsBottomSheet,
+    CARD.SELECT: CardSelectBottomSheet,
+    SORT_FILTER： SortFilterBottomSheet,
+    PRODUCT.SELECT: ProductSelectBottomSheet,
+    REPLY_CARD_SELECT: ReplyCardSelectBottomSheet,
+    RESEND： ResendBottomSheet,
+    STICKER： StickerBottomSheet,
+    BASE: null,
+};
+
+export type B0TT0M_SHEET_ID = keyof typeof BottomSheetMap;
+// "RECENT.CONTACTS" | "CARD.SELECT" | "SORT_FILTER" | "PRODUCT.SELECT" | "REPLY_CARD_SELECT" | "RESEND" | "STICKER" | "BASE";
+
+// 불필요한 반복이 발생한다
+type BottomSheetStore = {
+RECENT.CONTACTS: {
+    resolver?: (payload： any) => void;
+    args?： any;
+    isOpened： boolean;
+};
+CARD.SELECT: {
+    resolver?: (payload： any) => void;
+    args?; any;
+    isOpened： boolean;
+}；
+SORT.FILTER: {
+    resolver?： (payload: any) => void;
+    args?： any;
+    isOpened: boolean;
+}；
+// ...
+}；
+
+// Mapped Types를 통해 효율적으로 타입을 선언할 수 있다
+type Bottomsheetstore = {
+    [index in BOTTOM_SHEET_ID]: {
+        resolver?： (payload： any) => void;
+        args?: any;
+        isOpened： boolean；
+    }；
+}；
+```
+
+- 덧붙여 맵드 타입에서는 as 키워드를 사용하여 키를 재지정할 수 있다. 앞서 봤던 바텀시트를 다시 살펴보자. BottomSheetStore의 키 이름에 BottomSheetMap의 키 이름을 그대로 쓰고 싶은 경우가 있을 수 있고, 모든 키에 _BOTTOM_SHEET를 붙이는 식으로 공통된 처리를 적용하여 새로운 키를 지정하고 싶을 수도 있다. 이럴 때는 아래 예시처럼 as 키워드를 사용해서 효율적으로 처리할 수 있다.
+
+```js
+type BottomSheetStore = {
+    [index in BOTTOM_SHEET_ID as '${index}_BOTTOM_SHEET']: {
+        resolver?: (payload： any) => void;
+        args?： any;
+        isOpened： boolean;
+    }；
+}；
+```
+
+#### 3.1.6 템플릿 리터럴 타입(Template Literal Types)
+
+- 템플릿 리터럴 타입은 자바스크립트의 템플릿 리터럴 문자열을 사용하여 문자열 리터럴 타입을 선언할 수 있는 문법이다.
+
+```js
+type Stage =
+| "init"
+| "select-image"
+| "edit-image"
+| "decorateord"
+| "capture-image";
+type StageName = `${Stage}-stage`;
+// 'init-stage' i 'select-image-stage' ! ’edit-image-stage' i 'decorate-card-stage'i
+’capture-image-stage'
+```
+
+#### 3.1.7 제네릭(Generic)
+
+- 제네릭Generic은 C나 자바 같은 정적 언어에서 다양한 타입 간에 재사용성을 높이기 위해 사용하는 문법이다. 타입스크립트도 정적 타입을 가지는 언어이기 때문에 제네릭 문법을 지원하고 있다.
+- .좀 더 자세히 타입스크립트 제네릭의 개념을 풀어보면 **함수, 타입, 클래스 등에서 내부적으로 사용할 타입을 미리 정해두지 않고 타입 변수를 사용해서 해당 위치를 비워 둔 다음에, 실제로 그 값을 사용할 때 외부에서 타입 변수 자리에 타입을 지정하여 사용하는 방식을 말한다.**
+- 이렇게 하면 함수, 타입, 클래스 등 여러 타입에 대해 하나하나 따로 정의하지 않아도 되기 때문에 재사용성이 크게 향상된다.
+
+```js
+type ExampleArrayType<T> = T[];
+const arrayl： ExampleArrayType<string> = ["치킨", "피자", "우동"];
+```
+
+- 앞서 제네릭이 일반화된 데이터 타입을 말한다고 했는데, 이 표현만 보면 any의 쓰임과 혼동할 수도 있을 것이다. 하지만 둘은 명확히 다르다. 둘의 차이는 배열을 떠올리면 쉽게 알 수 있다.
+- any 타입의 배열에서는 배열 요소들의 타입이 전부 같지 않을 수 있다. 쉽게 말해 타입 정보를 잃어버린다고 생각하면 편하다. 즉, any를 사용하면 타입 검사를 하지 않고 모든 타입이 허용되는 타입으로 취급된다. 반면에 제네릭은 any처럼 아무 타입이나 무분별하게 받는 게 아니라, 배열 생성 시점에 원하는 타입으로 특정할 수 있다. 다시 말해 제네릭을 사용하면 배열 요소가 전부 동일한 타입이 라고 보장할 수 있다.
+- 또한 특정 요소 타입을 알 수 없을 때는 제네릭 타입에 기본값을 추가할 수 있다.
+
+```js
+interface SubmitEvent<T = HTMLElement> extends SyntheticEvent<T> { submitter： T;
+
+}
+```
+
+- 다시 언급하지만 제네릭은 일반화된 데이터 타입을 의미한다고 했다. 따라서 함수나 클래스 등의 내부에서 제네릭을 사용할 때 어떤 타입이든 될 수 있다는 개념을 알고 있어야 한다. 
+- 특정한 타입에서만 존재하는 멤버를 참조하려고 하면 안된다. 예를 들어 배열에만 존재하는 length 속성을 제네릭에서 참조하려고 하면 당연히 에러가 발생한다. 컴파일러는 어떤 타입이 제네릭에 전달될지 알 수 없기 때문에 모든 타입이 length 속성을 사용할 수는 없다고 알려주는 것이다.
+
+```js
+function exampleFunc2<T>(arg： T)： number {
+return arg.length; // 에러 발생: Property 'length' does not exist on type 'T'
+}
+```
+
+- 이럴 때는 제네릭 꺾쇠괄호 내부에 "length 속성을 가진 타입만 받는다"라는 제약을 걸어줌으로써 length 속성을 사용할 수 있게끔 만들 수 있다.
+
+```js
+interface TypeWithLength {
+    length： number;
+}
+function exampleFunc2<T extends TypeWithLength>(arg: T): number {
+    return arg.length;
+}
+```
+
+- 제네릭을 사용할 때 주의해야 할 점이 있다. **파일 확장자가 tsx일 때 화살표 함수에 제네릭을 사용하면 에러가 발생한다.** tsx는 타입스크립트 + JSX이므로 제네릭의 꺾쇠괄호와 태그의 꺾쇠괄호를 혼동하여 문제가 생기는 것이다. JSX에서는 태그를 나타내는 데 꺾쇠괄호(<>)를 사용한다.
+- **이러한 상황을 피하기 위해서는 제네릭 부분에 extends 키워드를 사용하여 컴파일러에게 특정 타입의 하위 타입만 올 수 있음을 확실히 알려주면 된다.** 보통 제네릭을 사용할 때는 function 키워드로 선언하는 경우가 많다.
+
+```js
+// 에러 발생: JSX element 'T' has no corresponding closing tag
+const arrowExampleFunc = <T></>(arg：T): T[] => {
+    return new Array(3).fill.(arg);
+};
+
+// 에러 발생 X
+const arrowExampleFunc2 = <T extends {}>(arg： T)： T[] => {
+    return new Array(3).fiVL(arg);
+}
+>>>>>>> Stashed changes:_posts/2024-02-08-elegant-typescript-ch3-type.md
+```
+
+### 3.2 제네릭 사용법
+
+#### 3.2.1 함수의 제네릭
+
+- 어떤 함수의 매개변수나 반환 값에 다양한 타입을 넣고 싶을 때 제네릭을 사용할 수 있다. 아래 예시처럼 T 자리에 넣는 타입에 따라 ReadOnlyRepository가 적절하게 사용될 수 있다.
+
+```js
+function ReadOnlyRepository<T>(target: ObjectType<T> | EntitySchema<T> | string)：
+Repository<T> {
+    return getConnection("ro").getRepository(target);
+}
+```
+
+#### 3.2.2 호출 시그니처의 제네릭
+
+- 호출 시그니처(call signature)는 타입스크립트의 함수 타입 문법으로 함수의 매개변수와 반환 타입을 미리 선언하는 것을 말한다. 호출 시그니처를 사용할 때 제네릭 타입을 어디에 위치시키는지에 따라 타입의 범위와 제네릭 타입을 언제 구체 타입으로 한정할지를 결정할 수 있다.
+
+```js
+interface useSelectPaginationProps<T> {
+    categoryAtom： RecoilState<number>;
+    filterAtom： RecoilState<string[]>; sortAtom：
+    RecoilState<SortType>;
+    fetcherFunc： (props： CommonListRequest) => Promise<DefaultResponse<ContentListRes
+    ponse<T>>>；
+}
+```
+
+- 여기서 <T>는 useSelectPaginationProps의 타입 별칭으로 한정했다. 따라서 useSelectPaginationProps을 사용할 때 타입을 명시함으로써 제네릭 타입을 구체 타입으로 한정한다.
+
+```js
+
+export type UseRequesterHookType = <RequestData = void, ResponseData = void>(
+baseURL?：
+string | Headers,
+defaultHeader?： Headers
+) => [Requeststatus, Requester<RequestData, ResponseData>];
+```
+
+- 이 예시에서 <RequestData, ResponseData>는호출 시그니처의 일부, 다시 말해 괄호 앞에 선언했기 때문에 타입스크립트는 UseRequesterHookTyp은 타입의 함수를 실제 호출할 때 제네릭 타입을 구체 타입으로 한정한다.
+
+#### 3.2.3 제네릭 클래스
+
+- 제네릭 클래스는 외부에서 입력된 타입을 클래스 내부에 적용할 수 있는 클래스이다. 제네릭 클래스는 다음과 같은 형태로 선언된다.
+
+```js
+class LocalDB<T> {
+    // ...
+    async put(table： string, row： T)： Promise<T> {
+        return new Promise<T>((resolved, rejected) => { /* T 타입의 데이터를 DB에 저장 */ });
+    }
+    async get(table:string, key： any)： Promise<T> {
+        return new Promise<T>((resolved, rejected) => { /* T 타입의 데이터를 DB에서 가져옴 */
+         })；
+    }
+    async getTable(table： string)： Promise<T[]> {
+        return new Promise<r[]>((resolved, rejected) => { /* T[] 타입의 데이터를 DB에서 가져옴*/ })
+    }
+}
+
+export default class IndexedDB implements ICacheStore {
+    private _DB?： LocalDB<{ key： string; value： Promise<Record<string, unknown>>;
+    cacheTTL: number }>;
+    private DB() {
+        if (!this._DB) {
+            this._DB = new LocalDB("localCache", { ver: 6, tables; [{ name: TABLE_NAME,
+            keyPath： "key" }] });
+        }
+        return this._DB;
+    }
+    //...
+}
+```
+
+- 클래스 이름 뒤에 타입 매개변수인 <T>를 선언해준다. <T>는 메서드의 매개변수나 반환 타입으로 사용될 수 있다. LocalDB 클래스는 외부에서 { key： string; value: Promise<Record<string, unknown>>; cacheTTL： number } 타입을 받아들여 클래스 내부에
+서 사용될 제네릭 타입으로 결정된다.
+- 제네릭 클래스를 사용하면 클래스 전체에 걸쳐 타입 매개변수가 적용된다. 특정 메서드만을 대상으로 제네릭을 적용하려면 해당 메서드를 제네릭 메서드로 선언하면 된다.
+
+#### 3.2.4 제한된 제네릭
+
+- 타입스크립트에서 제한된 제네릭은 타입 매개변수에 대한 제약 조건을 설정하는 기능을 말한다. 예를 들어 string 타입으로 제약하려면 타입 매개변수는 특정 타입을 상속(extends)해야한다.
+
+```js
+type ErrorRecord<Key extends string> = Exclude<Key, ErrorCodeTypo extends never
+? Partial<Record<Key, boolean>>
+: never；
+```
+
+- 이처럼 타입 매개변수가 특정 타입으로 묶였을 때(bind) 키를 바운드 타입 매개변수(bounded
+type parameters)라고 부른다. 그리고 String을 키의 상한 한계(upper bound)라고 한다. 상속받을 수 있는 타입으로는 기본 타입뿐만 아니라 상황에 따라 인터페이스나 클래스도 사용할 수 있다. 또한 유니온 타입을 상속해서 선언할 수도 있다.
+
+#### 3.2.5. 확장된 제네릭
+
+- 제네릭 타입은 여러 타입을상속받을 수 있으며 타입 매개변수를 여러 개 둘수도 있다.
+
+```js
+ <Key extends string>
+```
+
+- 타입을 이런 식으로 제약해버리면 제네릭의 유연성을 잃어버린다. 제네릭의 유연성을 잃지 않으면서 타입을 제약해야 할 때는 타입 매개변수에 유니온 타입을 상속해서 선언하면 된다.
+
+```js
+ <Key extends string | number>
+```
+
+- 유니온 타입으로 주가 여러 타입을 받게 할 수는 있지만, 타입 매개변수가 여러 개일 때는 처리할 수 없다. 이럴 때는 매개변수를 하나 더 추가하여 선언한다.
+
+#### 3.2.6. 제네릭 예시
+
+- 제네릭의 장점은 다양한 타입을 받게 함으로써 코드를 효율적 재사용할 수 있는 것이다. 그렇다면 실제 현업에서 가장 많이 제네릭이 활용할 때는 언제일까? 바로 API 응답 값의 타입을 지정할때이다.
+- 우아한형제들에서는 API 응답 값의 타입을 지정할 때 제네릭을 활용하여 적절한 타입 추론과 코드의 재사용성을높이고 있다.
+
+```js
+export interface MobileApiResponse<Data> {
+    data： Data;
+    statusCode： string；
+    statusMessage?： string;
+}
+```
+
+- 이 코드를 살펴보면 API 응답 값에 따라 달라지는 data를 제네릭 타입 Data로 선언하고 있다. 이렇게 만든 MobileApiResponse는 실제 API 응답 값의 타입을 지정할 때 아래와 같이 사용되고 있다.
+
+```js
+export const fetchPriceInfo = (): Promise<MobileApiResponse<PriceInfo>> => {
+    const priceUrl = "https：~~~" // url 주소
+    return request({
+        method： "GET",
+        url： priceUrl,
+    })；
+}；
+
+export const fetchOrderlnfo = ()： Promise<MobileApiResponse<Order>> => {
+    const orderUrl =  "https：~~~" // url 주소
+    return requests({
+        method: "GET",
+        url： orderUrl,
+    })；
+};
+```
+
+- 이처럼 다양한 API 응답 값의 타입에 MobileApiResponse을 활용해서 코드를 효율적으로 재사용할 수 있다.
+- 이런 식으로 제네릭을 필요한 곳에 사용하면 가독성을 높이고 코드를 효율적으로 작성할 수 있다. 하지만 굳이 필요하지 않은 곳에 제네릭을 사용하면 오히려 독이 되어 코드를 복잡하게 만든다.
+
+<h5>제네릭을 구딩 사용하지 않아도 되는 타입</h5>
+
+- 제네릭이 필요하지 않을 때도 사용하면 코드 길이만 늘어나고 가독성을 해칠 수 있다. 다음은 제네릭이 굳이 필요하지 않은데도 사용한 예시다.
+
+```js
+type GType<T> = T;
+type RequirementType = "USE" | "UN_USE" | "NON_SELECT"；
+interface Order {
+    getRequirement()： GType<RequirementType>;
+}
+```
+
+- GType이 다른 곳에서는 사용되지 않고 getRequirement 함수의 반환 값 타입으로만 사용되고 있다고 가정해보자.
+- GType이라는 이름이 현재 사용되고 있는 목적의 의미를 정확히 담고 있지도 않을뿐더러 굳이 제네릭을 사용하지 않고 타입 매개변수를 그대로 선언하는 것과 같은 기능을 하고 있다. 즉, 아래처럼 사용하는 것과동일하다.
+
+```js
+type RequirementType = "USE" | "UN_USE" | "NON_SELECT"；
+interface Order {
+    getRequirement()： RequirementType;
+}
+```
+
+<h5>any 사용하기</h5>
+
+- 제네릭은 코드의 재사용성을 높이고 타입 추론을 하는 데 사용된다. 그러나 any를 사용하면 제네릭의 장점과 타입 추론 및 타입 검사를 할 수 있는 이점을 누릴 수 없게 된다. any 타입은 모든 타입을 허용하기 때문에 사실상 자바스크립트와 동일한 방식으로 코드를 작성하는 것과 같다. 따라서 any를 사용하면 제네릭을 포함해 타입을 지정하는 의미가 사라지게 된다.
+
+```js
+type ReturnType<T = any> = {
+    // ...
+};
+```
+
+<h5>가독성을 고려하지 않은 사용</h5>
+
+- 제네릭이 과하게 사용되면 가독성을 해치기 때문에 코드를 읽고 타입을 이해하기가 어려워진다. 부득이한 상황을 제외하고 복잡한 제네릭은 의미 단위로 분할해서 사용하는 게 좋다.
+- 만약에 내가 작성한 코드를 다른 개발자가 쉽게 이해하지 못하고 있다면 혹시 제네릭을 오남용하고 있는 것은 아닌지 검토해봐야 한다.
 
 <h3>끝!</h3>
