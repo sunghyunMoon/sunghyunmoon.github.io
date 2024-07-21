@@ -5,7 +5,7 @@ categories:
 feature_image: "https://raw.githubusercontent.com/sunghyunMoon/sunghyunmoon.github.io/main/assets/img/background/elegant_typescript.png"
 ---
 
-- 우아한형제들의 실무 코드 예시를 살펴보면서 정확한 타이핑을 하지 못해 발생하는 문제를 타입스크립트의 다양한 기법과 유틸리티 타입을 활용해 해결해본다. 5장의 내용은 타입스크립트의 기본적인 문법과 리액트 및 reactwuery의 코드를 포함하고 있다. 하지만 기본적인 관련 지식만 알고 있다면 읽는 데 무리가 없을것이다.
+- 우아한형제들의 실무 코드 예시를 살펴보면서 정확한 타이핑을 하지 못해 발생하는 문제를 타입스크립트의 다양한 기법과 유틸리티 타입을 활용해 해결해본다. 5장의 내용은 타입스크립트의 기본적인 문법과 리액트 및 react-query의 코드를 포함하고 있다. 하지만 기본적인 관련 지식만 알고 있다면 읽는 데 무리가 없을것이다.
 
 ### 5.1 조건부 타입
 
@@ -20,7 +20,7 @@ feature_image: "https://raw.githubusercontent.com/sunghyunMoon/sunghyunmoon.gith
 T extends U ? X : Y
 ```
 
-- 조건부 타입에서 extends를 사용할 때는 자바스크립트 삼항 연산자와 함께 쓴다. 이 표현은 타입 주를 U에 할당할 수 있으면 X 타입, 아니 면 Y 타입으로 결정됨을 의미한다. 간단한 예시를 통해 좀 더 면밀히 살펴보자.
+- 조건부 타입에서 extends를 사용할 때는 자바스크립트 삼항 연산자와 함께 쓴다. 이 표현은 타입 T를 U에 할당할 수 있으면 X 타입, 아니 면 Y 타입으로 결정됨을 의미한다. 간단한 예시를 통해 좀 더 면밀히 살펴보자.
 
 ```js
 interface Bank {
@@ -60,7 +60,7 @@ type BankPayMethodType = PayMethod<"bank">;
     - PayMethodBaseFromRes: 서버에서 받아오는 결제 수단 기본 타입으로 은행과 카드에 모두 들어가 있다
     - Bank, Card: 은행과 카드 각각에 맞는 결제 수단 타입이다. 결제 수단 기본 타입인 PayMethodBaseFromRes를 상속받아 구현한다.
     - PayMethodlnterface： 프론트에서 관리하는 결제 수단 관련 데이터로 UI를 구현하는 데 사용되는 타입이다.
-    - PayMethodInfo<T extends Bank | Card> :
+    - PayMethodInfo<T extends Bank \| Card> :
         - 최종적인 은행, 카드 결제 수단 타입이다. 프론트에서 추가되는 UI 데이터 타입과 제네릭으로 받아오는 Bank 또는 Card를 합성한다.
         - extends를 제네릭에서 한정자로 사용하여 Bank 또는 Card를 포함하지 않는 타입은 제네릭으로 넘겨주지 못하게 방어한다.
         - BankPayMethodInfo = PayMethodlnterface & Bank처럼 카드와 은행의 타입을 만들어줄 수 있지만 제네릭을 활용해서 중복된 코드률 제거한다.
@@ -84,7 +84,7 @@ type PayMethodlnterface = {
 ```
 
 - 이제 react-query의 useQuery를 사용하여 구현한 커스텀 훅인 useGetRegisteredList 함수를 살펴보자.
-- useGetRegisteredList 함수는 useQuery의 반환 값을 돌려준다. **useCommonQuery<T>는 useQuery를 한 번 래핑해서 사용하고 있는 함수로 useQuery의 반환 data를 T타입으로 반환한다.** fetcherFactory는 axios를 래핑해주는 함수이며, 서버에서 데이터를 받아온 후 onSuccess 콜백 함수를 거친 결괏값을 반환한다.
+- useGetRegisteredList 함수는 useQuery의 반환 값을 돌려준다. useCommonQuery<T>는 useQuery를 한 번 래핑해서 사용하고 있는 함수로 useQuery의 반환 data를 T타입으로 반환한다. fetcherFactory는 axios를 래핑해주는 함수이며, 서버에서 데이터를 받아온 후 onSuccess 콜백 함수를 거친 결괏값을 반환한다.
 
 ```js
 type PayMethodType = PayMethodInfo<Card> | PayMethodInfo<Bank>;
@@ -111,7 +111,7 @@ type： "card" | "appcard" | "bank"
 };
 ```
 
-- 즉, useGetRegisteredList 함수는 타입으로 "card", "appcard", "bank"를 받아서 해당 결제 수단의 결제 수단 정보 리스트를 반환하는 함수이다. 함수 useGetRegisteredList가 반환하는 데이터는 UseQueryResult<PayMethodType[]>이다. PayMethodType은 PayMethodInfo<Card>와 PayMethodInfo<Bank>의 유니온 타입이므로, 이 함수가 반환하는 데이터는 PayMethodInfo<Card>와 PayMethodInfo<Bank>의 배열이다. 그러나 필터링을 통해 반환된 데이터는 PocketInfo<Card> | PocketInfo<Bank> 타입의 요소를 포함하게 된다.
+- 즉, useGetRegisteredList 함수는 타입으로 "card", "appcard", "bank"를 받아서 해당 결제 수단의 결제 수단 정보 리스트를 반환하는 함수이다. 함수 useGetRegisteredList가 반환하는 데이터는 UseQueryResult<PayMethodType[]>이다. PayMethodType은 PayMethodInfo<Card>와 PayMethodInfo<Bank>의 유니온 타입이므로, 이 함수가 반환하는 데이터는 PayMethodInfo<Card>와 PayMethodInfo<Bank>의 배열이다. 그러나 필터링을 통해 반환된 데이터는 PocketInfo<Card> \| PocketInfo<Bank> 타입의 요소를 포함하게 된다.
 - 따라서, **최종적으로 useGetRegisteredList 함수가 반환하는 데이터의 타입은 PocketInfo<Card>[] | PocketInfo<Bank>[] 요소를 포함할 수 있는 UseQueryResult<PayMethodType[]>이다.**
 - **인자로 넣는 타입에 알맞은 타입을 반환하고 싶지만, 타입설정이 유니온으로만 되어있기 때문에 타입스크립트는 해당 타입에 맞는 Data 타입을 추론할 수없다.** 이처럼 인자에 따라 반환되는 타입을 다르게 설정하고 싶다면 extends를 사용한 조건부 타입을 활용하면 된다.
 
@@ -304,7 +304,7 @@ ReadonlyArray<infer U>
 - 자세히 위 코드를 이해해보자.
 - T extends ReadonlyArray<infer U>
     - T가 ReadonlyArray 타입인 경우, U는 배열의 요소 타입
-    - 예를 들어, T가 ReadonlyArray<MainMenu | SubMenu>라면 U는 MainMenu | SubMenu 타입
+    - 예를 들어, T가 ReadonlyArray<MainMenu \| SubMenu>라면 U는 MainMenu | SubMenu 타입
 - U extends MainMenu
     - U가 MainMenu 타입인 경우를 처리
     - MainMenu는 선택적 subMenus 속성을 포함할 수 있음
@@ -331,6 +331,7 @@ const mainMenu: MainMenu = {
 };
 
 type MenuNames = UnpackMenuNames<readonly [typeof mainMenu]>;
+// MenuNames 타입은 "SubMenu1" | "SubMenu2"
 ```
 
 - T는 readonly [MainMenu] 타입
@@ -341,5 +342,11 @@ type MenuNames = UnpackMenuNames<readonly [typeof mainMenu]>;
     - UnpackMenuNames<V>는 UnpackMenuNames<ReadonlyArray<SubMenu>>
     - 이제 T는 ReadonlyArray<SubMenu> 타입
     - 이로 인해 U는 SubMenu 타입
+    - U extends SubMenu가 성립
+    - U["name"]가 추출
+- 이 과정을 통해 UnpackMenuNames는 MainMenu 객체의 subMenus 배열에서 모든 SubMenu의 이름을 추출
+- PermissionNames는 menuList에서 권한으로 유효한 값만 추출하여 배열로 반환하는 타입임
+을 확인할 수 있다.
+
 
 <h3>끝!</h3>
