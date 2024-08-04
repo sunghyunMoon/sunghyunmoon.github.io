@@ -392,7 +392,7 @@ type Direction = Vertical | `${Vertical}${Capitalize<Horizon>}`;
 - 타입스크립트로 프로젝트를 진행하다 보면 표현하기 힘든 타입을 마주할 때가 있다. 원하는 타입을 정확하게 설정해야만 해당 컴포넌트, 함수의 안정성과 사용성을 높일 수 있지만 타입스크립트에서 제공하는 유틸리티 타입만으로는 표현하는 데 한계를 느끼기도 한다. 이럴 때는 유틸리티 타입을 활용한 커스텀 유틸리티 타입을 제작해서 사용하면 된다. 이 절에서는 우아한형제들에서 사용하는 유틸리티 함수와 커스텀 유틸리티 타입을 소개하면서 어떻게 유틸리
 티 타입을 활용하는지를 살펴본다.
 
-### 5.3.1 유틸리티 함수를 활욤해 styled-components의 중복 타입 선언 피하기
+#### 5.3.1 유틸리티 함수를 활욤해 styled-components의 중복 타입 선언 피하기
 
 - 리액트 컴포넌트를 구현할 때 여러 옵션을 props로 받아 유연한 컴포넌트로 만들 수 있다. 예를 들어 컴포넌트의 background-color, size 값을 props로 받아와서 상황에 맞게 스타일을 구현할 때가 많다. 이와 같은 스타일 관련 props는 styled—components에 전달되며 styled-components에도 해당 타입을 정확하게 작성해줘야 한다. styled-components로 만든 컴포넌트에 넘겨주는 타입은 props에서 받은 타입과 동일할 때가 대부분이다. 이런 경우에는 타입스크립트에서 제공하는 Pick, Omit 같은 유틸리티 타입을 잘 활용하여 코드를 간결하게 작성할 수 있다.
 - 먼저 유틸리티 타입을 활용하지 않으면 어떤 불편함이 발생하는지 살펴보자.
@@ -419,20 +419,24 @@ export const Hr： VFC<Props> = ({ height, color, isFull, className }) => {
 
 // styles.ts
 import { Props } from "...";
+// Props 타입에서 'height', 'color', 'isFull' 프로퍼티만 선택하여 StyledProps 타입을 정의
 type StyledProps = Pick<Props, 'height' | 'color' | 'isFull'>;
+// HrComponent를 스타일링
 const HrComponent = styled.hr<StyledProps>`
     height： ${({ height }) => height || "10px"};
     margin： 0;
-    background-color： ${({ color }) => colors[color || "gray7"};
+    background-color： ${({ color }) => colors[color || "gray7"];
     border： none;
     ${({ isFull }) =>
     isFull &&
     css'
     margin: 0 -15px;
     `}
-    `;
+`;
 ```
 
+- StyledProps 타입 정의: Props 타입에서 height, color, isFull 프로퍼티만 선택하여 StyledProps 타입을 정의하고 있다.
+- HrComponent 스타일링: styled-components 라이브러리를 사용하여 hr 태그를 스타일링하고 있다.
 - Hr 컴포넌트 Props의 height, color, isFull 속성은 styled-components 컴포넌트인 HrComponent에 바로 연결되며 타입도 역시 같다. // style.ts 주석 아래 코드처럼 height, color, isFulll에 대한 StyledProps 타입을 새로 정의하여 HrComponent에 적용해보자.
 - **StyledProps를 따로 정의하려면 Props와 똑같은 타입임에도 새로 작성해야 하므로 불가피하게 중복된 코드가 생긴다. 그리고 Props의 height, color, isFull 타입이 변경되면 StyledProps도 같이 변경돼야 한다.** Hr 컴포넌트가 간단한 컴포넌트이기 때문에 코드를 중복해서 작성하는 게 별로 번거롭지 않을 수도 있지만. 컴포넌트가 더 커지고 styled-components로 만든 컴포넌트가 늘어날수록 중복되는 타입이 많아지며 관리해야 하는 포인트도 늘어난다.
 - 이런 문제를 Pick, Omit 같은 유틸리티 타입으로 개선할 수 있다. 아래 그림처럼 Pick 유틸리티 타입을 사용해서 styled-components 컴포넌트 타입을 작성해보자.
@@ -468,7 +472,7 @@ type StyledProps = Pick<Props, 'height' | 'color' | 'isFull'>;
 
 - 이처럼 Pick 유틸리티 타입을 활용해서 props에서 필요한 부분만 선택하여 styled-components 컴포넌트의 타입을 정의하면, 중복된 코드를 작성하지 않아도 되고 유지보수를 더욱 편리하게 할 수 있게 된다. 이외에도 상속받는 컴포넌트 혹은 부모 컴포넌트에서 자식 컴포넌트로 넘겨주는 props 등에도 Pick, Omit 같은유틸리티 타입을 활용할수 있다.
 
-### 5.3.2 PickOne 유틸리티 함수
+#### 5.3.2 PickOne 유틸리티 함수
 
 - 타입스크립트에는 서로 다른 2개 이상의 객체를 유니온 타입으로 받을 때 타입 검사가 제대로 진행되지 않는 이슈가 있다. 이런 문제를 해결하기 위해 PickOne이라는 이름의 유틸리티 함수를 구현해보자.
 - 아래 코드와 같이 Card. Account 중 하나의 객체만 받고 싶은 상황에서 Card | Account로 타입을 작성하면 의도한 대로 타입 검사가 이뤄지지 않는다. 또한 withdraw 함수의 인자로 {card: 'hyundai'} 또는 {account: 'hana'} 중 하나만 받고 싶지만 실제로는 card, account 속성을 모두 받아도 타입 에러가 발생하지 않는다.
@@ -516,7 +520,7 @@ withdraw({ type： "account", account： "hana" });
 <h5>PickOne 커스텀 유틸리티 타입 구현하기</h5>
 
 - 타입스크립트에서 제공하는 유틸리티 타입을 활용해서 커스텀 유틸리티 타입을 만들어보자. **앞의 여러 속성 중 하나의 속성만 받는 커스텀 유틸리티 타입을 구현하기 전에 구현해야 하는 타입이 정확히 무엇인지 생각해보자.**
-- 구현하고자 하는 타입은 account 또는 card 속성 하나만 존재하는 객체를 받는 타입이다. 처음에 작성한 것처럼 { account： string } ! { card： string }으로타입을 구현했을 때는 account와 card 속성을 모두 가진 객체도 허용되는 문제가 있었다.
+- 구현하고자 하는 타입은 account 또는 card 속성 하나만 존재하는 객체를 받는 타입이다. 처음에 작성한 것처럼 { account： string } | { card： string }으로타입을 구현했을 때는 account와 card 속성을 모두 가진 객체도 허용되는 문제가 있었다.
 - account일 때는 card를 받지 못하고, card일 때는 account를 받지 못하게 하려면 하나의 속성이 들어왔을 때 다른 타입을 옵셔널한 undefined 값으로 지정하는 방법을 생각해볼 수 있다. 
 
 ```js
@@ -527,7 +531,7 @@ withdraw({ type： "account", account： "hana" });
 
 ```js
 type PickOne<T> = {
-    [P in keyof T]： Record<P, TEP]> & Partial<Record<Exclude<keyof T, P>, undefined>>;
+    [P in keyof T]： Record<P, T[P]> & Partial<Record<Exclude<keyof T, P>, undefined>>;
 }[keyof T];
 ```
 
@@ -541,6 +545,352 @@ type PickOne<T> = {
  type One<T> = { [P in keyof T]： Record<P, T[P]> }[keyof T];
 ```
 
-- 
+- keyof T
+    - keyof T는 타입 T의 모든 키를 유니언 타입으로 반환한다.
+    - 예를 들어, T가 { card: string; price: number }라면, keyof T는 'card' | 'price'가 된다.
+- 맵드 타입 구문 [P in keyof T]
+    - P는 T 타입의 모든 키를 순회한다.
+    - 예를 들어, T가 { card: string; price: number }라면, P는 순차적으로 card와 price가 된다.
+- Record<P, T[P]>
+    - Record<K, T>는 TypeScript의 유틸리티 타입으로, **키 K와 값 T를 가진 객체 타입을 생성**한다.
+    - 예를 들어, P가 card라면 Record<'card', string>은 { card: string } 타입이 된다.
+- { [P in keyof T]: Record<P, T[P]> }
+    - 이 구문은 타입 T의 각 키 P에 대해 Record<P, T[P]> 타입을 생성하여 새로운 객체 타입을 만든다.
+    - 예를 들어, T가 { card: string; price: number }라면, { [P in keyof T]: Record<P, T[P]> }는 { card: Record<'card', string>; price: Record<'price', number> }가 된다.
+    - 결국 { card: { card: string }; price: { price: number } } 타입이 된다.
+- [keyof T]
+    - 앞에서 생성한 타입에서 keyof T에 해당하는 모든 키를 유니언 타입으로 추출한다.
+    - 예를 들어, T가 { card: string; price: number }라면, keyof T는 'card' | 'price'가 되고, **최종적으로 { card: { card: string }; price: { price: number } }['card' | 'price']는 { card: string } | { price: number } 타입이 된다.**
+    - { card: { card: string }; price: { price: number } }['card']는 {card: string} 타입이고, { card: { card: string }; price: { price: number } }['price']는 { price: number } 타입이다. 따라서 인덱스 타입 조회를 각각 한 다음 유니온 타입으로 합친것과 같다.
+
+- 정리
+    - 1. T 타입의 모든 키를 순회한다.
+    - 2. 각 키와 해당 값을 Record 타입으로 변환한다.
+    - 3. 최종적으로 변환된 객체 타입에서 모든 키를 유니언 타입으로 추출한다.
+
+```js
+type Card = { card： string };
+const one： One<Card> = { card： "hyundai" };
+```
+
+<h6>ExcludeOne<T></h6>
+
+```js
+type ExcludeOne<T> = { [P in keyof T]： Partial<Record<Exclude<keyof T, P>, undefined>> }[keyof T];
+```
+
+- Exclude<keyof T, P>
+    - Exclude<UnionType, ExcludedMembers>는 유니언 타입에서 특정 멤버를 제외하는 타입 유틸리티이다.
+    - Exclude<keyof T, P>는 T 타입의 키들 중 P를 제외한 나머지 키들을 반환한다.
+    - 예를 들어, P가 card일 때, Exclude<'card' | 'price', 'card'>는 'price'가 된다.
+- Record<Exclude<keyof T, P>, undefined>
+    - Record<Exclude<keyof T, P>, undefined>는 P를 제외한 나머지 키들에 대해 값 타입이 undefined인 객체 타입을 생성한다.
+    - 예를 들어, P가 card일 때, Record<'price', undefined>는 { price?: undefined }가 된다.
+- Partial<T>
+    - Partial<T>는 T 타입의 모든 프로퍼티를 선택적(Optional)으로 만드는 타입 유틸리티
+    - Partial<Record<Exclude<keyof T, P>, undefined>>는 P를 제외한 나머지 키들에 대해 선택적 undefined 타입을 가진 객체 타입을 생성한다.
+    - P가 card일 때, Partial<Record<'price', undefined>>는 { price?: undefined }가 된다.
+- { [P in keyof T]： Partial<Record<Exclude<keyof T, P>, undefined>> }
+    - T 타입의 각 키 P에 대해 P를 제외한 나머지 키들을 undefined로 설정한 객체 타입을 생성한다.
+    - 최종적으로, [keyof T]를 사용하여 이들 객체 타입을 유니언 타입으로 합친다.
+    - 예를 들어, T가 { card: string; price: number }일 때, 최종 타입은 { price?: undefined } | { card?: undefined }가 된다.
+
+<h6>PickOne<T></h6>
+
+```js
+type PickOne<T> = One<T> & ExcludeOne<T>;
+```
+
+- One<T> & ExcludeOne<T>는 [P in keyof T]를 공통으로 갖기 때문에 아래 같이 교차된다.
+
+```js
+[P in keyof T]: Record<P, T[P]> & Partial<Record<Exclude<keyof T, P>, undefined>>
+```
+
+- ) 이 타입을 해석하면 전달된 T 타입의 1 개의 키는 값을 가지고 있으며, 나머지 키는 옵셔널한 undefined 값을 가진 객체를 의미한다.
+
+```js
+type Card = { card： string };
+type Account = { account： string };
+const pickOnel： PickOne<Card & Account> = { card： "hyundai" }; // (0)
+const pickOne2： PickOne<Card & Account> = { account： "hana" }; // (0)
+const pickOne3： PickOne<Card & Account> = { card： "hyundai", account： undefined }; // (0)
+const pickOne4; PickOne<Card & Account> = { card： undefined, account： "hana" }; // (0)
+const pickOne5： PickOne<Card & Account> = { card： "hyundai", account; "hana" }; // (X)
+```
+
+- 지금까지 PickOne 타입을 구현하기 위해 단계별로 One<T> 타입과 ExcludeOne<T> 타입을 구현하는 예시를 살펴보았다. 유틸리티 타입만으로는 원하는 타입을 추출하기 어려울 때 커스텀 유틸리티 타입을 구현한다. 앞에서 본 예시에서처럼 커스텀 유틸리티 타입을 구현할 때는 정확히 어떤 타입을 구현해야 하는지를 파악하고, 필요한 타입을 작은 단위로 쪼개어 생각하여 단계적으로 구현하는 게 좋다. 이렇게 하면 용이하게 원하는 타입을 구현할 수 있을 것이다.
+
+#### 5.3.3 NonNullable 타입 검사 함수를 사용하여 간편하게 타입 가드하기
+
+- 타입 가드는 타입스크립트에서 많이 사용된다. 특히 null을 가질 수 있는값(Nullable)의 null 처리는 자주 사용되는 타입 가드 패턴의 하나이다.
+- 일반적으로 if문을 사용해서 null 처리 타입 가드를 적용하지만, is 키워드와 NonNullable 타입으로 타입 검사를 위한 유틸 함수를 만들어서 사용할 수도 있다.
+
+<h6>NonNullable 타입이란<T></h6>
+
+- 타입스크립트에서 제공하는 유틸리티 타입으로 제네릭으로 받는 T가 null 또는 undefined 일 때 never 또는 T를 반환하는 타입이다. NonNullable을 사용하면 null이나 undefined가 아닌 경우를 제외할 수 있다.
+
+```js
+type NonNullable<T> = T extends null | undefined ? never : T;
+```
+
+<h6>null, undefined를 검사해주는 NonNullable 함수</h6>
+
+- NonNullable 유틸리티 타입을 사용하여 null 또는 undefined를 검사해주는 타입 가드 함수를 만들어 쓸 수 있다.
+- NonNullable 함수는 매개변수인 value가 null 또는 undefined라면 false를 반환한다. is 키워드가 쓰였기 때문에 NonNullable 함수를 사용하는 쪽에서 true가 반환된다면 넘겨준 인자는 null이나 undefined가 아닌 타입으로 타입 가드（타입이 좁혀진다）가 된다.
+
+### 5.4 불변 객체 타입으로 활용하기
+
+- 프로젝트를 진행하면서 상숫값을 관리할 때 객체를 사용한다.
+
+```js
+const colors = {
+red： "#F45452",
+green： "#0C952A",
+blue: "#1A7CFF",
+}；
+const getColorHex = (key; string) => colors[key];
+```
+
+- 컴포넌트나 함수에서 이런 객체를 사용할 때 열린 타입으로 설정할 수 있다. 함수 인자로 키를 받아서 value를 반환하는 함수를 보자. 키 타입을 해당 객체에 존재하는 키값으로 설정하는 것이 아니라 string으로 설정하면 getColorHex 함수의 반환 값은 any가 된다. colors에 어떤 값이 추가될지 모르기 때문이다.
+- 여기서 as const 키워드로 객체를 불변 객체로 선언하고, keyof 연산자를 사용하여 getColorHex 함수 인자로 실제 colors 객체에 존재하는 키값만 받도록 설정할 수 있다. keyof, as const로 객체 타입을 구체적으로 설정하면 타입에 맞지 않는 값을 전달할 경우 타입 에러가 반환되기 때문에 컴파일 단계에서 발생할 수 있는 실수를 방지할 수 있다. 즉, 이런 방법으로 객체 타입을 더 정확하고 안전하게 설정할 수 있다.
+
+#### 5.4.1 Atom 컴포넌트에서 theme style 객체 활용하기
+
+- Atom 단위의 작은 컴포넌트(Button, Header, Input 등)는 폰트 크기, 폰트 색상, 배경 색상 등 다양한 환경에서 유연하게 사용될 수 있도록 구현되어야 하는데 이러한 설정값은 props로 넘겨주도록 설계한다. props로 직접 색상 값을 직접 넘겨줄 수도 있지만 그렇게 하면 사용자가 모든 색상 값을 인지해야 하고, 변경 사항이 생길 때 직접 값을 넣은 모든 곳을 찾아 수정해야 하는 번거로움이 생기기 때문에 변경에 취약한 상태가 된다.
+- 이런 문제를 해결하기 위해 **대부분의 프로젝트에서는 해당 프로젝트의 스타일 값을 관리해주는 theme 객체를 두고 관리**한다. Atom 컴포넌트에서는 theme 객체의 색상, 폰트 사이즈의 키값을 props로 받은 뒤 theme 객체에서 값을 받아오도록 설계한다. 컴포넌트에서 props의 color, fontsize 값의 타입을 정의할 때는 아래 예시처럼 string으로 설정할 수도 있다.
+
+```js
+interface Props {
+    fontsize?： string;
+    backgroundcolor?： string;
+    color?: string;
+    onClick: (event： React.MouseEvent<HTMLButtonElement>) => void | Promise<void>;
+}
+const Button: FC<Props> = ({ fontSize, backgroundColor, color, children }) => {
+    return (
+        <ButtonWrap
+            fontSize={fontSize}
+            backgroundColor={backgroundcolor}
+            color={color}
+        >
+            {children}
+        </ButtonWrap>
+    );
+};
+
+const ButtonWrap = styled.button<Omit<Props, "onClick">>`
+    color： ${({ color }) => theme.color[color ?? "default"]};
+    background-color： ${({ backgroundcolor }) =>
+        theme.bgColor[backgroundcolor ?? "default"]};
+    font-size： ${({ fontsize }) => theme.fontSize[fontSize ?? "default"]};
+`;
+```
+
+- 앞의 코드에서 fontsize, backgroundcolor 같은 props 타입이 string이면 Button 컴포넌트의 props로 color, backgroundcolor를 넘겨줄 때 키값이 자동 완성되지 않으며 잘못된 키값을 넣어도 에러가 발생하지 않게 된다. 이러한 문제는 theme 객체로 타입을 구체화해서 해결할 수 있다.
+- theme 객체로 타입을 구체화하려면 keyof, typeof 연산자가 타입스크립트에서 어떻게 사용되는지 알아야한다.
+
+<h6>타입스크립트 keyof 연산자로 객체의 키값을 타입으로 추출하기</h6>
+
+- 타입스크립트에서 keyof 연산자는 객체 타입을 받아 해당 객체의 키값을 string 또는 number의 리터럴 유니온 타입을 반환한다.
+- 아래 예시로 keyof의 동작을 확인해보자. ColorType 객체 타입의 keyof ColorType을 사용하면 객체의 키값인 ‘red’, green’, ‘blue’가 유니온으로 나오게 된다.
+
+```js
+interface ColorType {
+red; string;
+green： string;
+blue： string;
+}
+
+type ColorKeyType = keyof ColorType; //'red' | 'green' | 'blue'
+```
+
+<h6>타입스크립트 typeof 연산자로 값을 타입으로 다루기</h6>
+
+- keyof 연산자는 객체 타입을 받는다. 따라서 객체의 키값을 타입으로 다루려면 값 객체를 타입으로 변환해야 한다. 이때 타입스크립트의 typeof 연산자를 활용할 수 있다. **자바스크립트에서는 typeof가 타입을 추출하기 위한 연산자로 사용된다면, 타입스크립트에서는 typeof가 변수 혹은 속성의 타입을 추론하는 역할을 한다.**
+- 타입스크립트의 typeof 연산자는 단독으로 사용되기보다 주로 ReturnType같이 유틸리티 타입이나 keyof 연산자같이 타입을 받는 연산자와 함께 쓰인다.
+- typeof로 colors 객체의 타입을 추론한 결과는 아래와 같다.
+
+```js
+const colors = {
+red: "#F45452",
+green: "#0C952A",
+blue: "#1A7CFF",
+};
+
+type ColorsType = typeof colors;
+/**
+{
+red： string;
+green： string;
+blue： string;
+}
+*/
+```
+
+<h6>객체의 타입을 활용해서 컴포넌트 구현하기</h6>
+
+- keyof, typeof 연산자를 사용해서 theme 객체 타입을 구체화하고, string으로 타입을 설정했던 Button 컴포넌트를 개선해보자.
+- color, backgroundcolor, fontsize의 타입을 theme 객체에서 추출하고 해당 타입을 Button 컴포넌트에 사용했다.
+
+```js
+import { FC } from "react";
+import styled from "styled-components";
+const colors = {
+black： "#000000",
+gray： "#222222",
+white: "#FFFFFF",
+mint： "#2AC1BC",
+};
+
+const theme = {
+    colors: {
+        default： colors.gray,
+        ...colors
+    },
+    backgroundcolor： {
+        default： colors.white,
+        gray： colors.gray,
+        mint： colors.mint,
+        black： colors.black.
+    },
+    fontsize： {
+        default： "16px",
+        small： "14px",
+        large： "18px",
+    },
+}；
+
+type ColorType = typeof keyof theme.colors;
+type BackgroundColorType = typeof keyof theme.backgroundcolor;
+type FontSizeType = typeof keyof theme.fontsize;
+
+interface Props {
+    color?： ColorType;
+    backgroundcolor?： BackgroundColorType;
+    fontsize?： FontSizeType;
+    onClick： (event： React.MouseEvent서TMLButtonElement>) => void ! Promise<void>;
+}
+
+const Button: FC<Props> = ({ fontSize, backgroundColor, color, children }) => {
+    return (
+        <ButtonWrap
+            fontSize={fontSize}
+            backgroundColor={backgroundcolor}
+            color={color}
+        >
+            {children}
+        </ButtonWrap>
+    );
+};
+
+const ButtonWrap = styled.button<Omit<Props, "onClick">>`
+    color： ${({ color }) => theme.color[color ?? "default"]};
+    background-color： ${({ backgroundcolor }) =>
+        theme.bgColor[backgroundcolor ?? "default"]};
+    font-size： ${({ fontsize }) => theme.fontSize[fontSize ?? "default"]};
+`;
+```
+
+- Button 컴포넌트를 사용하는 곳에서 아래처럼 background의 값만 받을 수 있게 되었고 다른 값을 넣었을 때는 타입 오류가 발생한다.
+
+### 5.5 Record 원시 타입 키 개선하기
+
+- 객체 선언 시 키가 어떤 값인지 명확하지 않다면 Record의 키를 string이나 number 깉은 원시 타입으로 명시하곤 한다. 이때 타입스크립트는 키가 유효하지 않더라도 타입상으로는 문제 없기 때문에 오류를 표시하지 않는다. 이것은 예상치 못한 런타임 에러를 야기할 수 있다. 이 절에서는 Record를 명시적으로 사용하는 방안에 대해 다룬다.
+
+#### 5.5.1 무한한 키를 집합으로 가지는 Record
+
+- 다음처럼 음식 분류（한식, 일식）를 키로 사용하는 음식 배열이 담긴 객체를 만들었다.
+
+```js
+type Category = string;
+interface Food {
+    name： string;
+    // ...
+}
+
+const foodByCategory： Record<Category, Food[]> = {
+    한식: [{ name： "제육덮밥" }, { name： "뚝배기 불고기" }],
+    일식: [{ name： "초밥" }, { name： "텐동" }],
+}；
+```
+
+- 여기에서 Category의 타입은 string이다. Category를 Record의 키로 사용하는 foodByCategory 객체는 무한한 키 집합을 가지게 된다. 이때 foodByCategory 객체에 없는 키값을 사용하더라도 타입스크립트는 오류를 표시하지 않는다.
+
+```js
+foodByCategory["양식"]; // Food[]로 추론
+foodByCategory["양식"].map((food) => console.log(food.name)); // 오류가 발생하지 않는다
+```
+
+- 그러나 foodByCategory["양식"]은 런타임에서 undefined가 되어 오류를 반환한다.
+- 이때 자바스크립트의 옵셔널 체이닝 등을 사용해 런타임 에러를 방지할 수 있다.
+
+```js
+foodByCategory["양식"]?.map((food) => console.log(food.name));
+```
+
+- 그러나 어떤 값이 undefined인지 매번 판단해야 한다는 번거로움이 생긴다. 또한 실수로 undefined일 수 있는 값을 인지하지 못하고 코드를 작성하면 예상치 못한 런타임 에러가 발생할 수 있다. 하지만 타입스크립트의 기능을 활용하여 개발 중에 유효하지 않은 키가 사용되었는지 또는 undefined일 수 있는 값이 있는지 등을 사전에 파악할 수 있다.
+
+#### 5.5.2 유닛 타입으로 변경하기
+
+- 키가 유한한 집합이라면 유닛 타입（다른 타입으로 쪼개지지 않고 오직 하나의 정확한 값을 가지는 타입）을사용할수 있다.
+
+```js
+type Category = "한식" | "일식";
+interface Food {
+    name： string;
+    // ...
+}
+
+const foodByCategory: Record<Category, Food[]> = {
+    한식: [{ name： "제육덮밥" }, { name： "뚝배기 불고기" }],
+    일식: [{ name： "초밥" }, { name： "텐동" }],
+};
+
+// Property ’양식' does not exist on type 'Record<Category, Food[]>'.
+foodByCategory ["양식"];
+```
+
+- 이제 Category로 한식 또는 일식만 올 수 있기 때문에 양식을 키로 사용하면 에러가 발생한다. 이처럼 유닛 타입을 활용하면 개발 중에 유효하지 않은 키가 사용되었는지를 확인할 수 있다. 그러나 키가 무한해야 하는 상황에는 적합하지 않다.
+
+#### 5.5.3 Partial을 활용하여 정확한 타입 표현하기
+
+- 키가 무한한 상황에서는 Partial을 사용하여 해당 값이 undefined일 수 있는 상태임을 표현할 수 있다. 객체 값이 undefined일 수 있는 경우에 Partial을 사용해서 PartialRecord 타입을 선언하고 객체를 선언할 때 이것을 활용할 수 있다.
+
+```js
+type PartialRecord<K extends string, T> = Partial<Record<K, T>>;
+type Category = string;
+interface Food {
+    name; string;
+    // ...
+}
+
+const foodByCategory： PartialRecord<Category, Food[]> = {
+    한식: [{ name： "제육덮밥" }, { name： "뚝배기 불고기" }],
+    일식: [{ name: "초밥" }, { name： "텐동" }],
+}；
+foodByCategory["양식"]; // Food[] 또는 undefined 타입으로 추론
+foodByCategory["양식"].map((food) => console.log(food.name)); // Object is possibly 'undefined'
+foodByCategory["양식"]?.map((food) => console.log(food.name)); // OK
+```
+
+- Record<K, T>
+    - Record<K, T>는 객체 타입을 생성하는 유틸리티 타입
+    - 예를 들어, Record<'a' | 'b', number>는 { a: number; b: number } 타입을 생성한다.
+    - K는 문자열 유니언 타입이어야 하며(K extends string), T는 값의 타입이다.
+    - Record<K, T>는 K에 포함된 모든 키에 대해 값이 T인 객체 타입을 생성합니다.
+- Partial<Record<K, T>>
+    - Record<K, T>를 먼저 생성한 후, 이를 Partial로 감싸서 모든 프로퍼티를 선택적으로 만든다.
+    - PartialRecord<K, T>는 Record<K, T>에서 모든 프로퍼티를 선택적으로 만든 객체 타입을 정의한다.
+
+```js
+type Keys = 'a' | 'b' | 'c';
+type Value = number;
+
+type Example = PartialRecord<Keys, Value>;
+// Example은 { a?: number; b?: number; c?: number } 타입입니다
+```
+
+- 타입스크립트는 foodByCategory[key]를 Food[] 또는 undefined로 추론하고, 개발자에게 이 값은 undefined일 수 있으니 해당 값에 대한 처리가 필요하다고 표시해준다. 개발자는 안내를 보고 옵셔널 체이닝을 사용하거나 조건문을 사용하는 등 사전에 조치할 수 있게 되어 예상치 못한 런타임 오류를 줄일 수 있다.
 
 <h3>끝!</h3>
