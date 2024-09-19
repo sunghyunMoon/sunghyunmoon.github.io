@@ -8,7 +8,7 @@ feature_image: "https://raw.githubusercontent.com/sunghyunMoon/sunghyunmoon.gith
 ### 3.1 타입스크립트만의 독자적 타입 시스템
 
 - 타입스크립트는 자바스크립트 자료형에서 제시되지 않은 독자적인 타입 시스템을 가지고 있다. 하지만 엄밀히 말하면 타입스크립트의 타입 시스템이 내포하고 있는 개념은 모두 자바스크립트에서 기인한 것이다. 단지 자바스크립트로 표현할 수단과 필요성이 없었을 뿐이다. 자바스크립트의 슈퍼셋으로 정적 타이핑을 할 수 있는 타입스크립트가 등장하면서 비로소 타입스크립트의 타입 시스템이 구축되었다.
-- . 이 장에서 소개하는 모든 타입 시스템은 타입스크립트에만 존재하는 키워드지만, 그 개념은 자바스크립트에 기인한 타입 시스템이라는 점을 인지하고 각 타입을 살펴 보자.
+- 이 장에서 소개하는 모든 타입 시스템은 타입스크립트에만 존재하는 키워드지만, 그 개념은 자바스크립트에 기인한 타입 시스템이라는 점을 인지하고 각 타입을 살펴 보자.
 
 #### 3.1.1 any 타입
 
@@ -82,10 +82,10 @@ function generateError(res： Response)： never {
 #### 3.1.5 Array 타입
 
 - 이미 자바스크립트에서도 확인할 수 있는 자료형 인데도 왜 타입스크립트에서 다시 배열을 다루는지 의문이 들 수 있을 것이다. 타입스크립트에서 다시 Array를 언급하는 이유를 다음과 같이 제시할 수 있다.
-    - 엄밀히 말하면 자바스크립트에서는 배열을 객체에 속하는 타입으로 분류한다. 즉, **자바스크립트에서는 배열을 단독으로 배열이라는 지료형에 국한하지 않는다.**
+    - 엄밀히 말하면 자바스크립트에서는 배열을 객체에 속하는 타입으로 분류한다. 즉, **자바스크립트에서는 배열을 단독으로 배열이라는 자료형에 국한하지 않는다.**
     - 타입스크립트에서 Array라는 타입을 사용하기 위해서는 타입스크립트의 특수한 문법을 함께 다뤄야 핸다.
-- 앞서 설명한 대로. 자바스크립트의 배열은 동적 언어의 특징에 따라 어떤 값이든 배열의 원소로 허용한다. 즉, 하나의 배열로 선언된 변수에 숫자, 문자열, 객체 등 자료형이 무엇이든 상관없이 원소를 삽입하고 관리할 수 있다.
--  타입스크립트에서는 일반적으로 배열의 크기까지 제한하지는 않지만 정적 타입의 특성을 살려 명시적인 타입을 선언하여 해당 타입의 원소를 관리하는 것을 강제한다.
+- 앞서 설명한 대로, 자바스크립트의 배열은 동적 언어의 특징에 따라 어떤 값이든 배열의 원소로 허용한다. 즉, 하나의 배열로 선언된 변수에 숫자, 문자열, 객체 등 자료형이 무엇이든 상관없이 원소를 삽입하고 관리할 수 있다.
+-  **타입스크립트에서는 일반적으로 배열의 크기까지 제한하지는 않지만 정적 타입의 특성을 살려 명시적인 타입을 선언하여 해당 타입의 원소를 관리하는 것을 강제한다.**
 - 2가지 방식으로 배열 타입을 선언할 수 있는데 두 방식 간의 차이점은 선언하는 형식 외에는 없다. 개인의 선호나 팀의 컨벤션에 따라 하나의 방식으로 통일하거나 2가지 방식을 혼용해서 사용해도 큰 문제는 없다.
 - 기본적으로 자바스크립트의 동작은 배열 원소의 타입을 구분하지 않기 때문에 다양한 자료형의 원소를 함께 다룰 수 있는데, 만약 숫자형과 문자열 등 여러 타입을 모두 관리해야 하는 배열을 선언하려면 유니온 타입을 사용할 수 있다.
 
@@ -125,7 +125,7 @@ Kotlin, // 401
 Rust, // 402
 Go, // 403
 }
-PrograinniingLangi』age[2]； // "Java"
+ProgrammingLanguage[300]； // "Java"
 ```
 
 - enum 타입은 주로 문자열 상수를 생성하는 데 사용된다. 이를 통해 응집력 있는 집합 구조체를 만들 수 있으며, 사용자 입장에서도 간편하게 활용할 수 있다. 또한 열거형은 그 자체로 변수 타입으로 지정할 수 있다. 이때 열거형을 타입으로 가지는 변수는 해당 열거형이 가지는 모든 멤버를 값으로 받을 수 있다. 이런 특성은 코드의 가독성을 높여준다.
@@ -140,7 +140,7 @@ const enum ProgrammingLanguage {
 }
 ```
 
-- 그러나 const enum으로 열거형을 선언하더라도 숫자 상수로 관리되는 열거형은 선언한 값 이외의 값을 할당하거나 접근할 때 이를 방지하지 못한다. 반면 문자열 상수 방식으로 선언한 열거형은 미리 선언하지 않은 멤버로 접근을 방지한다. 따라서 문자열 상수 방식으로 열거형을 사용하는 것이 숫자 상수 방식보다 더 안전하며 의도하지 않은 값의 할당이나 접근을 방지하는 데 도움이 된다.
+- 그러나 const enum으로 열거형을 선언하더라도 숫자 상수로 관리되는 열거형은 선언한 값 이외의 값을 할당하거나 접근할 때 이를 방지하지 못한다. 반면 문자열 상수 방식으로 선언한 열거형은 미리 선언하지 않은 멤버로 접근을 방지한다. 따라서 **문자열 상수 방식으로 열거형을 사용하는 것이 숫자 상수 방식보다 더 안전하며 의도하지 않은 값의 할당이나 접근을 방지하는 데 도움이 된다.**
 
 ```js
 const enum NUMBER {
@@ -179,7 +179,7 @@ type ProductItemWithDiscount = Productitem & { discountAmount: number };
 
 #### 3.1.2 유니온 타입(Union)
 
-- 교차 타입 (A & B)이 타입 A와 타입 으를 모두 만족하는 경우라면, 유니온 타입은 타입 A 또는 타입 B 중 하나가 될 수 있는 타입을 말하며 A | B 같이 표기한다. 주로 특정 변수가 가질수 있는 타입을 전부 나열하는 용도로 사용된다. 
+- 교차 타입 (A & B)이 타입 A와 타입을 모두 만족하는 경우라면, 유니온 타입은 타입 A 또는 타입 B 중 하나가 될 수 있는 타입을 말하며 A \| B 같이 표기한다. 주로 특정 변수가 가질수 있는 타입을 전부 나열하는 용도로 사용된다. 
 - 교차 타입과 마찬가지로 2개 이상의 타입을 이어 붙일 수 있고 타입 별칭을 통해 중복을 줄일 수도 있다. 아래 예시는 Productitem 혹은 Carditem이 될 수 있는 유니온 타입인 PromotionEventltem을 나타낸다. 즉, 이벤트 프로모션의 대상으로 상품이 될 수도 있고 카드가 될 수도 있다는 의미이다.
 
 ```js
@@ -230,12 +230,10 @@ type Example = {
     c： boolean；
 };
 type IndexedAccess = Example["a"];
-<<<<<<< Updated upstream:_posts/2024-02-05-elegant-typescript-ch3-type.md
-type IndexedAccess2 = Example["a" | "b"]; // number j string
-type IndexedAccessB = Example[keyof Example]; // number ! string { boolean
+type IndexedAccess2 = Example["a" | "b"]; // number | string
+type IndexedAccessB = Example[keyof Example]; // number | string | boolean
 type ExAlias = "b" | "c";
-type IndexedAccess4 = Exainple[ExAlias]; // string ! boolean
-=======
+type IndexedAccess4 = Exainple[ExAlias]; // string | boolean
 type IndexedAccess2 = Example["a" | "b"]; // number | string
 type IndexedAccessB = Example[keyof Example]; // number | string | boolean
 type ExAlias = "b" | "c";
@@ -269,32 +267,32 @@ const acExample: Subset<Example> = { a： 4, c： true };
 
 ```js
 const BottomSheetMap = {
-    RECENT.CONTACTS: RecentContactsBottomSheet,
-    CARD.SELECT: CardSelectBottomSheet,
+    RECENT_CONTACTS: RecentContactsBottomSheet,
+    CARD_SELECT: CardSelectBottomSheet,
     SORT_FILTER： SortFilterBottomSheet,
-    PRODUCT.SELECT: ProductSelectBottomSheet,
+    PRODUCT_SELECT: ProductSelectBottomSheet,
     REPLY_CARD_SELECT: ReplyCardSelectBottomSheet,
     RESEND： ResendBottomSheet,
     STICKER： StickerBottomSheet,
     BASE: null,
 };
 
-export type B0TT0M_SHEET_ID = keyof typeof BottomSheetMap;
+export type BOTTOM_SHEET_ID = keyof typeof BottomSheetMap;
 // "RECENT.CONTACTS" | "CARD.SELECT" | "SORT_FILTER" | "PRODUCT.SELECT" | "REPLY_CARD_SELECT" | "RESEND" | "STICKER" | "BASE";
 
 // 불필요한 반복이 발생한다
 type BottomSheetStore = {
-RECENT.CONTACTS: {
+RECENT_CONTACTS: {
     resolver?: (payload： any) => void;
     args?： any;
     isOpened： boolean;
 };
-CARD.SELECT: {
+CARD_SELECT: {
     resolver?: (payload： any) => void;
     args?; any;
     isOpened： boolean;
 }；
-SORT.FILTER: {
+SORT_FILTER: {
     resolver?： (payload: any) => void;
     args?： any;
     isOpened: boolean;
@@ -343,7 +341,7 @@ type StageName = `${Stage}-stage`;
 #### 3.1.7 제네릭(Generic)
 
 - 제네릭Generic은 C나 자바 같은 정적 언어에서 다양한 타입 간에 재사용성을 높이기 위해 사용하는 문법이다. 타입스크립트도 정적 타입을 가지는 언어이기 때문에 제네릭 문법을 지원하고 있다.
-- .좀 더 자세히 타입스크립트 제네릭의 개념을 풀어보면 **함수, 타입, 클래스 등에서 내부적으로 사용할 타입을 미리 정해두지 않고 타입 변수를 사용해서 해당 위치를 비워 둔 다음에, 실제로 그 값을 사용할 때 외부에서 타입 변수 자리에 타입을 지정하여 사용하는 방식을 말한다.**
+- 좀 더 자세히 타입스크립트 제네릭의 개념을 풀어보면 **함수, 타입, 클래스 등에서 내부적으로 사용할 타입을 미리 정해두지 않고 타입 변수를 사용해서 해당 위치를 비워 둔 다음에, 실제로 그 값을 사용할 때 외부에서 타입 변수 자리에 타입을 지정하여 사용하는 방식을 말한다.**
 - 이렇게 하면 함수, 타입, 클래스 등 여러 타입에 대해 하나하나 따로 정의하지 않아도 되기 때문에 재사용성이 크게 향상된다.
 
 ```js
@@ -352,7 +350,7 @@ const arrayl： ExampleArrayType<string> = ["치킨", "피자", "우동"];
 ```
 
 - 앞서 제네릭이 일반화된 데이터 타입을 말한다고 했는데, 이 표현만 보면 any의 쓰임과 혼동할 수도 있을 것이다. 하지만 둘은 명확히 다르다. 둘의 차이는 배열을 떠올리면 쉽게 알 수 있다.
-- any 타입의 배열에서는 배열 요소들의 타입이 전부 같지 않을 수 있다. 쉽게 말해 타입 정보를 잃어버린다고 생각하면 편하다. 즉, any를 사용하면 타입 검사를 하지 않고 모든 타입이 허용되는 타입으로 취급된다. 반면에 제네릭은 any처럼 아무 타입이나 무분별하게 받는 게 아니라, 배열 생성 시점에 원하는 타입으로 특정할 수 있다. 다시 말해 제네릭을 사용하면 배열 요소가 전부 동일한 타입이 라고 보장할 수 있다.
+- any 타입의 배열에서는 배열 요소들의 타입이 전부 같지 않을 수 있다. 쉽게 말해 타입 정보를 잃어버린다고 생각하면 편하다. 즉, **any를 사용하면 타입 검사를 하지 않고 모든 타입이 허용되는 타입으로 취급된다. 반면에 제네릭은 any처럼 아무 타입이나 무분별하게 받는 게 아니라, 배열 생성 시점에 원하는 타입으로 특정할 수 있다.** 다시 말해 제네릭을 사용하면 배열 요소가 전부 동일한 타입이 라고 보장할 수 있다.
 - 또한 특정 요소 타입을 알 수 없을 때는 제네릭 타입에 기본값을 추가할 수 있다.
 
 ```js
@@ -386,7 +384,7 @@ function exampleFunc2<T extends TypeWithLength>(arg: T): number {
 
 ```js
 // 에러 발생: JSX element 'T' has no corresponding closing tag
-const arrowExampleFunc = <T></>(arg：T): T[] => {
+const arrowExampleFunc = <T>(arg：T): T[] => {
     return new Array(3).fill.(arg);
 };
 
@@ -394,7 +392,6 @@ const arrowExampleFunc = <T></>(arg：T): T[] => {
 const arrowExampleFunc2 = <T extends {}>(arg： T)： T[] => {
     return new Array(3).fiVL(arg);
 }
->>>>>>> Stashed changes:_posts/2024-02-08-elegant-typescript-ch3-type.md
 ```
 
 ### 3.2 제네릭 사용법
@@ -501,11 +498,11 @@ type parameters)라고 부른다. 그리고 String을 키의 상한 한계(upper
  <Key extends string | number>
 ```
 
-- 유니온 타입으로 주가 여러 타입을 받게 할 수는 있지만, 타입 매개변수가 여러 개일 때는 처리할 수 없다. 이럴 때는 매개변수를 하나 더 추가하여 선언한다.
+- 유니온 타입으로 Key가 여러 타입을 받게 할 수는 있지만, 타입 매개변수가 여러 개일 때는 처리할 수 없다. 이럴 때는 매개변수를 하나 더 추가하여 선언한다.
 
 #### 3.2.6. 제네릭 예시
 
-- 제네릭의 장점은 다양한 타입을 받게 함으로써 코드를 효율적 재사용할 수 있는 것이다. 그렇다면 실제 현업에서 가장 많이 제네릭이 활용할 때는 언제일까? 바로 API 응답 값의 타입을 지정할때이다.
+- **제네릭의 장점은 다양한 타입을 받게 함으로써 코드를 효율적 재사용할 수 있는 것이다.** 그렇다면 실제 현업에서 가장 많이 제네릭이 활용할 때는 언제일까? 바로 API 응답 값의 타입을 지정할때이다.
 - 우아한형제들에서는 API 응답 값의 타입을 지정할 때 제네릭을 활용하여 적절한 타입 추론과 코드의 재사용성을높이고 있다.
 
 ```js
@@ -539,7 +536,7 @@ export const fetchOrderlnfo = ()： Promise<MobileApiResponse<Order>> => {
 - 이처럼 다양한 API 응답 값의 타입에 MobileApiResponse을 활용해서 코드를 효율적으로 재사용할 수 있다.
 - 이런 식으로 제네릭을 필요한 곳에 사용하면 가독성을 높이고 코드를 효율적으로 작성할 수 있다. 하지만 굳이 필요하지 않은 곳에 제네릭을 사용하면 오히려 독이 되어 코드를 복잡하게 만든다.
 
-<h5>제네릭을 구딩 사용하지 않아도 되는 타입</h5>
+<h5>제네릭을 굳이 사용하지 않아도 되는 타입</h5>
 
 - 제네릭이 필요하지 않을 때도 사용하면 코드 길이만 늘어나고 가독성을 해칠 수 있다. 다음은 제네릭이 굳이 필요하지 않은데도 사용한 예시다.
 
@@ -563,7 +560,7 @@ interface Order {
 
 <h5>any 사용하기</h5>
 
-- 제네릭은 코드의 재사용성을 높이고 타입 추론을 하는 데 사용된다. 그러나 any를 사용하면 제네릭의 장점과 타입 추론 및 타입 검사를 할 수 있는 이점을 누릴 수 없게 된다. any 타입은 모든 타입을 허용하기 때문에 사실상 자바스크립트와 동일한 방식으로 코드를 작성하는 것과 같다. 따라서 any를 사용하면 제네릭을 포함해 타입을 지정하는 의미가 사라지게 된다.
+- **제네릭은 코드의 재사용성을 높이고 타입 추론을 하는 데 사용된다.** 그러나 any를 사용하면 제네릭의 장점과 타입 추론 및 타입 검사를 할 수 있는 이점을 누릴 수 없게 된다. any 타입은 모든 타입을 허용하기 때문에 사실상 자바스크립트와 동일한 방식으로 코드를 작성하는 것과 같다. 따라서 any를 사용하면 제네릭을 포함해 타입을 지정하는 의미가 사라지게 된다.
 
 ```js
 type ReturnType<T = any> = {
