@@ -24,7 +24,16 @@ aside: true
   * 협업 및 공동 편집이 가능한 협업툴 Super Word 개발(Office365, GoogleDocs와 같은 웹 오피스)
     * File이 아닌 문서 데이터를 요소별로 DB화 하여 데이터 기반의 생산성 플랫폼 개발
   * Full Stack
-    * C++, TypeScript, React, Java, MySQL, Jest Unit Test
+    * C++, TypeScript, Java
+    * React, Spring Boot, Spring MVC
+    * MySQL, PL/SQL, Tibero
+    * Jest, Cucumber, Puppeteer, Junit4/5, Mockito
+  * 오피스 댓글 기능 공통 프레임워크화
+  * 오피스 페이지 썸네일 제공 기능 구현
+  * 워드 인쇄 기능 성능 향상을 위한 리팩토링
+  * 오피스 로딩 성능 개선
+  * 워드 레이아웃 성능 최적화
+  * Blink Layout 분석을 통한 SuperWord Layout 성능 점검
   * Super Word Graphic 개체 z-index Architecture 설계 및 구현
   * Super Word Memo UX 기획, Architecture 설계 및 구현
     * 직장 협업이 진화하고 있음에 따라 협업 툴로써 웹 친화적인 메모 기능 개발
@@ -38,9 +47,66 @@ aside: true
     * 1000 페이지 이상의 대용량 문서에서 탐색창 페이지 탭에 대해 Event-Driven Architectuire를 이용해 레이아웃
 
 <hr class="MuiDivider-root MuiDivider-fullWidth css-3udx1k">
+<h4 style="color:#008000">오피스 댓글 기능 공통 프레임워크화</h4>
+* 개발 기간 : 2024.08. ~ 2024.09
+* 기존 워드 모듈의 댓글 기능을 셀 및 포인트 모듈에서도 사용할 수 있도록 공통 프레임워크화 진행
+* 성과
+** 코드 중복 최소화: 댓글이 삽입 가능한 모든 객체는(예: 그림, 도형, 슬라이드, 셀) commentList 프로퍼티와 관리 메서드가 필요하고, 그 과정에서 코드 중복을 방지하기 위해 TypeScript의 Mixin 패턴을 적용
+** 유연한 구조 설계: 각 객체에 댓글 기능을 손쉽게 추가할 수 있도록 Mixin을 통해 재사용 가능한 코드를 구성
+** 타입 안전성 및 유지보수성 향상: Mixin이 적용된 객체에 대해 새로운 타입과 타입가드를 정의해 타입 안정성을 보장하고 유지보수성 개선
+** 정리 : https://sunghyunmoon.github.io/typescript/2024/03/09/typescript-mixin_apply/
+
+<hr class="MuiDivider-root MuiDivider-fullWidth css-3udx1k">
+<h4 style="color:#008000">RG사 A-Book 썸네일 기능 제공 설계 및 구현</h4>
+* 개발 기간 : 2024.03. ~ 2024.01
+* 워드의 모든 페이지 썸네일을 제공하는 기능 요청이 와서 구현 시작
+* 썸네일 이미지를 만들기 위해 HTML이 필요하고, 해당 HTML을 SVG로 변환
+* 성과
+  * HTML을 SVG로 변환할 때에 HTMLElement을 SVGElement에 append하면서 브라우저 렌더링이 일어남
+  * 해당 페이지 컴포넌트에서 userLayoutEffect 훅을 이용해 브라우저 렌더링이 일어나기 전 시점의 페이지 HTML을 SVGElement에 append해 **브라우저 렌더링이 한번만 일어나게해 성능을 60% 향상 시킴**
+* 리액트의 virtual DOM과 실제 DOM이 동기화되지 않지만 re-render가 필요 없는 상황이고, 일회성으로 썸네일 이미지를 만들면 되기 때문에 성능 최적화에 집중함
+
+<hr class="MuiDivider-root MuiDivider-fullWidth css-3udx1k">
+<h4 style="color:#008000">오피스 인쇄 기능 성능 향상을 위한 리팩토링</h4>
+* 개발 기간 : 2024.06. ~ 2024.07
+* 대용량 문서 인쇄 모드 진입시 10초 멈춤 현상 발생하는 문제
+* 편집 모드는 viewport에 걸쳐진 페이지들만 partial하게 렌더해 성능 최적화를 하지만, 인쇄 모드는 모든 페이지를 PDF화 해야하기 때문에 full HTML을 일괄적을 렌더하기 때문
+* 성과
+  * **Hybrid HTML 렌더 방식 제안으로 즉각적으로 인쇄 모드에 진입**할 수 있도록함
+  * 인쇄 모드시 partial HTML로 표현하되, JS단에서 동시성을 이용해 순차적으로 리액트 렌더링된 페이지 HTML을 DocumentFragment에 캐싱했다가, 인쇄시 DocumentFragment를 iframe으로 넘겨주는 방식으로 구현
+
+<hr class="MuiDivider-root MuiDivider-fullWidth css-3udx1k">
+<h4 style="color:#008000">오피스 로딩 성능 개선</h4>
+* 개발 기간 : 2023.08.
+* 문서를 처음 열 때 오래 걸린다는 고객사 VoC가 있어 성능 개선
+* 성과
+  * 성능 67% 향상시킴
+* **비동기 후속 처리 및 번들 최소화**
+  * 오피스는 리액트 Suspense를 이용해 ‘fetch-then-render’ 방식으로 로딩하고 있음
+  * 하지만, fetch 이전에 font 초기화와 같은 오래 걸리는 비동기 작업들이 많아 fallback UI를 표시하며 첫 화면 렌더링이 오래 걸림
+  * 오래 걸리는 비동기 작업들을 fetch 이후로 옮기도록 가이드
+  * 특정 상황에서만 필요한 라이브러리들은 dynamic import를 통해 번들 사이즈를 줄임
+  * 라이브러리의 소수의 메서드만 사용하는 경우 라이브러리를 사용하지 않고 직접 구현 가이드
+
+<hr class="MuiDivider-root MuiDivider-fullWidth css-3udx1k">
+<h4 style="color:#008000">워드 레이아웃 성능 최적화 설계</h4>
+* 개발 기간 : 2023.02. ~ 2023.07.
+* 워드 레이아웃
+  * 워드 docx의 XML 스펙에는 페이지 개념이 없고, JS단에서 직접 레이아웃을해 페이지를 계산함
+  * 워드는 이전 paragraph의 위치와 높이가 정해져야 다음 paragraph을 레이아웃 할 수 있고, 레이아웃은 항상 위에서부터 아래로 진행됨
+  * 따라서 아래 그림과 같이 밑에 페이지와 paragraph이 많다면 메인스레드에서의 레이아웃이 완료될때까지 사용자 event block이 발생할 수 있음
+
+<div><img src= "/assets/img/post/word_layout.PNG"></div>
+
+* 성과
+  * 자바스크립트의 동시성을 지원하는 브라우저의 이벤트 루프와 테스크 큐를 이용한 레이아웃 최적화 아키텍처 설계
+  * viewport까지 한번에 레이아웃을하고 viewport 밑으로는 작은 단위로 잘게 나누어 레이아웃하는 방식으로 구현해 애플리케이션의 반응성을 극대화함
+
+
+<hr class="MuiDivider-root MuiDivider-fullWidth css-3udx1k">
 
 <h4 style="color:#008000">Blink Layout 분석을 통한 SuperWord Layout 성능 점검</h4>
-* 개발 기간 : 2022.09 ~ 2022.10
+* 개발 기간 : 2022.08. ~ 2022.10.
 * Blink Layout
   * DOM 요소의 크기와 위치를 결정하는 fragment를 만드는 과정
   * LayoutObject가 LayoutAlgorithm을 통해 결과물인 LayoutResult를 만들어 내는 과정
@@ -84,7 +150,7 @@ aside: true
 <hr class="MuiDivider-root MuiDivider-fullWidth css-3udx1k">
 
 <h4 style="color:#008000">Super Word 메모 Architecture</h4>
-* 개발 기간 : 2021.11 ~ 
+* 개발 기간 : 2021.11. ~ 
 * 기존 기록을 하기 위한 주석 관점의 메모에서 **의견을 주고 받기 위한 협업 관점의 새로운 Super Word Comment UX/UI 제안**
 * 레퍼런스 웹 오피스 제품인 office365, google docs의 메모 기능(simple editor)을 뛰어 넘어 OOXML 스펙 기반의 paragraph, 그림, 테이블 등이 삽입 가능한 메모 기능(complex editor) 구현
 
@@ -108,7 +174,7 @@ aside: true
 <hr class="MuiDivider-root MuiDivider-fullWidth css-3udx1k">
 
 <h4 style="color:#008000">Super Word Graphic 개체 z-index Architecture</h4>
-* 개발 기간 : 2021.09 ~ 2021. 11
+* 개발 기간 : 2021.09. ~ 2021. 11.
 * OOXML z-index
   * 화면상에서 z 축 좌표를 의미
   * OOXML 스펙상으로 z-index는 **unique한 id** & **양수**만 가능
@@ -148,7 +214,7 @@ aside: true
 <hr class="MuiDivider-root MuiDivider-fullWidth css-3udx1k">
 
 <h4 style="color:#008000">탐색창 페이지 탭 Lazy Synchronization Architecture</h4>
-* 개발 기간 : 2020.10 ~ 2020. 12
+* 개발 기간 : 2020.10. ~ 2020. 12.
 * 탐색창 페이지 탭?
   * 검색 기능을 제공하는 툴페인으로 **페이지탭**이라는 세부 기능이 존재
   * 페이지탭 기능은 **문서 전체 페이지를 미리보기 리스트 형태**로 보여주며 본문의 셀렉션에 따라 현재 보고있는 페이지에도 강조표시가 됨
@@ -175,7 +241,7 @@ aside: true
 <hr class="MuiDivider-root MuiDivider-fullWidth css-3udx1k">
 
 <h4 style="color:#008000">XML Digital Signature Architecture 설계 및 구현</h4>
-* 개발 기간 : 2020.02 ~ 2020. 07
+* 개발 기간 : 2020.02. ~ 2020. 07.
 * 디지털 서명?
   * 문서를 작성한 서명자가 내가 예상한 서명자 인지를 보장할 수 있음
   * 디지털 서명된 문서는 전송 과정 중 어떠한 위변조도 없는 것을 보장할 수 있음
