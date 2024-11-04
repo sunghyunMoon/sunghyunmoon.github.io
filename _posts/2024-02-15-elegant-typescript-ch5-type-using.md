@@ -9,7 +9,7 @@ feature_image: "https://raw.githubusercontent.com/sunghyunMoon/sunghyunmoon.gith
 
 ### 5.1 조건부 타입
 
-- 프로그래밍에서는 다양한 상황을 다루기 위해 조건문을 많이 활용한다. 타입도 마찬가지로 조건에 따라 다른 타입을 반환해야 할 때가 있다. 타입스크립트에서는 조건부 타입을 사용해 조건에 따라 출력 타입을 다르게 도출할 수 있다. 타입스크립트의 조건부 타입은 자바스크립트의 삼항 연산자와 동일하게 Condition ? A : B 형태를 가지는데 A는 Condition이 true일 때 도출되는 타입이고, 으는 false일 때 도출되는 타입이다.
+- 프로그래밍에서는 다양한 상황을 다루기 위해 조건문을 많이 활용한다. 타입도 마찬가지로 조건에 따라 다른 타입을 반환해야 할 때가 있다. 타입스크립트에서는 조건부 타입을 사용해 조건에 따라 출력 타입을 다르게 도출할 수 있다. 타입스크립트의 조건부 타입은 자바스크립트의 삼항 연산자와 동일하게 Condition ? A : B 형태를 가지는데 A는 Condition이 true일 때 도출되는 타입이고, B는 false일 때 도출되는 타입이다.
 - 조건부 타입을 활용하면 중복되는 타입 코드를 제거하고 상황에 따라 적절한 타입을 얻을 수 있기 때문에 더욱 정확한 타입 추론을 할 수 있게 된다. 이 절에서는 extends, infer, never 등을 활용해 원하는 타입을 만들어보며 어떤 상황에서 조건부 타입이 필요한지 알아본다. 또한 **조건부 타입을 적용했을 때 어떤 장점을 얻을 수 있는지 알아보자.**
 
 #### 5.1.1 extend와 제네릭을 활용한 조건부 타입
@@ -50,8 +50,8 @@ type BankPayMethodType = PayMethod<"bank">;
 - 조건부 타입을 사용하기 전에 어떤 이슈가 있었는지 알아보자. 아래는 react-query（리액트 쿼리）를 활용한 예시다. 계좌, 카드, 앱 카드 등 3가지 결제 수단 정보를 가져오는API가 있으며, API의 엔드포인트는 다음과 같다고 해보자.
 
 ```js
-계좌 정보 엔드포인트: WWW .baemin .com/baeminpay/.../bank
-카드 정보 엔드포인트: WWW.baemin.com/baeminpay/.../card
+계좌 정보 엔드포인트: www.baemin .com/baeminpay/.../bank
+카드 정보 엔드포인트: www.baemin.com/baeminpay/.../card
 앱 카드 정보 엔드포인트: www.baemin.com/baeminpay/.../appcard
 ```
 
@@ -84,7 +84,7 @@ type PayMethodlnterface = {
 ```
 
 - 이제 react-query의 useQuery를 사용하여 구현한 커스텀 훅인 useGetRegisteredList 함수를 살펴보자.
-- useGetRegisteredList 함수는 useQuery의 반환 값을 돌려준다. useCommonQuery<T>는 useQuery를 한 번 래핑해서 사용하고 있는 함수로 useQuery의 반환 data를 T타입으로 반환한다. fetcherFactory는 axios를 래핑해주는 함수이며, 서버에서 데이터를 받아온 후 onSuccess 콜백 함수를 거친 결괏값을 반환한다.
+- useGetRegisteredList 함수는 useQuery의 반환 값을 돌려준다. useCommonQuery\<T>는 useQuery를 한 번 래핑해서 사용하고 있는 함수로 useQuery의 반환 data를 T타입으로 반환한다. fetcherFactory는 axios를 래핑해주는 함수이며, 서버에서 데이터를 받아온 후 onSuccess 콜백 함수를 거친 결괏값을 반환한다.
 
 ```js
 type PayMethodType = PayMethodInfo<Card> | PayMethodInfo<Bank>;
@@ -111,18 +111,18 @@ type： "card" | "appcard" | "bank"
 };
 ```
 
-- 즉, useGetRegisteredList 함수는 타입으로 "card", "appcard", "bank"를 받아서 해당 결제 수단의 결제 수단 정보 리스트를 반환하는 함수이다. 함수 useGetRegisteredList가 반환하는 데이터는 UseQueryResult<PayMethodType[]>이다. PayMethodType은 PayMethodInfo<Card>와 PayMethodInfo<Bank>의 유니온 타입이므로, 이 함수가 반환하는 데이터는 PayMethodInfo<Card>와 PayMethodInfo<Bank>의 배열이다. 그러나 필터링을 통해 반환된 데이터는 PocketInfo<Card> \| PocketInfo<Bank> 타입의 요소를 포함하게 된다.
-- 따라서, **최종적으로 useGetRegisteredList 함수가 반환하는 데이터의 타입은 PocketInfo<Card>[] | PocketInfo<Bank>[] 요소를 포함할 수 있는 UseQueryResult<PayMethodType[]>이다.**
+- 즉, useGetRegisteredList 함수는 타입으로 "card", "appcard", "bank"를 받아서 해당 결제 수단의 결제 수단 정보 리스트를 반환하는 함수이다. 함수 useGetRegisteredList가 반환하는 데이터는 UseQueryResult\<PayMethodType[]>이다. PayMethodType은 PayMethodInfo\<Card>와 PayMethodInfo\<Bank>의 유니온 타입이므로, 이 함수가 반환하는 데이터는 PayMethodInfo\<Card>와 PayMethodInfo \<Bank>의 배열이다. 그러나 필터링을 통해 반환된 데이터는 PocketInfo\<Card> | PocketInfo\<Bank> 타입의 요소를 포함하게 된다.
+- 따라서, 최종적으로 useGetRegisteredList 함수가 반환하는 데이터의 타입은 PocketInfo<Card>[] | PocketInfo<Bank>[] 요소를 포함할 수 있는 UseQueryResult<PayMethodType[]>이다.
 - **인자로 넣는 타입에 알맞은 타입을 반환하고 싶지만, 타입설정이 유니온으로만 되어있기 때문에 타입스크립트는 해당 타입에 맞는 Data 타입을 추론할 수없다.** 이처럼 인자에 따라 반환되는 타입을 다르게 설정하고 싶다면 extends를 사용한 조건부 타입을 활용하면 된다.
 
 #### 5.1.3 extends 조건부 타입을 활용하여 개선하기
 
 - useGetRegisteredList 함수의 반환 Data는 인자 타입에 따라 정해져 있다. 타입으로 "card" 또는 "appcard"를 받으면 카드 결제 수단 정보 타입인 Pocketlnfo<card>를 반환하고, "bank"를 받는다면 Pocketlnfo<bank>를 반환한다.
-    - type: "card" | "appcard => PocketInfo<Card>
+    - type: "card" \| "appcard => PocketInfo<Card>
     - type: "bank" => PocketInfo<Bank>
 
 - 이러한 상황에서 조건부 타입을 활용하면 하나의 API 함수에서 타입에 따른 정확한 반환 타입을 추론하게 만들 수 있다.
-- 조건부 타입을 사용해서 PayMethodInfo<Card> | PayMethodInfo<Bank> 타입이었던 PayMethodType 타입을 개선해보자.
+- 조건부 타입을 사용해서 PayMethodInfo\<Card> | PayMethodInfo\<Bank> 타입이었던 PayMethodType 타입을 개선해보자.
 
 ```js
 type PayMethodType<T extends "card" | "appcard" | "bank"> = T extends
@@ -132,7 +132,7 @@ type PayMethodType<T extends "card" | "appcard" | "bank"> = T extends
 : Bank;
 ```
 
-- PayMethodType의 제네릭으로 받은 값이 "card" 또는 "appcard"일 때는 PayMethodlnfo<Card> 타입을, 아닐 때는 PayMethodInfo<Bank> 타입을 반환하도록 수정했다. 또한 결제 수단 타입에는 "card", "appcard". "bank"만 들어올 수 있기 때문에 **extends를 한정자로 활용해서 제네릭에 넘 겨오는 값을 제한**하도록 했다.
+- PayMethodType의 제네릭으로 받은 값이 "card" 또는 "appcard"일 때는 PayMethodlnfo\<Card> 타입을, 아닐 때는 PayMethodInfo\<Bank> 타입을 반환하도록 수정했다. 또한 결제 수단 타입에는 "card", "appcard". "bank"만 들어올 수 있기 때문에 **extends를 한정자로 활용해서 제네릭에 넘 겨오는 값을 제한**하도록 했다.
 - 새롭게 정의한 PayMethodType 타입에 제네릭 값을 넣어주기 위해서는 useGetRegisteredList 함수 인자의 타입을 넣어줘야 한다. useGetRegisteredList 인자 타입을 제네릭으로 받으면서 extends를 활용하여 "card", "appcard", "bank" 이외에 다른 값이 인자로 들어올 경우에는 타입 에러를 반환하도록 구현해보자.
 
 ```js
@@ -173,7 +173,7 @@ export const useGetRegisteredList = <T extends "card" | "appcard" | "bank">(
  type UnpackPromise<T> = T extends Promise<infer K>[] ? K : any;
 ```
 
-- UnpackPromise 타입은 제네릭으로 T를 받아 **T가 Promise로 래핑된 경우라면 K를 반환하고,그렇지 않은 경우에는 any를 반환**한다. **Promise<infer K>는 Promise의 반환 값을 추론해 해당 값의 타입을 K로 한다는 의미**이다.
+- UnpackPromise 타입은 제네릭으로 T를 받아 **T가 Promise로 래핑된 경우라면 K를 반환하고,그렇지 않은 경우에는 any를 반환**한다. **Promise\<infer K>는 Promise의 반환 값을 추론해 해당 값의 타입을 K로 한다는 의미**이다.
 - 이번에는 배민 라이더를 관리하는 라이더 어드민 서비스에서 사용하는 타입으로 infer를 살펴보자.
 
 ```js
@@ -242,7 +242,7 @@ export const menuList: MenuItem[] = [
 ];
 ```
 
-- MainMenu와 SiibMenu는 메뉴 리스트에서 사용하는 타입으로 권한 API를 통해 반환된 사용자 권한과 name을 비교하여 사용자가 접근할 수 있는 메뉴만 렌더링한다. MainMenu의 name은 subMenus를 가지고 있을 때 단순히 이름의 역할만 하며, 그렇지 않을 때는 권한으로 간주된다.
+- MainMenu와 SubMenu는 메뉴 리스트에서 사용하는 타입으로 권한 API를 통해 반환된 사용자 권한과 name을 비교하여 사용자가 접근할 수 있는 메뉴만 렌더링한다. MainMenu의 name은 subMenus를 가지고 있을 때 단순히 이름의 역할만 하며, 그렇지 않을 때는 권한으로 간주된다.
 - menuList에는 MainMenu와 SubMenu 타입이 올 수 있기 때문에 유니온 타입인 Menuitem를 정의하여 사용하고 있다. 따라서 menuList에서 subMenus가 없는 MainMenu의 name(권한)과 subMenus에서 쓰이는 name(권한), route name(권한)에 동일한 문자열만 입력해야 한다는 제약이 존재한다.
 - 하지만 앞서 말한 바와 같이 name은 string 타입으로 정의되어 있기 때문에 routes와 menuList에서 subMenus의 기기 내역 관리처럼 서로 다른 값이 입력되어도 컴파일타임에서 에러가 발생하지 않는다. 또한 런타임에서도 인가되지 않음을 안내하는 페이지를 보여주거나 메뉴 리스트를 렌더링하지 않는 정도에 그치기 때문에, 존재하지 않는 권한에 대한 문제로 잘못인지할수있다.
 
@@ -302,21 +302,21 @@ ReadonlyArray<infer U>
 ```
 
 - 자세히 위 코드를 이해해보자.
-- T extends ReadonlyArray<infer U>
+- T extends ReadonlyArray\<infer U>
     - T가 ReadonlyArray 타입인 경우, U는 배열의 요소 타입
-    - 예를 들어, T가 ReadonlyArray<MainMenu \| SubMenu>라면 U는 MainMenu | SubMenu 타입
+    - 예를 들어, T가 ReadonlyArray<MainMenu \| SubMenu>라면 U는 MainMenu \| SubMenu 타입
 - U extends MainMenu
     - U가 MainMenu 타입인 경우를 처리
     - MainMenu는 선택적 subMenus 속성을 포함할 수 있음
 - U["subMenus"] extends infer V
     - U의 subMenus 속성을 V 타입으로 추론
-    - V는 ReadonlyArray<SubMenu> 타입
-- V extends ReadonlyArray<SubMenu>
-    - V가 ReadonlyArray<SubMenu> 타입인 경우를 처리
-    - V가 ReadonlyArray<SubMenu>라면 UnpackMenuNames<V>를 재귀적으로 호출
+    - V는 ReadonlyArray\<SubMenu> 타입
+- V extends ReadonlyArray\<SubMenu>
+    - V가 ReadonlyArray\<SubMenu> 타입인 경우를 처리
+    - V가 ReadonlyArray\<SubMenu>라면 UnpackMenuNames\<V>를 재귀적으로 호출
     - 재귀 호출을 통해 SubMenu의 이름을 추출
 - : U["name"]
-    - V가 ReadonlyArray<SubMenu>가 아닌 경우, U["name"]을 반환
+    - V가 ReadonlyArray\<SubMenu>가 아닌 경우, U["name"]을 반환
     - 이는 MainMenu의 이름을 의미
 
 - 구체적인 예시를 살펴보자.
