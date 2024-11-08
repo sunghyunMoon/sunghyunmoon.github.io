@@ -11,16 +11,16 @@ feature_image: "https://raw.githubusercontent.com/sunghyunMoon/sunghyunmoon.gith
 
 ### 컴포넌트 구조 설계
 
-- 이름, 비밀번호, 비밀번호 확인 Input Control을 담당하는 FormInput 컴포넌트가 있고, 이러한 FormInput 컴포넌트로 구성된 Form 컴포넌트가 있다고 하자.
-- 그리고 From 컴포넌트와 Sibling으로 fontSize를 제어하는 FontControlBox 컴포넌트를 구성하자.
-- 그리고 가입하기를 누르면 아이디, 비밀번호를 확인하는 모달인 Modal 컴포넌트도 구성하자.
+- 이름, 비밀번호, 비밀번호 확인 Input Control을 담당하는 FormInput 컴포넌트가 있고, 이러한 FormInput 컴포넌트로 구성된 Form 컴포넌트를 구성했다.
+- 그리고 From 컴포넌트와 Sibling으로 fontSize를 제어하는 FontControlBox 컴포넌트를 구성했다.
+- 그리고 가입하기를 누르면 아이디, 비밀번호를 확인하는 모달인 Modal 컴포넌트가 있다.
 
 ### state 관리 설계
 
-- 최상위 App 컴포넌트의 자식으로 Form 컴포넌트와 Modal 컴포넌트가 있다. 우선 **Model 컴포넌트가 렌더링되기 위해서는 id, 비밀번호, 비밀번호 확인 상태값이 필요**하다.
+- 최상위 App 컴포넌트의 자식으로 Form 컴포넌트와 Modal 컴포넌트가 있다. 우선 **Modal 컴포넌트가 렌더링되기 위해서는 id, 비밀번호, 비밀번호 확인 상태값이 필요**하다.
 - 그리고 **Form 컴포넌트의 가입하기(submit) 버튼을 눌렀을 때, id와 비밀번호, 그리고 비밀번호 확인하는 과정이 필요**하다. 즉, id와 비밀번호, 비밀번호 확인 상태값들이 필요하다.
-- id와 비밀번호의 값은 Form 컴포넌트의 자식인 FormInput 컴포넌트에서 event로 받는다. 이 값들에 따라서 FormInput 컴포넌트의 에러 메세지가 렌더되기도하고, Form 컴포넌트의 가입하기 버튼을 눌렀을때 Model 컴포넌트 렌더 여부를 체크하기도하고, Modal 컴포넌트에서 이 값들을 렌더해준다.
-- 따라서, id, 비밀번호, 비밀번호 확인 상태 값들은 global state로 관리해야한다. Form과 Modal의 부모인 App 컴포넌트에서 관리하면 적절할 것 같다.
+- id와 비밀번호의 값은 Form 컴포넌트의 자식인 FormInput 컴포넌트에서 event로 받는다. 이 값들에 따라서 FormInput 컴포넌트의 에러 메세지가 렌더되기도하고, Form 컴포넌트의 가입하기 버튼을 눌렀을때 Modal 컴포넌트 렌더 여부를 체크하기도하고, Modal 컴포넌트에서 이 값들을 렌더해준다.
+- **따라서, id, 비밀번호, 비밀번호 확인 상태 값들은 global state로 관리**해야한다. Form과 Modal의 부모인 App 컴포넌트에서 관리하면 적절할 것 같다.
 
 #### Context 초기 설정
 
@@ -42,7 +42,7 @@ function App() {
     const [formData, setFormData] = useState(initialFormData)
 
     return (
-        <FormContext.Provider value={{ formData, setFormData }}>
+        <FormContext.Provider value= {{ formData, setFormData }}>
             <section className="form-wrapper">
                 <Form />
             </section>
