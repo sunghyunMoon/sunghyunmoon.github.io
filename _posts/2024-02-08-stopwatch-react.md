@@ -1,141 +1,169 @@
 ---
-title: React로 스톱워치 만들기
+title: React로 장바구니 만들기
 categories:
 - ToyProject
 feature_image: "https://raw.githubusercontent.com/sunghyunMoon/sunghyunmoon.github.io/main/assets/img/background/react.png"
 ---
 
-이번에는 React JS를 이용해 스톱워치를 만들어보자. 
+이번에는 React JS를 이용해 장바구니를 만들어보자. 
 
 ### 컴포넌트 구성
 
-- 컴포넌트 구성은 우선 스톱워치를 총괄하는 컴포넌트인 StoWatch 컴포넌트를 생성했다.
+- 컴포넌트는 크게 상품 리스트를 렌더하는 ProductList 컴포넌트와 오른쪽 툴페인인 CartToolpane 컴포넌트로 구성했다.
+- ProductList는 productlist를 props로 받아 map을 통해 각 item들을 ProductItem 컴포넌트를 통해 렌더했다.
 
 ```js
-const { centisecond, start, pause, createLap, reset, isRunning, laps } =
-        useTimer();
-
-<section className="w-fit bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 flex flex-col justify-center m-auto mt-36 max-w-sm">
-            <Timer centisecond={centisecond} />
-            <div className="flex justify-between text-white pb-8 text-sm select-none">
-                <Button
-                    color="bg-gray-600"
-                    label={isRunning === true ? '랩' : '리셋'}
-                    code="L"
-                    handleBtnClick={handleLapRest}
-                    ref={lapResetRef}
-                />
-                <Button
-                    color={isRunning === true ? 'bg-red-600' : 'bg-green-600'}
-                    label={isRunning === true ? '중단' : '시작'}
-                    code="S"
-                    handleBtnClick={handleStartStop}
-                    ref={startStopRef}
-                />
-            </div>
-            <Laps laps={laps} />
-        </section>
-```
-- 가장 위에는 실시간 타이머를 보여주는 Timer 컴포넌트, 그 밑에 Button 컴포넌트, 그 밑에 Laps 컴포넌트를 뒀다.
-- StopWatch 컴포넌트에서 useTimer 훅을 호출하여 상태와 로직을 관리한 뒤, 해당 로직을 하위 Button 컴포넌트에 이벤트 핸들러를 내려주는 방식으로 구현했다.
-- 다시 말해, 타이머 모듈의 상태 관리를 단일화하여 여러 상태들을 한 곳(StopWatch)에서만 관리하고, 하위 컴포넌트들은 그 상태를 props로 전달 받아 표시하거나, 상위에서 내려준 핸들러를 통해 상태를 변경하게 된다.
-- 이를 통해, **Button 컴포넌트는 시간 측정과 관련된 로직을 전혀 알 필요 없이, 단순히 버튼 UI의 역할**에만 충실할 수 있도록 했다. 
-
-### 시작/중단, 랩/리셋 기능 만들기
-
-```js
-const handleStartStop = () => {
-        if (isRunning === false) {
-            start();
-        } else {
-            pause();
-        }
-    };
-    const handleLapRest = () => {
-        if (isRunning === false) {
-            reset();
-        } else {
-            createLap();
-        }
-    };
-
-<Button
-    color={isRunning === true ? 'bg-red-600' : 'bg-green-600'}
-    label={isRunning === true ? '중단' : '시작'}
-    code="S"
-    handleBtnClick={handleStartStop}
-    ref={startStopRef}
-/>
-```
-
-- useTimer의 isRunning 변수를 통해 Button 컴포넌트의 color, label props를 제어했다.
-- StopWatch 컴포넌트에서 Button 컴포넌트에 이벤트 핸들러를 props로 전달해줬다.
-
-### 랩 기능 구현
-
-- 랩 버튼을 누르면 useTimer의 createLap 메서드가 수행이 되고, 결과 값으로 laps를 반환한다.
-- 결과값인 laps는 StopWatch 컴포넌트의 state이기 때문에 StopWatch 컴포넌트 리렌더 되면서 Laps 컴포넌트에 laps를 props로 전달한다.
-
-### 키보드 조작 기능 구현
-
-- keydown 이벤트는 document에 이벤트 리스너를 추가해야하기 때문에 useEffect 훅을 사용했다.
-
-```js
-const handleKeyDown = (e) => {
-        if (e.code === 'KeyL') {
-            lapResetRef.current.click();
-        } else if (e.code === 'KeyS') {
-            startStopRef.current.click();
-        }
-};
-useEffect(() => {
-    document.addEventListener('keydown', (e) => handleKeyDown(e));
-}, []);
-```
-
-- 그리고 key 이벤트는 버튼을 클릭했을때와 동일하게 처리하기 위해 버튼의 ref에대해 click 이벤트를 수행하도록 했다.
-
-### 최단, 최장 기록 강조 기능 구현
-
--  최단, 최장 기록 강조 기능을 구현하기 위한 Laps 컴포넌트 로직은 아래와 같다. 
-
-```js
-const Laps = ({ laps }) => {
-    const sortedLaps = [...laps].sort((lap1, lap2) => lap1[1] - lap2[1]);
-    const maxLapNum = sortedLaps.length && sortedLaps[sortedLaps.length - 1][0];
-    const minLapNum = sortedLaps.length && sortedLaps[0][0];
-
-    const createMinMaxStyle = (lap) => {
-        if (laps.length < 2) return;
-        if (lap[0] === minLapNum) return 'text-green-600';
-        else if (lap[0] === maxLapNum) return 'text-red-600';
-    };
-
+const ProductList = ({ productList, handleProductItemClick }) => {
+    if (productList === undefined || productList.length === 0) {
+        return '상품이 없습니다.';
+    }
     return (
-        <article className="text-gray-600 h-64 overflow-auto border-t-2">
-            <ul id="laps">
-                {/* 추가되는 lap은 아래의 HTML 코드 형식을 사용해 추가해주세요.  */}
-                {laps.map((lap) => (
-                    <li
-                        className={`${createMinMaxStyle(
-                            lap
-                        )} flex justify-between py-2 px-3 border-b-2`}
-                        key={lap[0]}
-                    >
-                        <span>랩 {lap[0]}</span>
-                        <span>{formatTime(lap[1])}</span>
-                    </li>
-                ))}
-            </ul>
-        </article>
+        <>
+            <section id="product-list">
+                <div
+                    id="product-card-grid"
+                    className="grid gap-4 auto-cols-fr grid-cols-2 md:grid-cols-4"
+                >
+                    {productList?.map((item) => (
+                        <ProductItem
+                            key={item.id}
+                            id={item.id}
+                            imgSrc={item.imgSrc}
+                            name={item.name}
+                            price={item.price}
+                            handleProductItemClick={handleProductItemClick}
+                        />
+                    ))}
+                </div>
+            </section>
+        </>
     );
 };
 ```
 
-- 우선 laps 배열을 복사해 sortedLaps로 정렬했다.
-- 그리고 최단/ 최장 Lap 번호를 추출하고, map을 통해 렌더링시에 createMinMaxStyle 메서들를 생성해 Lap 번호가 같은 경우 스타일을 추가했다.
-- 그리고 Lap이 한 개인 경우는 최단/ 최장 기능이 동작하지 않기때문에 createMinMaxStyle 메서드에서 early return 처리했다.
+- 마찬가지로 CartToolpane 컴포넌트는 props로 cartlist를 CartList 컴포넌트에 전달하고, CartList 컴포넌트에서 CartItem 컴포넌트를 렌더했다.
 
+### 비동기 API 요청 모킹하기
+
+- src/api/productData.json 파일에 있는 상품 목록 데이터를 fetch API를 통해 비동기로 데이터를 받아와 렌더링했다. 
+
+```js
+useEffect(() => {
+        const fetchProductData = async () => {
+            const result = await getProductList();
+            setProductList(result);
+        };
+        fetchProductData();
+}, []);
+
+const request = async (url) => {
+    try {
+        const response = await fetch(url);
+        if (response.ok) {
+            const data = await response.json();
+            return data;
+        }
+        throw response.json();
+    } catch (e) {
+        console.log(e);
+    }
+};
+
+const getProductList = async () => {
+    const result = await request('./productData.json');
+    return result;
+};
+```
+
+- respone 객체의 json 메서드를 통해 JSON 형태를 파싱하여 자바스크립트 객체로 받았다.
+
+### 상품 목록 렌더링하기
+
+- fetch가 완료된 후 productList state를 초기화해 fetch된 productList를 ProductList 컴포넌트에 prpos로 전달해 초기화된 상품 목록을 렌더링하도록 했다.
+
+### 장바구니 토글 기능
+
+- 장바구니 아이콘을 클릭하거나 상품 목록 중 하나를 클릭하면 장바구니가 열려야한다.
+- 장바구니 열린 상태에서 닫기 버튼을 누르거나 backdrop을 누르면 장바구니가 닫혀야 한다.
+
+```js
+<App>
+    <ProductList />
+    <CartList />
+</App>
+```
+
+- 위 코드와 같이 ProductList와 CartList는 서로 다른 서브 트리 이지만, ProductList를 클릭하면 CartList가 열려야한다.
+- 따라서 공통 부모인 App 컴포넌트에서 cartToolpaneOpen state를 토글하는 이벤트 핸들러를 구현했다.
+- 아래의 이벤트 핸들러를 장바구니 아이콘, 상품 목록, 장바구니 닫기 버튼, backdrop의 onClick 이벤트 핸들러로 등록했다.
+
+```js
+const handleOpenCloseCartToolpane = () => {
+        setCartToolpaneOpen((prev) => !prev);
+};
+```
+
+### 장바구니 추가 기능
+
+- 상품 카드를 클릭하면 상품이 장바구니에 추가되어야 한다.
+- 따라서 App 컴포넌트에서 이벤트 핸들러를 만들어 ProductList 컴포넌트에 props로 전달했다.
+- Productlist 컴포넌트는 ProductItem 컴포넌트로 전달하고, ProductItem의 onClick 이벤트 핸들러로 등록한다.
+
+```js
+ const handleProductItemClick = (e) => {
+        // 장바구니 토글
+        handleOpenCloseCartToolpane();
+        const productId = e.target.dataset.productid;
+        addCartItem(parseInt(productId));
+};
+
+    const addCartItem = (id) => {
+        const selectedItem = productList.find((item) => item.id === id);
+        const idx = cartList.findIndex((item) => item.id === id);
+        if (idx === -1) {
+            setCartList((prev) => [...prev, { ...selectedItem, count: 1 }]);
+        } else {
+            cartList[idx].count += 1;
+            setCartList([...cartList]);
+        }
+};
+```
+
+- fetch한 productList의 정보는 App 커뮤포넌트에 있고, product 정보를 받으려면 id 정보가 필요하다. 따라서 ProductItem 컴포넌트의 HTMLElement의 dataset의 productid를 통해 id 정보를 받았다.
+- 그리고 id 가있는 경우는 해당 cartItem의 count를 1 증가시키고, 없는 경우는 기존 cartList state에 새롭게 추가했다.
+
+### 장바구니 상품 삭제 기능
+
+- 장바구니 목록에서 삭제하기 글씨를 클릭하면 해당 상품이 삭제된다.
+
+```js
+const handleRemoveItem = () => {
+        const newCratList = cartList.filter((item) => item.id !== id);
+        setCartList([...newCratList]);
+};
+```
+
+- 따라서 삭제하기 버튼에 handleRemoveItem 이벤트 핸들러를 구현해 등록했다.
+
+### Web Storage API를 사용한 장바구니 데이터 저장 기능
+
+- 장바구니의 결제하기 버튼을 누르면 장바구니 데이터를 브라우저에 저장하도록 했다.
+- 따라서 새로고침을 하더라도 장바구니 데이터가 localStorage에 저장되어있으면 장바구니 데이터를 보여준다.
+
+```js
+// 장바구니 데이터 저장
+const saveCartList = (e) => {
+    e.preventDefault();
+    localStorage.setItem('cartList', JSON.stringify(cartList));
+};
+
+// 장바구니 데이터 로드
+useEffect(() => {
+    setCartList(JSON.parse(localStorage.getItem('cartList')));
+}, [setCartList]);
+```
+
+- localStorage 이용해 장바구니 데이터를 저장하고 로드했다.
 
 ### 완성본
 
